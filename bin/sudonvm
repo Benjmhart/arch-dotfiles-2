@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+main() {
+n=$(which node); \
+o=(sudo which node)
+echo "copying $n"
+m=$(which npm)
+l=$(sudo which npm)
+sudo cp -r $n $o
+sudo cp -r $m $l
+}
+
+main
