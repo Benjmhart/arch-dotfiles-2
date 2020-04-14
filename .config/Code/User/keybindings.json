@@ -1,0 +1,121 @@
+// Place your key bindings in this file to overwrite the defaults
+[
+  {
+    "key": "ctrl+space ctrl+z",
+    "command": "workbench.action.toggleZenMode"
+  },
+  {
+    "key": "ctrl+k z",
+    "command": "-workbench.action.toggleZenMode"
+  },
+  {
+    "key": "alt+f10",
+    "command": "workbench.action.compareEditor.previousChange"
+  },
+  {
+    "key": "ctrl+shift+alt+h",
+    "command": "console.log.wrap.down.prefix",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+alt+w ctrl+alt+down",
+    "command": "-console.log.wrap.down.prefix",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+k ctrl+b",
+    "command": "workbench.action.openGlobalKeybindings"
+  },
+  {
+    "key": "ctrl+k ctrl+s",
+    "command": "-workbench.action.openGlobalKeybindings"
+  },
+  {
+    "key": "ctrl+space ctrl+f",
+    "command": "workbench.view.explorer"
+  },
+  {
+    "key": "ctrl+shift+e",
+    "command": "-workbench.view.explorer"
+  },
+  {
+    "key": "ctrl+space ctrl+s",
+    "command": "workbench.view.search",
+    "when": "!searchViewletVisible"
+  },
+  {
+    "key": "ctrl+shift+f",
+    "command": "-workbench.view.search",
+    "when": "!searchViewletVisible"
+  },
+  {
+    "key": "ctrl+space ctrl+p",
+    "command": "workbench.action.openSettingsJson"
+  },
+  {
+    "key": "ctrl+space ctrl+x",
+    "command": "workbench.action.closeActiveEditor"
+  },
+  {
+    "key": "ctrl+w",
+    "command": "-workbench.action.closeActiveEditor"
+  },
+  {
+    "key": "ctrl+space ctrl+e",
+    "command": "workbench.action.focusActiveEditorGroup"
+  },
+  {
+    "key": "ctrl+space ctrl+w",
+    "command": "editor.action.toggleWordWrap"
+  },
+  {
+    "key": "alt+z",
+    "command": "-editor.action.toggleWordWrap"
+  },
+  {
+    "key": "ctrl+f ctrl+r",
+    "command": "renameFile",
+    "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+  },
+  {
+    "key": "f2",
+    "command": "-renameFile",
+    "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus"
+  },
+  {
+    "key": "ctrl+f ctrl+n",
+    "command": "explorer.newFile"
+  },
+  {
+    "key": "ctrl+f ctrl+m",
+    "command": "explorer.newFolder"
+  },
+  {
+    "key": "ctrl+space ctrl+b",
+    "command": "workbench.action.toggleSidebarVisibility"
+  },
+  {
+    "key": "ctrl+b",
+    "command": "-workbench.action.toggleSidebarVisibility"
+  },
+  {
+    "key": "ctrl+f ctrl+f",
+    "command": "actions.find"
+  },
+  {
+    "key": "ctrl+f",
+    "command": "-actions.find"
+  },
+  {
+    "key": "ctrl+space ctrl+r",
+    "command": "workbench.files.action.refreshFilesExplorer"
+  },
+  {
+    "key": "ctrl+e ctrl+e",
+    "command": "workbench.extensions.action.showRecommendedExtensions"
+  },
+  {
+    "key": "ctrl+e ctrl+m",
+    "command": "workbench.extensions.action.installExtensions"
+  }
+]

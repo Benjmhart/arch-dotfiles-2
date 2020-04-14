@@ -1,0 +1,90 @@
+{
+  "folders": {
+    "root": [
+      {
+        "id": 0,
+        "image": "/home/bhart/Projects/streamDeck/images/baseline-power_settings_new-24px.svg",
+        "actions": [{ "settings": "toggleBrightness" }]
+      },
+      {
+        "id": 1,
+        "image": "/home/bhart/Projects/streamDeck/images/ic_featured_play_list_48px.svg",
+        "actions": [
+          { "keyTap": "end" },
+          { "keyTap": "enter" },
+          { "typeString": "console.log()" },
+          { "keyTap": "left" }
+        ]
+      },
+      {
+        "id": 2,
+        "color": [150, 255, 150],
+        "actions": [
+          { "macro": "copy" },
+          { "macro": "openLine" },
+          { "typeString": "console.log('" },
+          { "macro": "paste" },
+          { "typeString": "')" }
+        ]
+      },
+      {
+        "id": 3,
+        "color": [150, 150, 255],
+        "actions": [
+          { "macro": "copy" },
+          { "macro": "openLine" },
+          { "typeString": "console.log('" },
+          { "macro": "paste" },
+          { "typeString": "', " },
+          { "macro": "paste" },
+          { "typeString": ")" }
+        ]
+      },
+      {
+        "id": 4,
+        "color": [255, 150, 0],
+        "actions": [{ "folderLink": "fldr1" }]
+      },
+      {
+        "id": 5,
+        "color": [0, 0, 255],
+        "actions": [
+          { "macro": "copy" },
+          { "macro": "openLine" },
+          { "typeString": "console.log('" },
+          { "macro": "paste" },
+          { "typeString": "')" }
+        ]
+      }
+    ],
+    "fldr1": [
+      {
+        "id": 0,
+        "color": [255, 150, 0],
+        "actions": [{ "folderLink": "root" }]
+      }
+    ]
+  },
+  "macros": {
+    "cut": [
+      { "keyToggle": ["control", "down", []] },
+      { "keyTap": "x" },
+      { "keyToggle": ["control", "up", []] }
+    ],
+    "copy": [
+      { "keyToggle": ["control", "down", []] },
+      { "keyTap": "c" },
+      { "keyToggle": ["control", "up", []] }
+    ],
+    "paste": [
+      { "keyToggle": ["control", "down", []] },
+      { "keyTap": "v" },
+      { "keyToggle": ["control", "up", []] }
+    ],
+    "openLine": [
+      { "keyTap": "end" },
+      { "keyTap": "end" },
+      { "keyTap": "enter" }
+    ]
+  }
+}
