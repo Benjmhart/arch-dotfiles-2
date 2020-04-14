@@ -198,7 +198,7 @@ alias clip="xclip -sel clip"
 alias vimrc="nvim ~/.configure/nvim/init.vim"
 alias localec="LC_ALL='C'"
 alias localen="LC_ALL='en_US.UTF-8'"
+alias dot="/usr/bin/git --git-dir=$HOME/.dot/ --work-tree=$HOME"
 eval $(thefuck --alias)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dot/ --work-tree=$HOME"
