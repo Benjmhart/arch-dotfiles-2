@@ -34,6 +34,58 @@ nnoremap <C-H> :nohls<Enter>
 " try to keep the cursor away from the screen edge
 set scrolloff=10
 
+" Display suggestions in normal, visual and view modes for keys, marks and
+" registers (at most 5 files).  In other view, when available.
+
+set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
+
+" highlight search results automatically
+
+set hlsearch
+
+" Don't do too many requests to slow file systems
+
+if !has('win')
+    set slowfs=curlftpfs
+endif
+
+" Set custom status line look
+
+set statusline="  Hint: %z%= %A %10u:%-7g %15s %20d  "
+
+" ------------------------------------------------------------------------------
+
+" :mark mark /full/directory/path [filename]
+
+mark h ~/
+mark d ~/Downloads
+mark p ~/Projects
+
+" ------------------------------------------------------------------------------
+
+" Start shell in current directory
+nnoremap s :shell<cr>
+
+" Toggle visibility of preview window
+nnoremap w :view<cr>
+vnoremap w :view<cr>gv
+
+" Open editor to edit vifmrc and apply settings after returning to vifm
+nnoremap ,c :write | edit $MYVIFMRC | restart<cr>
+
+" Example of standard two-panel file managers mappings
+nnoremap <f3> :!less %f<cr>
+nnoremap <f4> :edit<cr>
+nnoremap <f5> :copy<cr>
+nnoremap <f6> :move<cr>
+nnoremap <f7> :mkdir<space>
+nnoremap <f8> :delete<cr>
+
+" Use ripgrep instead of grep
+"
+set grepprg='rg --line-numbers %i %a %s'
+
+
 " :com[mand][!] command_name action
 " The following macros can be used in a command
 " %a is replaced with the user arguments.
@@ -54,6 +106,9 @@ command! make !!make %a
 command! mkcd :mkdir %a | cd %a
 command! vgrep vim "+grep %a"
 command! reload :write | restart
+
+
+
 
 " The file type is for the default programs to be used with
 " a file extension.

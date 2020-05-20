@@ -4,6 +4,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'vmchale/dhall-vim'
 " Plug 'HerringtonDarkholme/yats.vim' 
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-abolish'
 "Plug 'mhartington/nvim-typescript' 
 Plug 'airblade/vim-gitgutter'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}

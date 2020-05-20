@@ -1,6 +1,18 @@
 # You can edit this file by hand, but it's recommended not to do that.
 
 # Marks:
+'d
+	/home/ben/Downloads
+	..
+1589902804
+'h
+	/home/ben/
+	..
+1589902804
+'p
+	/home/ben/Projects
+	..
+1589902804
 
 # Bookmarks:
 
@@ -23,6 +35,30 @@ d/home
 d/
 	home
 4
+d/home
+	ben
+1
+d/home/ben
+	videos
+16
+d/home/ben/videos
+	..
+0
+d/home/ben
+	nohup.out
+20
+d/home
+	ben
+1
+d/home/ben
+	z
+18
+d/home/ben/z
+	..
+0
+d/home/ben
+	nohup.out
+19
 d
 
 # Right window history (oldest to newest):
@@ -35,6 +71,15 @@ D/home
 D/
 	home
 4
+D/home
+	ben
+1
+D/home/ben
+	videos
+16
+D/home/ben/videos
+	tut7FFIDOM.mp4
+8
 D
 
 # Command line history (oldest to newest):
@@ -44,6 +89,12 @@ D
 # Search history (oldest to newest):
 
 # Prompt history (oldest to newest):
+ptut2basicCLI.mp4
+ptut3functor.mp4
+ptut3aSymbols.mp4
+ptut5monad.mp4
+ptut6aff.mp4
+ptut7FFIDOM.mp4
 
 # Local filter history (oldest to newest):
 
