@@ -199,6 +199,7 @@ alias vimrc="nvim ~/.configure/nvim/init.vim"
 alias localec="LC_ALL='C'"
 alias localen="LC_ALL='en_US.UTF-8'"
 alias dot="/usr/bin/git --git-dir=$HOME/.dot/ --work-tree=$HOME"
+alias dotadd="dot add -u"
 alias vimwikisync="rclone copy /home/ben/vimwiki GoogleDrive-vw:vimwiki  ; rclone sync GoogleDrive-vw:vimwiki /home/ben/vimwiki  ; echo success"
 eval $(thefuck --alias)
 
