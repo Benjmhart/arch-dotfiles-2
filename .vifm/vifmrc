@@ -136,12 +136,28 @@ command! reload :write | restart
 " You can also add %CLEAR if you want to clear screen before running FUSE
 " program.
 
-" Pdf
-filextype *.pdf zathura %c %i &, apvlv %c, xpdf %c
 
 " Displaying pictures in terminal
-"
-" fileviewer *.jpg,*.png shellpic %c
+fileviewer *.jpg,*.png shellpic %c
+
+" Video
+filextype *.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
+         \*.fl[icv],*.m2v,*.mov,*.webm,*.ts,*.mts,*.m4v,*.r[am],*.qt,*.divx,
+         \*.as[fx]
+        \ {View using mpv}
+        \ mpv %f,
+        \ {View using vlc}
+        \ vlc %f,
+
+" Pdf
+filextype *.pdf 
+       \ {View using zathura}
+       \ zathura %c %i &
+
+" PostScript
+filextype *.ps,*.eps,*.ps.gz
+        \ {View in zathura}
+        \ zathura %f,
 
 " Open all other files with default system programs (you can also remove all
 " :file[x]type commands above to ensure they don't interfere with system-wide

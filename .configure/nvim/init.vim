@@ -7,12 +7,14 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-abolish'
 "Plug 'mhartington/nvim-typescript' 
 Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'maxmellon/vim-jsx-pretty'
 " Plug 'leafgarland/typescript-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdtree' 
 Plug 'scrooloose/nerdcommenter' 
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'purescript-contrib/purescript-vim'
@@ -24,6 +26,7 @@ Plug 'ap/vim-css-color'
 Plug 'ryanoasis/vim-devicons'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'farmergreg/vim-lastplace'
+Plug 'vimwiki/vimwiki'
 
 call plug#end()
 
@@ -199,5 +202,9 @@ function Repeat()
   exe ":normal a" . repeat(char, times)
 endfunction
 
+" leader-r calls a function which repeats chars
 nmap <leader>r :call Repeat()<Enter>
+
+" leader-gb is git blame
+noremap <leader>gb :Gblame
 
