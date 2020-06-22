@@ -17,7 +17,7 @@
 # Bookmarks:
 
 # TUI:
-ar
+al
 q0
 v2
 ov
@@ -127,7 +127,13 @@ d/home/ben
 3
 d/home/ben/Downloads
 	thinking-with-types.pdf
-13
+16
+d/home/ben
+	videos
+17
+d/home/ben/videos
+	009 - FFI_LIB.mp4
+9
 d
 
 # Right window history (oldest to newest):
@@ -308,6 +314,18 @@ D/home/ben/Projects/vision2/euler-api-gateway
 D/home/ben/Projects/vision2/euler-api-gateway/.hpc
 	..
 0
+D/home/ben/Projects/vision2/euler-api-gateway
+	.stack-work
+2
+D/home/ben/Projects/vision2
+	euler-api-gateway
+5
+D/home/ben/Projects
+	vision2
+34
+D/home/ben
+	nohup.out
+30
 D
 
 # Command line history (oldest to newest):
@@ -317,8 +335,26 @@ D
 :q
 
 # Search history (oldest to newest):
+/vid
 
 # Prompt history (oldest to newest):
+p010 - Traversable .mp4
+p001 - intro.mp4
+p002 - basicCLI.mp4
+p003 - mini app pt 1 Symbols.mp4
+p003 - Functor pt2 Symbols.mp4
+p004 - Functor pt2 Symbols.mp4
+p003 - functor.mp4
+p005 - applicative.mp4
+p005 - monad.mp4
+p007 - aff.mp4
+p006 - monad.mp4
+p008 - FFIDOM.mp4
+p008 - FFI DOM.mp4
+p008 - FFI_DOM.mp4
+p009 - FFI_LIB.mp4
+p010 - Foldable.mp4
+p011 - Traversable .mp4
 ptut5monad.mp4
 ptut6aff.mp4
 ptut7FFIDOM.mp4
@@ -329,11 +365,12 @@ ptut4applicative.mp4
 ptut8FFILIB.mp4
 ptut9Foldable.mp4
 pGateway
+p011 - Traversable.mp4
+p012 - Transformers p1.mp4
 
 # Local filter history (oldest to newest):
 
 # Registers:
-""/home/ben/.local/share/vifm/Trash/000_vision2-ArchitectureV4.drawio
 
 # Directory stack (oldest to newest):
 
@@ -384,6 +421,10 @@ t/home/ben/.local/share/vifm/Trash/000_zoom_x86_64.pkg.tar.xz
 	/home/ben/Downloads/zoom_x86_64.pkg.tar.xz
 t/home/ben/.local/share/vifm/Trash/000_vision2-ArchitectureV4.drawio
 	/home/ben/Downloads/vision2-ArchitectureV4.drawio
+t/home/ben/.local/share/vifm/Trash/000_011 - Traversable .mp4
+	/home/ben/videos/011 - Traversable .mp4
+t/home/ben/.local/share/vifm/Trash/000_nohup.out
+	/home/ben/videos/nohup.out
 
 # State:
 f

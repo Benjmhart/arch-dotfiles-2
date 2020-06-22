@@ -1,5 +1,8 @@
 xrdb -merge .Xresources
 
+# vimwiki sync on edit
+find ./vimwiki | entr -adn vimwikisync &
+
 
 xsetroot -solid midnightblue
 
