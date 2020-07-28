@@ -1,0 +1,146 @@
+#!/usr/bin/env stack
+-- stack --resolver lts-16.2 script
+{-# LANGUAGE OverloadedStrings #-}
+
+import Prelude                           hiding (FilePath)
+import Turtle
+import qualified Chronos                 as Chronos
+import           Control.Concurrent      (threadDelay)
+import           Control.DeepSeq         (force)
+import           Data.Coerce             (coerce)
+import qualified Data.List               as List
+import qualified Data.List.Extra         as List
+import           Data.Maybe              (fromMaybe)
+import qualified Data.Text               as Text
+import           Data.Text.Lazy          (toStrict)
+import           Data.Text.Lazy.Builder  (toLazyText)
+import qualified Data.Time               as Time
+import qualified Safe                    as Safe
+import qualified System.Process          as Process
+import qualified System.IO               as IO
+
+-- vimwiki archiver and updater --
+
+
+-- General notes:
+
+-- only items from the top/immediate heading will be removed if marked complete
+-- headings must be in order - Immediate, Medium Priority, weekly, daily
+-- anything that starts with ### will be overwritten by the date
+
+dailyTodoPath :: String
+dailyTodoPath = "/home/ben/vimwiki/daily-todo.wiki" 
+
+dailyTodoPath' :: FilePath
+dailyTodoPath' = decodeString dailyTodoPath
+
+cronlogPath :: String
+cronlogPath = "/home/ben/Desktop/cronlog"
+
+cronlogPath' :: FilePath
+cronlogPath' = decodeString cronlogPath
+
+usageLogPath :: String
+usageLogPath = "/home/ben/vimwiki/usage-log.wiki"
+
+usageLogPath' :: FilePath
+usageLogPath' = decodeString usageLogPath
+
+main = do
+  shellScript
+
+shellScript :: IO ()
+shellScript = do
+  date <- Chronos.yesterday
+  newDate <- Chronos.today
+  newDateDay <- Chronos.todayDayOfWeek
+  let archivePath = ("/home/ben/vimwiki/.todo-archive/" <> (dateFmtShort $ Chronos.dayToDate date :: String))
+  nc <- IO.withFile dailyTodoPath IO.ReadMode $ \fileHandle -> do
+    fileContents <- IO.hGetContents fileHandle
+    IO.writeFile archivePath fileContents
+    let structuredData = parseTodoFile $ lines fileContents
+    let newContents = unlines $ rebuildTodoFile (Chronos.dayToDate newDate, newDateDay) $ structuredData
+    pure $ force newContents
+  IO.writeFile dailyTodoPath nc
+  let echoLine = showDayOfWeek newDateDay <> " - vimwiki daily-todo archive script"
+  print echoLine
+  IO.appendFile cronlogPath (echoLine)
+  IO.appendFile usageLogPath (dateFmtShort $ Chronos.dayToDate newDate)
+  print "success!"
+
+dateFmtShort = Text.unpack . toStrict . toLazyText . Chronos.builder_Dmy (Just '-')
+rebuildTodoFile :: (Chronos.Date, Chronos.DayOfWeek) -> [TodoLine] -> [String]
+rebuildTodoFile (newtime, newday) contents = List.reverse $ foldl go [] contents
+  where
+    go acc (DateLine s)              = ("### " <> showDayOfWeek newday <> ", "<> dateFmtShort newtime) : acc
+    go acc (OTHER s)                 = s : acc
+    go acc (SECTIONHEADER _ s)       = s : acc
+    go acc (TODO Immediate True _ _) = acc
+    go acc (TODO Daily True _ s)     = unmarkDone s : acc
+    go acc (TODO _ _ _ s)            = s : acc
+
+unmarkDone = (' ':) . drop 1
+
+parseTodoFile contents = List.reverse $ foldl go [] contents
+  where
+    go acc item = next acc item : acc
+    next acc [] =  OTHER []
+    next acc item
+      | List.isPrefixOf "###" item           = DateLine item
+      | List.isPrefixOf "#" item             = parseSectionHeader acc item
+      | List.isPrefixOf "-" (List.trim item) = parseToDo acc item False
+      | List.isPrefixOf "X" item             = parseToDo acc item True
+      | List.isPrefixOf "x" item             = parseToDo acc item True
+      | otherwise                            = OTHER item
+
+parseSectionHeader acc item = maybe (SECTIONHEADER Immediate item) (identify item) $ getLastSection acc
+
+getLastSection acc = matchMay $ Safe.headMay $ List.filter (isSectionHeader) acc
+
+matchMay (Just (SECTIONHEADER s _)) = Just s
+matchMay _                   = Nothing
+
+identify item Immediate      = SECTIONHEADER MediumPriority item
+identify item MediumPriority = SECTIONHEADER Weekly item
+identify item Weekly         = SECTIONHEADER Daily item
+identify item _              = SECTIONHEADER Immediate item
+
+parseToDo acc item done 
+  = TODO 
+    lastSection
+    done 
+    indentationLevel 
+    newText
+  where
+    lastSection = (fromMaybe Immediate (getLastSection acc)) 
+    indentationLevel = div (List.length $ List.takeWhile (==' ') item) 2
+    newText          = " " <> (List.drop 1 item)
+
+data Section
+  = Immediate
+  | MediumPriority
+  | Weekly
+  | Daily
+  deriving (Eq, Show)
+
+type Done = Bool
+type Indent = Int
+
+data TodoLine 
+  = DateLine String 
+  | OTHER String 
+  | SECTIONHEADER Section String
+  | TODO Section Done Indent String
+  deriving (Eq, Show)
+
+isSectionHeader (SECTIONHEADER _ _) = True
+isSectionHeader _                   = False
+
+showDayOfWeek day
+  | day == Chronos.monday    = "Monday"
+  | day == Chronos.tuesday   = "Tuesday"
+  | day == Chronos.wednesday = "Wednesday"
+  | day == Chronos.thursday  = "Thursday"
+  | day == Chronos.friday    = "Friday"
+  | day == Chronos.saturday  = "Saturday"
+  | day == Chronos.sunday    = "Sunday"

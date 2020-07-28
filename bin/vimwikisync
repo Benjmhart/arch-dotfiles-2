@@ -1,2 +1,2 @@
 #!/bin/bash
-rclone copy /home/ben/vimwiki GoogleDrive-vw:vimwiki  ; rclone sync GoogleDrive-vw:vimwiki /home/ben/vimwiki  ;  echo "$(date) - google drive sync" >> /home/ben/Desktop/cronlog
+rclone copy /home/ben/vimwiki GoogleDrive-vw:vimwiki ; echo "$(date) - google drive push" >> /home/ben/Desktop/cronlog

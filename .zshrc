@@ -95,7 +95,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(gitfast command-not-found compleat npm cabal sudo vscode zsh-syntax-highlighting vi-mode)
+plugins=(gitfast command-not-found compleat npm cabal sudo vscode zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -135,30 +135,6 @@ expand-aliases() {
 
 zle -N expand-aliases
 bindkey '^ ' expand-aliases
-
-# vim keybindings
-bindkey -v
-
-# create a zkbd compatible hash;
-# to add other keys to this hash, see: man 5 terminfo
-typeset -g -A key
-
-key[Home]="${terminfo[khome]}"
-key[End]="${terminfo[kend]}"
-
-# setup key accordingly
-[[ -n "${key[Home]}"      ]] && bindkey -- "${key[Home]}"      beginning-of-line
-[[ -n "${key[End]}"       ]] && bindkey -- "${key[End]}"       end-of-line
-
-# Finally, make sure the terminal is in application mode, when zle is
-# active. Only then are the values from $terminfo valid.
-if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
-	autoload -Uz add-zle-hook-widget
-	function zle_application_mode_start { echoti smkx }
-	function zle_application_mode_stop { echoti rmkx }
-	add-zle-hook-widget -Uz zle-line-init zle_application_mode_start
-	add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
-fi
 
 
 # vim mode switch delay
@@ -200,6 +176,11 @@ alias localec="LC_ALL='C'"
 alias localen="LC_ALL='en_US.UTF-8'"
 alias dot="/usr/bin/git --git-dir=$HOME/.dot/ --work-tree=$HOME"
 alias dotadd="dot add -u"
+alias cronlog="cat ~/Desktop/cronlog"
 eval $(thefuck --alias)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/ben/.sdkman"
+[[ -s "/home/ben/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ben/.sdkman/bin/sdkman-init.sh"

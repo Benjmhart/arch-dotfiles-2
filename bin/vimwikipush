@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+main() {
+  while true 
+  do
+    find /home/ben/vimwiki | entr /home/ben/bin/vimwikisync
+    sleep 1
+  done
+}
+
+main

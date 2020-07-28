@@ -29,6 +29,10 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'farmergreg/vim-lastplace'
 Plug 'vimwiki/vimwiki'
 
+"my plugins:
+Plug 'benjmhart/vim-instantinstance'
+
+
 call plug#end()
 
 
@@ -82,6 +86,9 @@ packadd vimball
 
 " inject haskell pragma syntax
 :nmap <leader>l i{-# LANGUAGE  #-}<Esc><<o<Esc>k$4ha
+
+"mouse stuff
+" :set mouse=a
 
 
 "edit and refresh vimrc
@@ -203,8 +210,15 @@ function Repeat()
   exe ":normal a" . repeat(char, times)
 endfunction
 
+
+" leader-sop sources current buffer
+nnoremap <leader>sop :source %
+
 " leader-r calls a function which repeats chars
 nmap <leader>r :call Repeat()<Enter>
+
+" leader-d injects a date
+map <leader>D :put =strftime('%d-%m-%y')<CR>
 
 " leader-gb is git blame
 noremap <leader>gb :Gblame

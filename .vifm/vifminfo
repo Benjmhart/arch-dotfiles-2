@@ -132,8 +132,8 @@ d/home/ben
 	videos
 17
 d/home/ben/videos
-	009 - FFI_LIB.mp4
-9
+	010 - Foldable.mp4
+10
 d
 
 # Right window history (oldest to newest):
@@ -325,7 +325,7 @@ D/home/ben/Projects
 34
 D/home/ben
 	nohup.out
-30
+18
 D
 
 # Command line history (oldest to newest):
@@ -367,6 +367,7 @@ ptut9Foldable.mp4
 pGateway
 p011 - Traversable.mp4
 p012 - Transformers p1.mp4
+p013 - Transformers p2 ReaderT.mp4
 
 # Local filter history (oldest to newest):
 
