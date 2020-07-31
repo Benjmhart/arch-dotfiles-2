@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+main() {
+  if pgrep stalonetray ; then
+    killall stalonetray
+  fi
+  bash ~/.screenlayout/double.sh
+  nohup stalonetray --config ~/.stalonetrayrc 2>&1 /dev/null &
+  nitrogen --set-scaled --random ~/dotfiles/bg &
+}
+
+main
