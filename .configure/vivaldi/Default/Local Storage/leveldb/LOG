@@ -1,0 +1,13 @@
+2020/07/31-11:24:39.410 974 Reusing MANIFEST /home/ben/.configure/vivaldi/Default/Local Storage/leveldb/MANIFEST-000001
+2020/07/31-11:53:43.083 27a6 Level-0 table #5: started
+2020/07/31-11:53:43.091 27a6 Level-0 table #5: 17503 bytes OK
+2020/07/31-11:53:43.094 27a6 Delete type=0 #3
+2020/07/31-11:59:53.393 27a6 Level-0 table #7: started
+2020/07/31-11:59:53.401 27a6 Level-0 table #7: 17006 bytes OK
+2020/07/31-11:59:53.403 27a6 Delete type=0 #4
+2020/07/31-12:04:14.171 27a6 Level-0 table #9: started
+2020/07/31-12:04:14.174 27a6 Level-0 table #9: 65830 bytes OK
+2020/07/31-12:04:14.175 27a6 Delete type=0 #6
+2020/07/31-12:18:14.171 27a6 Level-0 table #11: started
+2020/07/31-12:18:14.179 27a6 Level-0 table #11: 11926 bytes OK
+2020/07/31-12:18:14.182 27a6 Delete type=0 #8

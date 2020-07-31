@@ -1,0 +1,6 @@
+[user]
+	name = Ben Hart
+	email = Benjmhart@gmail.com
+[core]
+	editor = nvim
+	pager = less -F -X
