@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE khotnewstuff3>
+<hotnewstuffregistry>
+ <stuff category="462">
+  <name>Dracula</name>
+  <providerid>https://api.kde-look.org/ocs/v1/</providerid>
+  <author>tiny6996</author>
+  <homepage>https://store.kde.org/p/1310950</homepage>
+  <licence></licence>
+  <version>0.0.2</version>
+  <rating>50</rating>
+  <downloads>11312</downloads>
+  <installedfile>/home/ben/.local/share/konsole/Dracula.colorscheme</installedfile>
+  <id>1310950</id>
+  <releasedate>2019-06-22</releasedate>
+  <summary>A konsole theme based on the Dracula Theme</summary>
+  <changelog></changelog>
+  <preview>https://cn.opendesktop.org/cache/100x100-0/img/e/2/b/e/8861312a57cfafded6aea59e41c0f3518757.png</preview>
+  <previewBig>https://cn.opendesktop.org/cache/770x540-0/img/e/2/b/e/8861312a57cfafded6aea59e41c0f3518757.png</previewBig>
+  <payload>https://dllb2.pling.com/api/files/download/j/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1NjExODI3MjQiLCJvIjoiMSIsInMiOiIwNTkwMGE3N2Y1ZTA5NGVjMTM0ZDE3Y2U1NTczMWIzM2RjYmQzYTQzMDZmZTZjZWZjYjg1NjkyNDNlMWU5NzcwZjAyNTkwY2QxNTk3NmFiOTk0ZTRlZDgzMmIzOWE3NzcwYWViNzgwNTdhOWUwY2VhNDgwZTUzYzE1NWEzN2VkOCIsInQiOjE1OTYyMzgxMDYsInN0ZnAiOm51bGwsInN0aXAiOiIxODQuMTQ3LjE3LjIwNCJ9.pv4k1nVF9YDoBTd5pXcr0ifADwQ12yDFUifdcRf8CmE/Dracula.colorscheme</payload>
+  <tags>addon</tags>
+  <status>installed</status>
+ </stuff>
+</hotnewstuffregistry>

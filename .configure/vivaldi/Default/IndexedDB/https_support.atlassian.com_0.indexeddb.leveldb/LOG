@@ -1,5 +1,0 @@
-2020/07/31-11:52:54.193 255f Reusing MANIFEST /home/ben/.configure/vivaldi/Default/IndexedDB/https_support.atlassian.com_0.indexeddb.leveldb/MANIFEST-000001
-2020/07/31-12:04:16.954 144c Level-0 table #5: started
-2020/07/31-12:04:16.961 144c Level-0 table #5: 1000 bytes OK
-2020/07/31-12:04:16.963 144c Delete type=0 #3
-2020/07/31-12:04:16.963 144c Manual compaction at level-0 from (begin) .. (end); will stop at (end)

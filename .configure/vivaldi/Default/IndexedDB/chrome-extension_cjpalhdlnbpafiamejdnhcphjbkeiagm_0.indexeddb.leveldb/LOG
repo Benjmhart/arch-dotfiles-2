@@ -1,5 +1,0 @@
-2020/07/31-11:57:55.729 3164 Reusing MANIFEST /home/ben/.configure/vivaldi/Default/IndexedDB/chrome-extension_cjpalhdlnbpafiamejdnhcphjbkeiagm_0.indexeddb.leveldb/MANIFEST-000001
-2020/07/31-11:57:57.732 144c Level-0 table #5: started
-2020/07/31-11:57:57.739 144c Level-0 table #5: 217 bytes OK
-2020/07/31-11:57:57.743 144c Delete type=0 #3
-2020/07/31-11:57:57.743 144c Manual compaction at level-0 from (begin) .. (end); will stop at (end)

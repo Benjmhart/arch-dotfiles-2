@@ -1,8 +1,8 @@
 [Desktop Entry]
-DefaultProfile=Profile 2.profile
+DefaultProfile=New Profile.profile
 
 [Favorite Profiles]
-Favorites=Profile 1.profile
+Favorites=
 
 [KonsoleWindow]
 AllowMenuAccelerators=true
@@ -13,5 +13,5 @@ ShowWindowTitleOnTitleBar=true
 
 [MainWindow]
 MenuBar=Disabled
-State=AAAA/wAAAAD9AAAAAAAABVQAAALtAAAABAAAAAQAAAAIAAAACPwAAAAA
+State=AAAA/wAAAAD9AAAAAAAAB34AAAQlAAAABAAAAAQAAAAIAAAACPwAAAAA
 ToolBarsMovable=Disabled
