@@ -2,11 +2,13 @@
 # If you come from bash you might have to change your $PATH.
 source /etc/profile
 source ~/.bash_profile
-export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3
+export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts
 
 if  [ -f /home/ben/.nix-profile/etc/profile.d/nix.sh ] ; then
   . /home/ben/.nix-profile/etc/profile.d/nix.sh
 fi
+
+export VIFM=$HOME/.configure/vifm
 
 export WINHOME=/mnt/c/Users/Ben
 
@@ -177,6 +179,7 @@ alias localen="LC_ALL='en_US.UTF-8'"
 alias dot="/usr/bin/git --git-dir=$HOME/.dot/ --work-tree=$HOME"
 alias dotadd="dot add -u"
 alias cronlog="cat ~/Desktop/cronlog"
+alias vifmrc="nvim ~/.configure/vifm/vifmrc"
 eval $(thefuck --alias)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -184,3 +187,4 @@ eval $(thefuck --alias)
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/ben/.sdkman"
 [[ -s "/home/ben/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ben/.sdkman/bin/sdkman-init.sh"
+[ -f "/home/ben/.ghcup/env" ] && source "/home/ben/.ghcup/env" # ghcup-env

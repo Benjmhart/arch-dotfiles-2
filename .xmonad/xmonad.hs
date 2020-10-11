@@ -55,7 +55,7 @@ myStartupHook = do
   spawnOnce "konsole &"
   spawnOnce "copyq &"
   -- spawnOnce "clipmenud &"
-  spawnOnce "stalonetray"
+  spawnOnce "stalonetray &"
 
 -- wishlist 
 -- 3. hotkey for tile screenshot

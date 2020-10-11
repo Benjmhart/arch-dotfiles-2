@@ -44,15 +44,15 @@
   (major1) == 0 && (major2) == 16 && (minor) <= 0)
 #endif /* MIN_VERSION_xmonad_contrib */
 
-/* tool gcc-10.1.0 */
+/* tool gcc-10.2.0 */
 #ifndef TOOL_VERSION_gcc
-#define TOOL_VERSION_gcc "10.1.0"
+#define TOOL_VERSION_gcc "10.2.0"
 #endif /* TOOL_VERSION_gcc */
 #ifndef MIN_TOOL_VERSION_gcc
 #define MIN_TOOL_VERSION_gcc(major1,major2,minor) (\
   (major1) <  10 || \
-  (major1) == 10 && (major2) <  1 || \
-  (major1) == 10 && (major2) == 1 && (minor) <= 0)
+  (major1) == 10 && (major2) <  2 || \
+  (major1) == 10 && (major2) == 2 && (minor) <= 0)
 #endif /* MIN_TOOL_VERSION_gcc */
 
 /* tool ghc-8.8.3 */
@@ -132,15 +132,15 @@
   (major1) == 8 && (major2) == 8 && (minor) <= 3)
 #endif /* MIN_TOOL_VERSION_runghc */
 
-/* tool strip-2.34 */
+/* tool strip-2.35 */
 #ifndef TOOL_VERSION_strip
-#define TOOL_VERSION_strip "2.34"
+#define TOOL_VERSION_strip "2.35"
 #endif /* TOOL_VERSION_strip */
 #ifndef MIN_TOOL_VERSION_strip
 #define MIN_TOOL_VERSION_strip(major1,major2,minor) (\
   (major1) <  2 || \
-  (major1) == 2 && (major2) <  34 || \
-  (major1) == 2 && (major2) == 34 && (minor) <= 0)
+  (major1) == 2 && (major2) <  35 || \
+  (major1) == 2 && (major2) == 35 && (minor) <= 0)
 #endif /* MIN_TOOL_VERSION_strip */
 
 #ifndef CURRENT_PACKAGE_KEY

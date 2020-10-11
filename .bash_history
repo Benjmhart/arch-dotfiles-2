@@ -143,3 +143,243 @@ sudo pacman -Syu ranger vifm mesa lib32-mesa xf86-video-amdgpu vulkan-radeon mes
 sudo pacman -Syu ranger vifm mesa xf86-video-amdgpu vulkan-radeon mesa-vdpau
 reboot
 exit
+hpack
+cd euler-x
+exit
+ghcid
+rm .stack-work/
+rm -rf .stack-work/
+ghcid
+cabal new-repl --help
+ghcid
+exit
+ghcid
+cabal install tasty-quickcheck
+hpack
+hpack --force
+ghcid
+cabal build
+cabal update
+exit
+cabal-repl
+cabal repl
+cabal install inline-js
+cabal install inline-js-core
+cabal build
+exit
+hpack
+cabal repl
+exit
+cabal repl
+cabal test
+cabal repl
+cabal repl
+cabal test
+rg "No String Available"
+rg "No String ~Available"
+rg "No String available"
+cabal test
+cabal new-repl
+exit
+rg
+cabal test
+rg "TEST INPUT
+"
+rg "TEST INPUT"
+cabal test
+rg toHaskellString
+rg toString
+cabal test
+rm euler-x.cabal 
+hpack
+cabal test
+:q
+exit
+cabal new-repl
+exit
+cabal new-repl
+exit
+cabal build
+exit
+cabal new-repl
+git checkout src-generated/
+git checkout src-generated/**
+git status
+:q
+exit
+hpack
+cd..
+exit
+hpack
+exit
+cabal testr
+cabal test
+cabal repl
+exit
+cabal new-repl
+cd..
+exit
+cabal new-repl
+ls
+fzf
+hpack
+cabal new-repl
+rg "data Configs"
+rg "type Configs"
+rg "Configs"
+cd..
+exit
+cabal repl
+exit
+cabal repl
+cd..
+exit
+cabal new-repl
+cabal repl
+hpack
+cabal repl
+exit
+cabal new-repl
+ecit
+exit
+cabal test
+rg toString
+rg unsafeToString
+rg toString
+cabal test
+exit
+cabal test
+:q
+exit
+cabal test
+rg index
+cabal test
+rm *.cabal
+hpack
+cabal test
+rg Partial
+cabal test
+rg "error ::"
+cabal test
+reboot
+cabal test
+cabal new-repl
+cabal test
+exit
+cabal test
+hpack
+cabal test
+hpack
+cabal test
+rg "as Show"
+cabal test
+exit
+
+hpack
+[B
+exit
+
+cabal test
+exit
+ghcid
+exit
+ghcid
+exit
+cabal build
+mkdir -p ./src/Gateway/Simpl/Endpoints
+touch ./src/Gateway/Simpl/Endpoints/Shims.hs
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+touch ./src/Gateway/Simpl/Endpoints/Shims.hs
+cabal build
+touch ./src/Gateway/PayZapp/Endpoints/Shims.hs
+mkdir -p ./src/Gateway/PayZapp/Endpoints/
+touch ./src/Gateway/PayZapp/Endpoints/Shims.hs
+exit
+hpack
+cabal build
+exit
+cabal build
+hpack
+cabal build
+exit
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+rg "data Effect"
+rg "Effect"
+rg Unit
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+rg liftM1
+cabal build
+hpack
+cabal build
+rg ":=:"
+cabal build
+rg ":=:"
+cabal build
+rg ExpressM
+cabal build
+rg getClientIP
+rg -i getClientIP
+rg -i getClientIP ./src-generated/
+cabal build
+nix build
+exit
+hpack
+cabal test
+cabal build
+rg getAllHeaders
+rg getAllHeaders ./src-generated/
+hpack
+cabal build
+rg Decode
+cabal build
+exit
+hpack
+cabal build
+rg "sendFile response"
+rg "sendFile response" ./src-generated/
+cabal build
+rg unsageTo
+cabal build
+rg "(:=:)"
+rg "\(:=:\)"
+cabal build
+exit
+cabal build
+exit
+hpack
+nvim
+exit
+cabal build
+:w
+cabal build
+cabal repl
+:q
+exit
+hpack
+cabal build
+hpack
+cabal build
+rg readStringAsInt
+cabal build
+[A
+cabal build
+cabal new-repl
+cabal build
+:q
+exit
