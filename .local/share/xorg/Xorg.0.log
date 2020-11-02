@@ -725,3 +725,5 @@ X Protocol Version 11, Revision 0
 [   663.127] (EE) event22 - Kinesis Freestyle Edge Keyboard: client bug: event processing lagging behind by 36ms, your system is too slow
 [   705.918] (EE) event22 - Kinesis Freestyle Edge Keyboard: client bug: event processing lagging behind by 33ms, your system is too slow
 [  1010.715] (EE) event22 - Kinesis Freestyle Edge Keyboard: client bug: event processing lagging behind by 27ms, your system is too slow
+[  1336.643] (EE) event22 - Kinesis Freestyle Edge Keyboard: client bug: event processing lagging behind by 11ms, your system is too slow
+[  1339.875] (EE) event22 - Kinesis Freestyle Edge Keyboard: client bug: event processing lagging behind by 20ms, your system is too slow

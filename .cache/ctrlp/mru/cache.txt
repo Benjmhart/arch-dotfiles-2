@@ -1,5 +1,5 @@
-/home/ben/.zshrc
 /home/ben/.configure/nvim/init.vim
+/home/ben/.zshrc
 /home/ben/Projects/ps-edu/keyval/test/Main.purs
 /home/ben/Projects/ps-edu/keyval/src/Main.purs
 /home/ben/Projects/ps-edu/keyval/index.js

@@ -28,11 +28,17 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'farmergreg/vim-lastplace'
 Plug 'vimwiki/vimwiki'
+Plug 'dusans/vim-hardmode'
 
 "my plugins:
 Plug 'benjmhart/vim-instantinstance'
 
 call plug#end()
+
+
+
+" refresh plugins
+:nnoremap <leader>pi :PlugInstall
 
 " leader is spacebar
 let mapleader = " " 
@@ -149,9 +155,12 @@ packadd vimball
 :nnoremap <M-l> <c-w>l
 
 "normal mode movement helpers
-:nnoremap Y y$
+:nnoremap Y y$ 
 :nnoremap H ^
 :nnoremap L $
+" exit insert mode by typing jk
+:inoremap jk <esc>  
+:inoremap kj <esc>  
 
 " todo move to instantinstance
 " inject haskell pragma syntax
@@ -284,4 +293,4 @@ noremap <leader>gb :Gblame
 " insert seamless undo
 :inoremap <c-u> <esc>ui
 
-
+:call HardMode()
