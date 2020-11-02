@@ -1,4 +1,3 @@
-stack
 stack install xmonad xmonad-contrib ghcid
 stack install xmonad xmonad-contrib ghcid
 stack install xmonad xmonad-contrib ghcid
@@ -383,3 +382,119 @@ cabal new-repl
 cabal build
 :q
 exit
+hpack
+cabal build
+cabal repl
+hpack
+cabal repl
+exit
+hpack
+exit
+hpack
+cabal repl
+cabal build
+exit
+hpack
+cabal repl
+exit
+cabal repl
+exit
+hpack
+cabal repl
+cabal build
+cabal repl
+exit
+hpack
+cabal repl
+exit
+cabal build
+cabal repl
+exit
+cabal repl
+:q
+cabal repl
+exit
+cabal repl
+:q
+exit
+cabal build
+exit
+cabal repl
+reboot
+exit
+cabal build
+exit
+cabal build
+hpack
+cabal build
+exit
+hpack
+cabal buil
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+git diff
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+hpack ; cabal repl --ghc-options=-fno-code
+cabal repl
+cabal repl --fno-code
+cabal repl --ghc-options=-fno-code
+hpack
+cabal repl --ghc-options=-fno-code
+:q
+exit
+cabal repl --ghc-options=-fno-code
+exit
+cabal repl --ghc-options=-fno-code
+exit
+hpack
+cabal repl --ghc-options=-fno-code
+exit
+rg _string
+cabal repl
+exit
+cabal repl --ghc-options=-fno-code
+exit
+cabal repl --ghc-options=-fno-code
+exit
+hpack
+cabal repl --ghc-options=-fno-code
+exit
+hpack
+cabal repl --ghc-options=-fno-code
+exit
+cabal repl --ghc-options=-fno-code
+exit
+hpack
+cabal repl --ghc-options=-fno-code
+hpack
+cabal repl --ghc-options=-fno-code
+exit
+hpack
+cabal repl --ghc-options=-fno-code
+exit
+hpack
+cabal repl --ghc-options=-fno-code
+hpack
+cabal repl --ghc-options=-fno-code
+exit
+cabal repl --ghc-options=-fno-code
+exit
+cabal repl --ghc-options=-fno-code
+exit
+cabal repl --ghc-options=-fno-code
+exit
+cabal repl --ghc-options=-fno-code
+exit
+cabal repl --ghc-options=-fno-code

@@ -3,56 +3,6 @@
       xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
       xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
 >
-  <bookmark href="file:///home/ben/Downloads/age_verify.jpg" added="2020-09-16T23:39:26Z" modified="2020-09-16T23:42:00Z" visited="1969-12-31T23:59:59Z">
-    <info>
-      <metadata owner="http://freedesktop.org">
-        <mime:mime-type type="image/jpeg"/>
-        <bookmark:applications>
-          <bookmark:application name="vivaldi-stable" exec="&apos;vivaldi-stable %u&apos;" modified="2020-09-16T23:42:00Z" count="3"/>
-        </bookmark:applications>
-      </metadata>
-    </info>
-  </bookmark>
-  <bookmark href="file:///home/ben/Downloads/age_verify2.jpg" added="2020-09-16T23:43:58Z" modified="2020-09-16T23:44:03Z" visited="1969-12-31T23:59:59Z">
-    <info>
-      <metadata owner="http://freedesktop.org">
-        <mime:mime-type type="image/jpeg"/>
-        <bookmark:applications>
-          <bookmark:application name="vivaldi-stable" exec="&apos;vivaldi-stable %u&apos;" modified="2020-09-16T23:44:03Z" count="2"/>
-        </bookmark:applications>
-      </metadata>
-    </info>
-  </bookmark>
-  <bookmark href="file:///home/ben/Desktop/2020-09-27_15-47.png" added="2020-09-27T19:48:08Z" modified="2020-09-27T19:48:08Z" visited="1969-12-31T23:59:59Z">
-    <info>
-      <metadata owner="http://freedesktop.org">
-        <mime:mime-type type="image/png"/>
-        <bookmark:applications>
-          <bookmark:application name="vivaldi-stable" exec="&apos;vivaldi-stable %u&apos;" modified="2020-09-27T19:48:08Z" count="1"/>
-        </bookmark:applications>
-      </metadata>
-    </info>
-  </bookmark>
-  <bookmark href="file:///home/ben/Downloads/benjamin-hart-return-cra-19%20(1).pdf" added="2020-09-27T19:50:40Z" modified="2020-09-27T19:50:40Z" visited="1969-12-31T23:59:59Z">
-    <info>
-      <metadata owner="http://freedesktop.org">
-        <mime:mime-type type="application/pdf"/>
-        <bookmark:applications>
-          <bookmark:application name="vivaldi-stable" exec="&apos;vivaldi-stable %u&apos;" modified="2020-09-27T19:50:40Z" count="1"/>
-        </bookmark:applications>
-      </metadata>
-    </info>
-  </bookmark>
-  <bookmark href="file:///home/ben/Downloads/benjamin-hart-return-cra-19.pdf" added="2020-09-27T19:51:12Z" modified="2020-09-27T19:51:12Z" visited="1969-12-31T23:59:59Z">
-    <info>
-      <metadata owner="http://freedesktop.org">
-        <mime:mime-type type="application/pdf"/>
-        <bookmark:applications>
-          <bookmark:application name="vivaldi-stable" exec="&apos;vivaldi-stable %u&apos;" modified="2020-09-27T19:51:12Z" count="1"/>
-        </bookmark:applications>
-      </metadata>
-    </info>
-  </bookmark>
   <bookmark href="file:///home/ben/Desktop/2020-10-02_14-40.png" added="2020-10-02T18:41:40.993829Z" modified="2020-10-02T18:41:40.993833Z" visited="2020-10-02T18:41:40.993830Z">
     <info>
       <metadata owner="http://freedesktop.org">
@@ -109,6 +59,16 @@
         <mime:mime-type type="application/octet-stream"/>
         <bookmark:applications>
           <bookmark:application name="vivaldi-stable" exec="&apos;vivaldi-stable %u&apos;" modified="2020-10-11T16:03:33.360935Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/ben/Desktop/2020-10-12_10-10.png" added="2020-10-12T14:10:43.624907Z" modified="2020-10-12T14:10:43.624910Z" visited="2020-10-12T14:10:43.624908Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/png"/>
+        <bookmark:applications>
+          <bookmark:application name="vivaldi-stable" exec="&apos;vivaldi-stable %u&apos;" modified="2020-10-12T14:10:43.624908Z" count="1"/>
         </bookmark:applications>
       </metadata>
     </info>

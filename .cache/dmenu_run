@@ -106,6 +106,7 @@ axfer
 b2sum
 badblocks
 bannedWords
+baobab
 base32
 base64
 basename
@@ -114,6 +115,8 @@ bash
 bashbug
 bdftogd
 bd_info
+bd_list_titles
+bd_splice
 bison
 blkdeactivate
 blkdiscard
@@ -441,6 +444,7 @@ egrep
 eject
 electron
 electron7
+electron9
 elfedit
 enc2xs
 encguess

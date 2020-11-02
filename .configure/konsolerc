@@ -12,6 +12,8 @@ ShowMenuBarByDefault=false
 ShowWindowTitleOnTitleBar=true
 
 [MainWindow]
+HDMI-A-0 HDMI-A-1 XPosition=1
+HDMI-A-0 HDMI-A-1 YPosition=18
 MenuBar=Disabled
 State=AAAA/wAAAAD9AAAAAAAAA74AAAQlAAAABAAAAAQAAAAIAAAACPwAAAAA
 ToolBarsMovable=Disabled
