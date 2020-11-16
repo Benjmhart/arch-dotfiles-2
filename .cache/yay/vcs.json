@@ -1,1 +1,11 @@
-{}
+{
+	"mdp-git": {
+		"github.com/visit1985/mdp.git": {
+			"protocols": [
+				"https"
+			],
+			"branch": "HEAD",
+			"sha": "8c5926148f9db65ec1d9cf348b8f784991e564c0"
+		}
+	}
+}

@@ -251,3 +251,19 @@ CopyQ Warning [2020-10-30 12:34:10.251] <monitorClipboard-1932>: ELAPSED 1150 ms
 CopyQ Warning [2020-10-30 13:03:06.337] <monitorClipboard-1932>: ELAPSED 5000 ms acessing "text/plain"
 CopyQ Warning [2020-10-30 13:03:06.337] <monitorClipboard-1932>: ELAPSED 5000 ms acessing "UTF8:text/plain"
 CopyQ Warning [2020-10-30 13:03:06.337] <monitorClipboard-1932>: Clipboard data expired, refusing to access old data
+CopyQ Warning [2020-11-03 10:30:57.233] <monitorClipboard-1893>: ELAPSED 5000 ms acessing "text/plain"
+CopyQ Warning [2020-11-03 10:30:57.234] <monitorClipboard-1893>: ELAPSED 5000 ms acessing "UTF8:text/plain"
+CopyQ Warning [2020-11-03 10:30:57.234] <monitorClipboard-1893>: Clipboard data expired, refusing to access old data
+CopyQ Warning [2020-11-05 11:46:59.904] <monitorClipboard-1923>: ELAPSED 833 ms acessing "text/plain"
+CopyQ Warning [2020-11-05 11:46:59.910] <monitorClipboard-1923>: ELAPSED 839 ms acessing "UTF8:text/plain"
+CopyQ Warning [2020-11-05 16:42:33.242] <monitorClipboard-1923>: ELAPSED 1817 ms acessing "text/plain"
+CopyQ Warning [2020-11-05 16:42:33.243] <monitorClipboard-1923>: ELAPSED 1818 ms acessing "UTF8:text/plain"
+CopyQ Warning [2020-11-05 18:57:24.971] <monitorClipboard-1923>: ELAPSED 5000 ms acessing "text/plain"
+CopyQ Warning [2020-11-05 18:57:24.976] <monitorClipboard-1923>: ELAPSED 5005 ms acessing "UTF8:text/plain"
+CopyQ Warning [2020-11-05 18:57:24.976] <monitorClipboard-1923>: Clipboard data expired, refusing to access old data
+CopyQ Warning [2020-11-06 14:35:29.910] <monitorClipboard-1893>: ELAPSED 522 ms acessing "text/plain"
+CopyQ Warning [2020-11-06 14:35:29.915] <monitorClipboard-1893>: ELAPSED 527 ms acessing "UTF8:text/plain"
+CopyQ Warning [2020-11-11 15:44:36.680] <monitorClipboard-1920>: ELAPSED 637 ms acessing "text/plain"
+CopyQ Warning [2020-11-11 15:44:36.686] <monitorClipboard-1920>: ELAPSED 643 ms acessing "UTF8:text/plain"
+CopyQ Warning [2020-11-11 18:11:50.168] <monitorClipboard-1920>: ELAPSED 822 ms acessing "text/plain"
+CopyQ Warning [2020-11-11 18:11:50.168] <monitorClipboard-1920>: ELAPSED 823 ms acessing "UTF8:text/plain"

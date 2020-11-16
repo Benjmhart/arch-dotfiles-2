@@ -2,7 +2,7 @@
 # If you come from bash you might have to change your $PATH.
 source /etc/profile
 source ~/.bash_profile
-export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts
+export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts:$HOME/Projects/Juspay/euler-tools/scripts
 
 if  [ -f /home/ben/.nix-profile/etc/profile.d/nix.sh ] ; then
   . /home/ben/.nix-profile/etc/profile.d/nix.sh

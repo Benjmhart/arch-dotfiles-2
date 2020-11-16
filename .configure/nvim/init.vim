@@ -24,18 +24,20 @@ Plug 'rhysd/conflict-marker.vim'
 Plug 'itchyny/lightline.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'ap/vim-css-color'
+Plug 'gcmt/taboo.vim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'farmergreg/vim-lastplace'
 Plug 'vimwiki/vimwiki'
-Plug 'dusans/vim-hardmode'
 
 "my plugins:
 Plug 'benjmhart/vim-instantinstance'
 
 call plug#end()
 
-
+nmap <Leader>r  <Plug>ReplaceWithRegisterOperator
+nmap <Leader>rr <Plug>ReplaceWithRegisterLine
+xmap <Leader>r  <Plug>ReplaceWithRegisterVisual
 
 " refresh plugins
 :nnoremap <leader>pi :PlugInstall
@@ -45,8 +47,8 @@ let mapleader = " "
 
 " open vimconfig in a split
 "edit and refresh vimrc
-:command Vimrc :e $MYVIMRC
-:command Refresh :so $MYVIMRC
+:command! Vimrc :e $MYVIMRC
+:command! Refresh :so $MYVIMRC
 " Edit Vimrc <- nmemnonic
 :nnoremap <leader>ev :split $MYVIMRC<cr>
 " Refresh Vimrc
@@ -92,14 +94,6 @@ set updatetime=50
 " adds a horizontal line where the cursor is
 set cursorline
 
-" haskell and vim quick mappings
-" todo move these to instantinstance
-" alt-f for forall
-inoremap <M-f> forall 
-" alt-r for Array
-inoremap <M-r> Array 
-" alt-t for Tuple
-inoremap <M-t> Tuple 
 
 " toggle comment with // in normal mode
 let g:NERDSpaceDelims = 1
@@ -153,6 +147,12 @@ packadd vimball
 :nnoremap <M-j> <c-w>j
 :nnoremap <M-k> <c-w>k
 :nnoremap <M-l> <c-w>l
+" autofill/autocomplete mappings
+:inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+:inoremap <expr> <Esc> pumvisible() ? "\<C-e>" : "\<Esc>"
+:inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "j"
+:inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "k"
+:inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "j"
 
 "normal mode movement helpers
 :nnoremap Y y$ 
@@ -161,19 +161,16 @@ packadd vimball
 " exit insert mode by typing jk
 :inoremap jk <esc>  
 :inoremap kj <esc>  
-
-" todo move to instantinstance
-" inject haskell pragma syntax
-:nnoremap <leader>l i{-# LANGUAGE  #-}<Esc><<o<Esc>k$4ha
+" tab movement
+:nnoremap Gt 1gt
+:nnoremap GT 1gT
 
 "mouse stuff
 " :set mouse=a
 
-
-
 " be lazy with the shift key when writing a file or quitting
-:command W :w
-:command Q :q
+:command! W :w
+:command! Q :q
 
 " checks for file changes  and updates the buffer
 :set autoread
@@ -232,6 +229,10 @@ hi CustomWhiteSpace ctermfg=255
 :let NERDTreeMinimalUI = 1
 :let NERDTreeDirArrows = 1
 
+" quickfix list management
+" :nnoremap <leader><C-o> :copen 5<cr>
+" :nnoremap <leader><C-j> :cnext<cr>
+" :nnoremap <leader><C-k> :cprevious<cr>
 
 " auto-reload files when they change
 au FocusGained,BufEnter * :silent! checktime
@@ -256,6 +257,10 @@ set laststatus=2
 " highlight ColorColumn ctermbg=red
 " call matchadd('ColorColumn', '\%81v', 100)
 
+" completely unfold with za by default, zA unfolds one level
+:nnoremap za zA
+:nnoremap zA za
+
 " utf8 encode
 if &encoding ==# 'latin1' && has('gui_running')
   set encoding=utf-8
@@ -267,16 +272,21 @@ if !empty(&viminfo)
 endif
 set sessionoptions-=options
 set viewoptions-=options
+" multi-session undo tied to file
+:set undofile
 
 " insert characters, used for fance comment blocks
-function Repeat()
+function RepeatChar()
   let times = input("Count: ")
   let char  = input("Char :" )
   exe ":normal a" . repeat(char, times)
 endfunction
 
+"leader - adds an 80 char line break
+nnoremap <leader>- :call RepeatChar()<CR>80<CR>-<CR>
+
 " leader-r calls a function which repeats chars
-nnoremap <leader>r :call Repeat()<Enter>
+nnoremap <leader>rc :call RepeatChar()<CR>
 
 " leader-sop sources current buffer
 nnoremap <leader>sop :source %
@@ -293,4 +303,56 @@ noremap <leader>gb :Gblame
 " insert seamless undo
 :inoremap <c-u> <esc>ui
 
-:call HardMode()
+" ctrl-p use cwd not file-relative search
+let g:ctrlp_working_path_mode = 'rw'
+
+function! LightLineFileName()
+  " todo: trim to show ....40 ish chars?
+  return expand('%')
+endfunction 
+
+" lightline show full filename from cwd if possible
+let g:lightline = {
+      \ 'component_function': {
+      \   'filename': 'LightLineFileName'
+      \ },
+      \ }
+
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=indent
+augroup END
+
+augroup filetype_haskell
+    autocmd!
+    autocmd FileType haskell setlocal foldmethod=indent
+augroup END
+
+augroup filetype_purescript
+    autocmd!
+    autocmd FileType purescript setlocal foldmethod=indent
+augroup END
+
+function HardMode()
+  :noremap <Up> <nop>
+  :noremap <Down> <nop>
+  :noremap <Left> <nop>
+  :noremap <Right> <nop>
+  :noremap <PageUp> <nop>
+  :noremap <PageDown> <nop>
+  :inoremap <Up> <nop>
+  :inoremap <Down> <nop>
+endfunction
+
+"enable hardmode by default
+:augroup hardmode
+    :autocmd!
+    :autocmd VimEnter,BufNewFile,BufReadPost * silent! call HardMode()
+:augroup END
+" :autocmd BufNewFile * :write
+" vautocmd BufWritePre *.html :normal gg=G
+
+" high-legibility tab color hacks
+:hi TabLineFill ctermfg=White ctermbg=DarkGreen
+:hi TabLine ctermfg=DarkBlue ctermbg=LightYellow
+:hi TabLineSel ctermfg=DarkRed ctermbg=LightYellow

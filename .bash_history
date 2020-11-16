@@ -1,35 +1,3 @@
-stack install xmonad xmonad-contrib ghcid
-stack install xmonad xmonad-contrib ghcid
-stack install xmonad xmonad-contrib ghcid
-sudo pacman -S build-essential coreutils findutils
-sudo pacman -S build-essentials coreutils findutils
-sudo pacman -S buildessentials coreutils findutils
-stack install xmonad xmonad-contrib
-stack install xmonad
-sudo pacman install xorg
-sudo pacman -S xorg
-git clone https://aur.archlinux.org/yay.git
-cd yay
-mkpkg -i
-makepkg -i
-sudo pacman -Syyu go
-mkdir ~/go
-mkdir -p ~/go/src
-mkdir -p ~/go/bin
-makepkg -i
-pacman -S docker
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | sh
-logout
-nv
-nvm
-nvm install 10.22
-ls
-mkdir ubuntufs
-mount /dev/sdb5 ubuntufs/
-stack install xmonad
-stack install xmobar
-pacman -Syyu xorg-server xorg-init stalonetray xdotool grep tmux udiskie picom volumeicon pulseaudio pacmixer notofonts gmrun
-sudo pacman -Syyu xorg-server xorg-init stalonetray xdotool grep tmux udiskie picom volumeicon pulseaudio pacmixer notofonts gmrun
 sudo pacman -Syyu xorg-server xorg-init stalonetray xdotool grep tmux udiskie picom volumeicon pulseaudio noto-fonts gmrun
 yay -Syyu pacmixer
 ls
@@ -498,3 +466,35 @@ exit
 cabal repl --ghc-options=-fno-code
 exit
 cabal repl --ghc-options=-fno-code
+exit
+cabal repl --ghc-options=-fno-code
+:q
+exit
+cabal repl --ghc-options=-fno-code
+hpack
+cabal repl --ghc-options=-fno-code
+hpack
+cabal repl --ghc-options=-fno-code
+exit
+cabal build
+ghc --make -auto-all -prof your-program.hs
+./your-program +RTS -p -RTS
+ghc --make -auto-all -prof .hs
+cabal build
+exit
+cabal v2-run
+cabal v2-run euler-api-gateway
+cabal configure --enable-library-profiling --enable-executable-profiling --enable-tests --enable-benchmarks
+cabal v2-run euler-api-gateway
+cabal install --only-dependencies --enable-library-profiling
+cabal v2-run euler-api-gateway
+cabal install --enable-library-profiling
+euler-api-gateway
+cabal install --enable-library-profiling
+cabal install --only-dependencies --enable-library-profiling
+cabal install --enable-library-profiling --overwrite-policy=always
+cabal install --only-dependencies --enable-library-profiling --overwrite-policy=always
+euler-api-gateway
+cabal v2-run euler-api-gateway
+cabal v2-run euler-api-gateway --enable-library-profiling --enable-profiling
+exit

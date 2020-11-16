@@ -125,6 +125,7 @@ blkzone
 blockdev
 bond2team
 bootctl
+bottle.py
 bower
 boxdumper
 brctl
@@ -268,10 +269,16 @@ convert-dump-to-gsheet
 copyq
 coredumpctl
 corelist
+couchdb-dump
+couchdb-load
+couchdb-load-design-doc
+couchdb-replicate
+couchpy
 cp
 cpaldjvu
 cpan
 cpp
+cpuinfo
 cracklib-check
 cracklib-format
 cracklib-packer
@@ -358,6 +365,7 @@ diff3
 diff-json
 dir
 dircolors
+direnv
 dirmngr
 dirmngr-client
 dirname
@@ -577,6 +585,7 @@ ftpd
 fuck
 funzip
 fuser
+futurize
 fzf
 fzf-tmux
 g++
@@ -622,6 +631,7 @@ gennorm2
 genrb
 gensprep
 gentrigrams
+geomet
 geqn
 GET
 getcap
@@ -669,6 +679,7 @@ git-receive-pack
 git-shell
 git-upload-archive
 git-upload-pack
+glances
 glib-compile-resources
 glib-compile-schemas
 glib-genmarshal
@@ -687,6 +698,7 @@ go
 gobject-query
 gofmt
 google-chrome-stable
+google_cl
 gpasswd
 gperl
 gpg
@@ -851,6 +863,7 @@ homectl
 hostid
 hostname
 hostnamectl
+hp2pretty
 hp2ps
 hp2ps-8.8
 hp2ps-8.8.4
@@ -863,6 +876,7 @@ hsc2hs
 hsc2hs-8.8
 hsc2hs-8.8.4
 HTMLLinker
+htop
 hwclock
 hwloc-annotate
 hwloc-bind
@@ -1297,6 +1311,7 @@ mdel
 mdeltree
 mdir
 mdmon
+mdp
 mdu
 media-ctl
 melt
@@ -1306,6 +1321,8 @@ mesg
 metaflac
 mev
 mformat
+mibcopy.py
+mibdump.py
 mii-tool
 minfo
 mk_cmds
@@ -1575,7 +1592,9 @@ partprobe
 partx
 passwd
 paste
+pasteurize
 pasuspender
+patat
 patch
 pathchk
 pavucontrol
@@ -1705,6 +1724,7 @@ postgresql-check-db-dir
 post-grohtml
 postmaster
 poweroff
+powertop
 pphs
 ppm2tiff
 pppd
@@ -1733,6 +1753,7 @@ print-json
 print-null-variables
 prlimit
 profile2mat.pl
+profiteur
 protocoltojson
 prove
 proxy
@@ -1784,12 +1805,16 @@ pwd
 pwdx
 pwmconfig
 pwunconv
+py3smi
 pydoc
 pydoc2
 pydoc3
 pydoc3.8
+pygal_gen.py
 pylupdate5
 pyrcc5
+pystache
+pystache-test
 python
 python2
 python2.7
@@ -2373,12 +2398,14 @@ which
 whiptail
 who
 whoami
+wifi
 wipefs
 wpa_cli
 wpa_passphrase
 wpa_supplicant
 write
 wrjpgcom
+wrk
 wsdump.py
 X
 x264

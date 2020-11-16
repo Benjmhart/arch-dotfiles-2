@@ -8,9 +8,10 @@ Name=New Profile
 Parent=FALLBACK/
 
 [Interaction Options]
+AutoCopySelectedText=true
 CtrlRequiredForDrag=false
 DropUrlsAsText=false
-OpenLinksByDirectClickEnabled=true
+OpenLinksByDirectClickEnabled=false
 UnderlineFilesEnabled=true
 
 [Scrolling]
