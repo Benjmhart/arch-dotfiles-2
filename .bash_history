@@ -1,117 +1,3 @@
-sudo pacman -Syyu xorg-server xorg-init stalonetray xdotool grep tmux udiskie picom volumeicon pulseaudio noto-fonts gmrun
-yay -Syyu pacmixer
-ls
-ls ubuntufs/
-sudo mount /dev/sdb5 ubuntufs/
-cd ubuntufs/
-ls
-cd ..
-cp -r ubuntufs/home/ben/arch-dotfiles/ .
-cp -r arch-dotfiles/.xmonad/ .
-cp -r arch-dotfiles/.xmobarrc .
-ls arch-dotfiles/
-ls -a arch-dotfiles/
-cp arch-dotfiles/.bashrc .
-cp arch-dotfiles/.bash_profile .
-cp arch-dotfiles/.stalonetrayrc .
-cp arch-dotfiles/.stalonetrayrc-single .
-cp arch-dotfiles/.xinitrc .
-cp arch-dotfiles/.xsession .
-stack install xmonad
-tmux
-tmux >&2 | less
-tmux > | less
-tmux  | less
-stack install xmonad | less
-stack install xmonad 1>&2 /log.txt
-stack install xmonad 1>&2 ./log.txt
-stack install xmonad > ./log.txt
-nvim log.txt 
-stack install xmonad 2> ./log.txt
-nvim log.txt 
-sudo pacman -S libXss
-sudo pacman -S libxss
-stack install xmonad 2> ./log.txt
-stack install xmonad
-stack install xmonad-contrib
-stack install xmobar
-ls -a
-xmonad --recompile
-sudo pacman -S zsh
-curl -L http://install.ohmyz.sh | sh
-chsh -s /bin/zsh
-sudo chsh -s /bin/zsh
-cp ./arch-dotfiles/.zshrc .
-cp ./arch-dotfiles/.Xmodmap .
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-pacman -Syu ttf-fira-code
-sudo pacman -Syu ttf-fira-code
-sudo pacman -Syu konsole
-pacman -s thefuck
-pacman -S thefuck
-sudo pacman -S thefuck
-cd /
-ls
-cd ~
-mkdir Downloads
-cd ./ubuntufs/home/ben/
-ls
-cd Downloads
-ls
-cp *.* ~/Downloads
-ping 8.8.8.8
-ls
-sudo pacman -S zip unzip
-unzip ./3270.zip --directory /usr/share/fonts
-unzip ./3270.zip -d /usr/share/fonts
-sudo unzip ./3270.zip -d /usr/share/fonts
-ls
-sudo unzip ./Hasklig.zip -d /usr/share/fonts
-sudo unzip ./Monoid.zip -d /usr/share/fonts
-sudo unzip ./Iosevka.zip -d /usr/share/fonts
-ls
-sudo unzip ./Terminus.zip -d /usr/share/fonts
-fc-cache
-git config --global user.name "Ben Hart"
-git config --global user.email "Benjmhart@gmail.com"
-git config --global core.editor nvim
-git config --global --replace-all core.pager "less -F -X"
-mkdir -p .configure/nvim
-cd..
-cd ..
-cp ./arch-dotfiles/.configure/nvim/* ./.configure/nvim/
-cp -r ./arch-dotfiles/.configure/nvim/* ./.configure/nvim/
-cd .configure/nvim
-curl -fLo https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim -o ./autoload/plug.vim
-curl https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim -o ./autoload/plug.vim
-ls ./autoload/
-cd..
-cd..
-cd ..
-cd ..
-pacman -S inotify-tools entr xorg-xrandr arandr
-sudo pacman -S inotify-tools entr xorg-xrandr arandr
-yay -s google-chrome-stable vivaldi-stable
-yay -s google-chrome-stable vivaldi
-yay -S google-chrome-stable vivaldi
-yay -S vivaldi
-cp ./arch-dotfiles/bin .
-cp -r ./arch-dotfiles/bin/* ./bin
-mkdir ./bin
-cp -r ./arch-dotfiles/bin/* ./bin
-pacman -S wine xf86-input-libinput alsa-utils lib32-libpulse lib32-alsa-plugins
-sudo pacman -S wine xf86-input-libinput alsa-utils lib3
-pacman -S xf86-input-libinput alsa-utils libpulse alsa-plugins
-sudo pacman -S xf86-input-libinput alsa-utils libpulse alsa-plugind
-sudo pacman -S xf86-input-libinput alsa-utils libpulse alsa-plugins
-lspci
-pacman -Syu ranger vifm mesa lib32-mesa xf86-video-amdgpu vulkan-radeon mesa-vdpau lib32-mesa-vdpau
-sudo pacman -Syu ranger vifm mesa lib32-mesa xf86-video-amdgpu vulkan-radeon mesa-vdpau lib32-mesa-vdpau
-sudo pacman -Syu ranger vifm mesa xf86-video-amdgpu vulkan-radeon mesa-vdpau
-reboot
-exit
-hpack
-cd euler-x
 exit
 ghcid
 rm .stack-work/
@@ -497,4 +383,118 @@ cabal install --only-dependencies --enable-library-profiling --overwrite-policy=
 euler-api-gateway
 cabal v2-run euler-api-gateway
 cabal v2-run euler-api-gateway --enable-library-profiling --enable-profiling
+exit
+cabal build
+exit
+cabal build
+exit
+cabal build
+exit
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+cabal build library
+cabal build lib
+cabal build euler-x:library
+cabal build euler-x:lib
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+exit
+hpack
+cabal build
+exit
+cabal build
+hpack
+cabal build
+exit
+hpack
+
+hpack
+cabal build
+hpack
+cabal build
+hpack\
+cabal build
+hpack ; cabal build
+rm euler-x.cabal
+hpack ; cabal build
+exit
+hpack ; cabal build
+rm euler-x.cabal 
+hpack ; cabal build
+[A
+hpack ; cabal build
+rg Object
+hpack ; cabal build
+rg MonadThrow
+hpack ; cabal build
+rg view
+rg view ::
+rg "view ::"
+ls
+hpack ; cabal build
+rg view
+hpack ; cabal build
+rg sq;
+hpack ; cabal build
+rg sqlValueSyntax
+hpack ; cabal build
+rg deriveGeneric
+hpack ; cabal build
+reboot
+make fmt
+exit
+make hlint
+hlint
+ls ./scripts/
+./scripts/format
+./scripts/pre-commit 
+hlint
+./scripts/format
+hlint .
+make fmt
+hlint .
+W
+hlint .
+exit
+./scripts/format
+make fmt
+git reset --hard HEAD
+make fmt
+hlint .
+which hlint
+exit
+which hlint
+:q
+exit
+make fmt
+./scripts/hlint-auto
+exit
+cabal repl
+exit
+cabal build
+rg defaultEnumDecode
+cabal build
+exit
+cabal build
+
+cabal build
+rg "(:=)"
+rg "import JRec"
+cabal build
+rg HasDataTypeInfo
+rg -i HasDataTypeInfo
+cabal build
 exit

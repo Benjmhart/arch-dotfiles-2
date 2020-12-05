@@ -71,7 +71,7 @@ let mapleader = " "
 
 " indentation behaviour 
 :filetype plugin indent on
-:set noautoindent
+:set autoindent
 :set nocindent
 :set nosmartindent
 " On pressing tab, insert 2 spaces
@@ -356,3 +356,23 @@ endfunction
 :hi TabLineFill ctermfg=White ctermbg=DarkGreen
 :hi TabLine ctermfg=DarkBlue ctermbg=LightYellow
 :hi TabLineSel ctermfg=DarkRed ctermbg=LightYellow
+
+function CommonTabs()
+  :TabooOpen(nau)
+  :edit ~/Projects/juspay/nau/
+  :TabooOpen(gw)
+  :edit ~/Project/juspay/euler-api-gateway
+  :TabooOpen(vimwiki)
+  :edit ~/vimwiki/index.wiki
+  :TabooOpen(vimscript)
+  :edit ~/Projects/vimscript
+  :TabooOpen(ps-edu)
+  :edit ~/Projects/ps-edu/
+  :normal Gt
+  :tabclose
+
+endfunction
+
+nnoremap <leader>vwr :!vimwikirefresh<cr>
+
+nnoremap <leader>ct :call CommonTabs()<cr>
