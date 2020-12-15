@@ -6,8 +6,13 @@ Plug 'vmchale/dhall-vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-abolish'
 "Plug 'mhartington/nvim-typescript' 
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+if has('nvim') || has('patch-8.0.902')
+  Plug 'mhinz/vim-signify'
+else
+  Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+endif
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'maxmellon/vim-jsx-pretty'
 " Plug 'leafgarland/typescript-vim'
@@ -29,6 +34,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'farmergreg/vim-lastplace'
 Plug 'vimwiki/vimwiki'
+Plug '~/Projects/vimscript'
 
 "my plugins:
 Plug 'benjmhart/vim-instantinstance'
@@ -89,7 +95,13 @@ let mapleader = " "
 " leader-w is write/save
 nnoremap <Leader>w :w<CR>
 " reduce wait time when exiting a mode
-set updatetime=50
+set updatetime=100
+
+" Signify config (git gutter)
+:highlight SignifySignAdd    ctermfg=34  ctermbg=53 guifg=#00ff00 cterm=NONE gui=NONE
+:highlight SignifySignDelete ctermfg=red ctermbg=green guifg=#ff0000 cterm=NONE gui=NONE
+:highlight SignifySignChange ctermfg=34 ctermbg=53 gui=NONE
+
 
 " adds a horizontal line where the cursor is
 set cursorline
@@ -353,9 +365,10 @@ endfunction
 " vautocmd BufWritePre *.html :normal gg=G
 
 " high-legibility tab color hacks
-:hi TabLineFill ctermfg=White ctermbg=DarkGreen
-:hi TabLine ctermfg=DarkBlue ctermbg=LightYellow
+:hi TabLineFill ctermfg=Black ctermbg=DarkGreen
+:hi TabLine ctermfg=Black ctermbg=LightYellow
 :hi TabLineSel ctermfg=DarkRed ctermbg=LightYellow
+
 
 function CommonTabs()
   :TabooOpen(nau)
@@ -374,5 +387,6 @@ function CommonTabs()
 endfunction
 
 nnoremap <leader>vwr :!vimwikirefresh<cr>
+nnoremap <leader>zsh :e ~/.zshrc<cr>
 
 nnoremap <leader>ct :call CommonTabs()<cr>

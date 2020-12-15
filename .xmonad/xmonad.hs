@@ -18,7 +18,7 @@ import XMonad.Layout.IndependentScreens
 main = do
   xmproc <- spawnPipe "/home/ben/.local/bin/xmobar ~/.xmobarrc"
   xmonad $ def 
-    { terminal = "konsole"
+    { terminal = "alacritty"
     , manageHook = myManageHook <+> manageDocks 
     , startupHook = myStartupHook
     , layoutHook = avoidStruts $ layoutHook def
@@ -52,7 +52,7 @@ myKeys
     ]
 
 myStartupHook = do
-  spawnOnce "konsole &"
+  spawnOnce "alacritty &"
   spawnOnce "copyq &"
   -- spawnOnce "clipmenud &"
   spawnOnce "stalonetray &"

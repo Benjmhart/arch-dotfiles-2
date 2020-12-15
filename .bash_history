@@ -1,68 +1,4 @@
 exit
-ghcid
-rm .stack-work/
-rm -rf .stack-work/
-ghcid
-cabal new-repl --help
-ghcid
-exit
-ghcid
-cabal install tasty-quickcheck
-hpack
-hpack --force
-ghcid
-cabal build
-cabal update
-exit
-cabal-repl
-cabal repl
-cabal install inline-js
-cabal install inline-js-core
-cabal build
-exit
-hpack
-cabal repl
-exit
-cabal repl
-cabal test
-cabal repl
-cabal repl
-cabal test
-rg "No String Available"
-rg "No String ~Available"
-rg "No String available"
-cabal test
-cabal new-repl
-exit
-rg
-cabal test
-rg "TEST INPUT
-"
-rg "TEST INPUT"
-cabal test
-rg toHaskellString
-rg toString
-cabal test
-rm euler-x.cabal 
-hpack
-cabal test
-:q
-exit
-cabal new-repl
-exit
-cabal new-repl
-exit
-cabal build
-exit
-cabal new-repl
-git checkout src-generated/
-git checkout src-generated/**
-git status
-:q
-exit
-hpack
-cd..
-exit
 hpack
 exit
 cabal testr
@@ -496,5 +432,69 @@ rg "import JRec"
 cabal build
 rg HasDataTypeInfo
 rg -i HasDataTypeInfo
+cabal build
+exit
+cabal build
+hpack
+cabal build
+:q
+exit
+cabal build
+exit
+cabal build
+exit
+cabal build
+exit
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+exit
+cabal build
+exit
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+exit
+hpack
+cabal build
+exit
+cabal build
+exit
+cabal build
+hpack
+cabal build
+exit
+cabal build
+exit
+cabal build
+exit
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+exit
+cabal build
+exit
+hpack
+exit
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+exit
+cabal build
+hpack
+cabal build
+exit
+cabal build
+hpack
+cabal bui
+exit
 cabal build
 exit

@@ -189,3 +189,6 @@ eval $(thefuck --alias)
 export SDKMAN_DIR="/home/ben/.sdkman"
 [[ -s "/home/ben/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ben/.sdkman/bin/sdkman-init.sh"
 [ -f "/home/ben/.ghcup/env" ] && source "/home/ben/.ghcup/env" # ghcup-env
+
+#use the startship prompt
+eval "$(starship init zsh)"
