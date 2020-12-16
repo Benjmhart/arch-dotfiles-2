@@ -37,7 +37,8 @@ Plug 'vimwiki/vimwiki'
 Plug '~/Projects/vimscript'
 
 "my plugins:
-Plug 'benjmhart/vim-instantinstance'
+" Plug 'benjmhart/vim-instantinstance'
+Plug '~/Projects/vim-instantinstance'
 
 call plug#end()
 
@@ -106,6 +107,8 @@ set updatetime=100
 " adds a horizontal line where the cursor is
 set cursorline
 
+"easy vim source
+nnoremap <leader>sop :source %<cr>
 
 " toggle comment with // in normal mode
 let g:NERDSpaceDelims = 1
@@ -300,9 +303,6 @@ nnoremap <leader>- :call RepeatChar()<CR>80<CR>-<CR>
 " leader-r calls a function which repeats chars
 nnoremap <leader>rc :call RepeatChar()<CR>
 
-" leader-sop sources current buffer
-nnoremap <leader>sop :source %
-
 " leader-d injects a date
 noremap <leader>D :put =strftime('%d-%m-%y')<CR>
 
@@ -390,3 +390,7 @@ nnoremap <leader>vwr :!vimwikirefresh<cr>
 nnoremap <leader>zsh :e ~/.zshrc<cr>
 
 nnoremap <leader>ct :call CommonTabs()<cr>
+
+
+
+
