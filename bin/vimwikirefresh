@@ -14,8 +14,10 @@ import           Data.Maybe              (fromMaybe)
 import qualified Data.Text               as Text
 import           Data.Text.Lazy          (toStrict)
 import           Data.Text.Lazy.Builder  (toLazyText)
+import           Data.Traversable           (traverse)
 import qualified Data.Time               as Time
 import qualified Safe                    as Safe
+import qualified System.Directory        as Dir
 import qualified System.Process          as Process
 import qualified System.IO               as IO
 
@@ -46,6 +48,9 @@ usageLogPath = "/home/ben/vimwiki/usage-log.wiki"
 usageLogPath' :: FilePath
 usageLogPath' = decodeString usageLogPath
 
+archiveBasePath :: String
+archiveBasePath = "/home/ben/vimwiki/.todo-archive/" 
+
 main = do
   shellScript
 
@@ -54,7 +59,12 @@ shellScript = do
   date <- Chronos.yesterday
   newDate <- Chronos.today
   newDateDay <- Chronos.todayDayOfWeek
-  let archivePath = ("/home/ben/vimwiki/.todo-archive/" <> (dateFmtShort $ Chronos.dayToDate date :: String))
+  let
+    yearpath = (show $ Chronos.getYear $ Chronos.dateYear $ Chronos.dayToDate $ date) <> "/"
+    monthpath = (show $ Chronos.getMonth $ Chronos.dateMonth $ Chronos.dayToDate $ date) <> "/"
+    archiveDir = archiveBasePath <> yearpath <> monthpath
+    archivePath = archiveDir <> (dateFmtShort $ Chronos.dayToDate date :: String)
+  Process.callCommand ("mkdir -p " <> archiveDir)
   nc <- IO.withFile dailyTodoPath IO.ReadMode $ \fileHandle -> do
     fileContents <- IO.hGetContents fileHandle
     IO.writeFile archivePath fileContents
@@ -66,21 +76,47 @@ shellScript = do
   print echoLine
   IO.appendFile cronlogPath (echoLine)
   IO.appendFile usageLogPath (dateFmtShort $ Chronos.dayToDate newDate)
+  makeMonthToDateReport archiveDir
   print "success!"
 
+makeMonthToDateReport :: String -> IO ()
+makeMonthToDateReport archiveDir = do
+  print "attempting to make month report"
+  allFilenames <- Dir.listDirectory archiveDir
+  print allFilenames
+  let files = List.sort $ filter (not . List.isInfixOf "REPORT") $ map (archiveDir <>) $ allFilenames
+  contents <- (traverse IO.readFile files :: IO ([String]))
+  IO.writeFile (archiveDir <> "REPORT.txt") (unlines $ (map convertToReport $ contents))
+
+convertToReport :: String -> String
+convertToReport contents = unlines $ map getStringRep $ filter (\x -> isDateLine x || isImmediateWork x)$ parseTodoFile (lines contents)
+
+isDateLine :: TodoLine -> Bool
+isDateLine (DateLine _) = True
+isDateLine _ = False
+
+isImmediateWork :: TodoLine -> Bool
+isImmediateWork (TODO ImmediateWork _ _ _) = True
+isImmediateWork _ = False
+
+dateFmtShort :: Chronos.Date -> String
 dateFmtShort = Text.unpack . toStrict . toLazyText . Chronos.builder_Dmy (Just '-')
+
 rebuildTodoFile :: (Chronos.Date, Chronos.DayOfWeek) -> [TodoLine] -> [String]
 rebuildTodoFile (newtime, newday) contents = List.reverse $ foldl go [] contents
   where
-    go acc (DateLine s)              = ("### " <> showDayOfWeek newday <> ", "<> dateFmtShort newtime) : acc
+    go acc (DateLine s)              = ("### " <> showDayOfWeek newday <> ", " <> dateFmtShort newtime :: String) : acc
     go acc (OTHER s)                 = s : acc
     go acc (SECTIONHEADER _ s)       = s : acc
+    go acc (TODO ImmediateWork _ _ _) = acc
     go acc (TODO Immediate True _ _) = acc
     go acc (TODO Daily True _ s)     = unmarkDone s : acc
     go acc (TODO _ _ _ s)            = s : acc
 
+unmarkDone :: String -> String
 unmarkDone = (' ':) . drop 1
 
+parseTodoFile :: [String] -> [TodoLine]
 parseTodoFile contents = List.reverse $ foldl go [] contents
   where
     go acc item = next acc item : acc
@@ -93,31 +129,39 @@ parseTodoFile contents = List.reverse $ foldl go [] contents
       | List.isPrefixOf "x" item             = parseToDo acc item True
       | otherwise                            = OTHER item
 
-parseSectionHeader acc item = maybe (SECTIONHEADER Immediate item) (identify item) $ getLastSection acc
+parseSectionHeader :: [TodoLine] -> String -> TodoLine
+parseSectionHeader acc item = maybe (SECTIONHEADER ImmediateWork item) (identify item) $ getLastSection acc
 
+getLastSection :: [TodoLine] -> Maybe Section
 getLastSection acc = matchMay $ Safe.headMay $ List.filter (isSectionHeader) acc
 
+matchMay :: Maybe TodoLine -> Maybe Section
 matchMay (Just (SECTIONHEADER s _)) = Just s
 matchMay _                   = Nothing
 
+-- trickles from Immediatework (default) down through the order of task types
+identify :: String -> Section -> TodoLine
+identify item ImmediateWork  = SECTIONHEADER Immediate item
 identify item Immediate      = SECTIONHEADER MediumPriority item
 identify item MediumPriority = SECTIONHEADER Weekly item
 identify item Weekly         = SECTIONHEADER Daily item
 identify item _              = SECTIONHEADER Immediate item
 
+parseToDo :: [TodoLine] -> String -> Bool -> TodoLine
 parseToDo acc item done 
   = TODO 
     lastSection
     done 
     indentationLevel 
-    newText
+    newString
   where
-    lastSection = (fromMaybe Immediate (getLastSection acc)) 
+    lastSection = (fromMaybe ImmediateWork (getLastSection acc)) 
     indentationLevel = div (List.length $ List.takeWhile (==' ') item) 2
-    newText          = " " <> (List.drop 1 item)
+    newString          = " " <> (List.drop 1 item)
 
 data Section
-  = Immediate
+  = ImmediateWork
+  | Immediate
   | MediumPriority
   | Weekly
   | Daily
@@ -133,9 +177,17 @@ data TodoLine
   | TODO Section Done Indent String
   deriving (Eq, Show)
 
+getStringRep :: TodoLine -> String
+getStringRep (DateLine s) = s
+getStringRep (OTHER s)    = s
+getStringRep (SECTIONHEADER _ s) = s
+getStringRep (TODO _ _ _ s) = s
+
+isSectionHeader :: TodoLine -> Bool
 isSectionHeader (SECTIONHEADER _ _) = True
 isSectionHeader _                   = False
 
+showDayOfWeek :: Chronos.DayOfWeek -> String
 showDayOfWeek day
   | day == Chronos.monday    = "Monday"
   | day == Chronos.tuesday   = "Tuesday"
