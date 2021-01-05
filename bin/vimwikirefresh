@@ -61,7 +61,7 @@ shellScript = do
   newDateDay <- Chronos.todayDayOfWeek
   let
     yearpath = (show $ Chronos.getYear $ Chronos.dateYear $ Chronos.dayToDate $ date) <> "/"
-    monthpath = (show $ Chronos.getMonth $ Chronos.dateMonth $ Chronos.dayToDate $ date) <> "/"
+    monthpath = (show $ (+ 1) $ Chronos.getMonth $ Chronos.dateMonth $ Chronos.dayToDate $ date) <> "/"
     archiveDir = archiveBasePath <> yearpath <> monthpath
     archivePath = archiveDir <> (dateFmtShort $ Chronos.dayToDate date :: String)
   Process.callCommand ("mkdir -p " <> archiveDir)
@@ -108,8 +108,10 @@ rebuildTodoFile (newtime, newday) contents = List.reverse $ foldl go [] contents
     go acc (DateLine s)              = ("### " <> showDayOfWeek newday <> ", " <> dateFmtShort newtime :: String) : acc
     go acc (OTHER s)                 = s : acc
     go acc (SECTIONHEADER _ s)       = s : acc
-    go acc (TODO ImmediateWork _ _ _) = acc
     go acc (TODO Immediate True _ _) = acc
+    go acc (TODO ImmediateWork False _ _) = s : acc
+    go acc (TODO Immediate True _ _) = acc
+    go acc (TODO Immediate False _ _) = s : acc
     go acc (TODO Daily True _ s)     = unmarkDone s : acc
     go acc (TODO _ _ _ s)            = s : acc
 
