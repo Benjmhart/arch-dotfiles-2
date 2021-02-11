@@ -34,7 +34,8 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'farmergreg/vim-lastplace'
 Plug 'vimwiki/vimwiki'
-Plug '~/Projects/vimscript'
+Plug '~/Projects/vimscript/potion'
+Plug 'liuchengxu/vim-which-key'
 
 "my plugins:
 " Plug 'benjmhart/vim-instantinstance'
@@ -51,6 +52,7 @@ xmap <Leader>r  <Plug>ReplaceWithRegisterVisual
 
 " leader is spacebar
 let mapleader = " " 
+let maplocalleader = ","
 
 " open vimconfig in a split
 "edit and refresh vimrc
@@ -167,7 +169,21 @@ packadd vimball
 :inoremap <expr> <Esc> pumvisible() ? "\<C-e>" : "\<Esc>"
 :inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "j"
 :inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "k"
-:inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "j"
+" make sure tab usage adds tabs
+:inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "  " 
+
+" Ctrl-tab in insert mode removes a tab
+:inoremap <C-Tab> <ESC><<i
+" tab key behaviour in normal mode
+:nnoremap <Tab> >>
+:nnoremap <M-Tab> <<
+
+"
+" ctrl-c  - (C)omma add a comma to end of line and jump to next
+" otherwise it would be something silly like telling you how to exit
+:nnoremap <C-c> A,<Esc>j^
+" alt-c - (Comma) add newline at comma
+:nnoremap <M-c> f,a<cr><Esc>l
 
 "normal mode movement helpers
 :nnoremap Y y$ 
@@ -179,6 +195,9 @@ packadd vimball
 " tab movement
 :nnoremap Gt 1gt
 :nnoremap GT 1gT
+
+" ctrl + a appends to word
+:nnoremap <C-a> ea
 
 "mouse stuff
 " :set mouse=a
@@ -317,6 +336,8 @@ noremap <leader>gb :Gblame
 
 " ctrl-p use cwd not file-relative search
 let g:ctrlp_working_path_mode = 'rw'
+" ctrl-p use regexp mode by default
+let g:ctrlp_regexp = 1
 
 function! LightLineFileName()
   " todo: trim to show ....40 ish chars?
@@ -378,9 +399,9 @@ function CommonTabs()
   :TabooOpen(vimwiki)
   :edit ~/vimwiki/index.wiki
   :TabooOpen(vimscript)
-  :edit ~/Projects/vimscript
-  :TabooOpen(ps-edu)
-  :edit ~/Projects/ps-edu/
+  :edit ~/.configure/nvim/init.vim
+  :TabooOpen(stonks)
+  :edit ~/Projects/stonks/
   :normal Gt
   :tabclose
 
@@ -393,4 +414,6 @@ nnoremap <leader>ct :call CommonTabs()<cr>
 
 
 
-
+" TODO - find out why/where ctrl-i got remapped
+" forces ctrl-i to in/out jump navigation
+nnoremap <c-i> <c-i>

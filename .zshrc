@@ -2,7 +2,7 @@
 # If you come from bash you might have to change your $PATH.
 source /etc/profile
 source ~/.bash_profile
-export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts:$HOME/Projects/Juspay/euler-tools/scripts
+export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts:$HOME/Projects/Juspay/euler-tools/scripts:$HOME/ben/.local/share/gem/ruby/2.7.0/bin
 
 if  [ -f /home/ben/.nix-profile/etc/profile.d/nix.sh ] ; then
   . /home/ben/.nix-profile/etc/profile.d/nix.sh
@@ -19,7 +19,7 @@ export XDG_CONFIG_HOME=$HOME/.configure
 export XDG_CACHE_HOME=$HOME/.cache
 
 export EDITOR=/bin/nvim
-export BROWSER=/usr/bin/qutebrowser
+export BROWSER=/usr/bin/vivaldi-stable
 
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -172,7 +172,10 @@ alias singletray="stalonetray --config ~/.stalonetrayrc-single"
 alias tmux="tmux -u"
 alias clipdelete="clipmenu | clipdel -d --exact-match"
 unalias la
-alias la="ls -a"
+alias la="exa -a"
+alias ls="exa"
+alias bc="eva"
+alias cat="bat"
 alias clip="xclip -sel clip"
 alias vimrc="nvim ~/.configure/nvim/init.vim"
 alias localec="LC_ALL='C'"
@@ -192,3 +195,5 @@ export SDKMAN_DIR="/home/ben/.sdkman"
 
 #use the startship prompt
 eval "$(starship init zsh)"
+
+
