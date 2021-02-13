@@ -1,300 +1,3 @@
-exit
-hpack
-exit
-cabal testr
-cabal test
-cabal repl
-exit
-cabal new-repl
-cd..
-exit
-cabal new-repl
-ls
-fzf
-hpack
-cabal new-repl
-rg "data Configs"
-rg "type Configs"
-rg "Configs"
-cd..
-exit
-cabal repl
-exit
-cabal repl
-cd..
-exit
-cabal new-repl
-cabal repl
-hpack
-cabal repl
-exit
-cabal new-repl
-ecit
-exit
-cabal test
-rg toString
-rg unsafeToString
-rg toString
-cabal test
-exit
-cabal test
-:q
-exit
-cabal test
-rg index
-cabal test
-rm *.cabal
-hpack
-cabal test
-rg Partial
-cabal test
-rg "error ::"
-cabal test
-reboot
-cabal test
-cabal new-repl
-cabal test
-exit
-cabal test
-hpack
-cabal test
-hpack
-cabal test
-rg "as Show"
-cabal test
-exit
-
-hpack
-[B
-exit
-
-cabal test
-exit
-ghcid
-exit
-ghcid
-exit
-cabal build
-mkdir -p ./src/Gateway/Simpl/Endpoints
-touch ./src/Gateway/Simpl/Endpoints/Shims.hs
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-touch ./src/Gateway/Simpl/Endpoints/Shims.hs
-cabal build
-touch ./src/Gateway/PayZapp/Endpoints/Shims.hs
-mkdir -p ./src/Gateway/PayZapp/Endpoints/
-touch ./src/Gateway/PayZapp/Endpoints/Shims.hs
-exit
-hpack
-cabal build
-exit
-cabal build
-hpack
-cabal build
-exit
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-rg "data Effect"
-rg "Effect"
-rg Unit
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-rg liftM1
-cabal build
-hpack
-cabal build
-rg ":=:"
-cabal build
-rg ":=:"
-cabal build
-rg ExpressM
-cabal build
-rg getClientIP
-rg -i getClientIP
-rg -i getClientIP ./src-generated/
-cabal build
-nix build
-exit
-hpack
-cabal test
-cabal build
-rg getAllHeaders
-rg getAllHeaders ./src-generated/
-hpack
-cabal build
-rg Decode
-cabal build
-exit
-hpack
-cabal build
-rg "sendFile response"
-rg "sendFile response" ./src-generated/
-cabal build
-rg unsageTo
-cabal build
-rg "(:=:)"
-rg "\(:=:\)"
-cabal build
-exit
-cabal build
-exit
-hpack
-nvim
-exit
-cabal build
-:w
-cabal build
-cabal repl
-:q
-exit
-hpack
-cabal build
-hpack
-cabal build
-rg readStringAsInt
-cabal build
-[A
-cabal build
-cabal new-repl
-cabal build
-:q
-exit
-hpack
-cabal build
-cabal repl
-hpack
-cabal repl
-exit
-hpack
-exit
-hpack
-cabal repl
-cabal build
-exit
-hpack
-cabal repl
-exit
-cabal repl
-exit
-hpack
-cabal repl
-cabal build
-cabal repl
-exit
-hpack
-cabal repl
-exit
-cabal build
-cabal repl
-exit
-cabal repl
-:q
-cabal repl
-exit
-cabal repl
-:q
-exit
-cabal build
-exit
-cabal repl
-reboot
-exit
-cabal build
-exit
-cabal build
-hpack
-cabal build
-exit
-hpack
-cabal buil
-exit
-cabal repl
-exit
-cabal repl
-exit
-cabal repl
-git diff
-cabal repl
-exit
-cabal repl
-exit
-cabal repl
-exit
-cabal repl
-exit
-cabal repl
-hpack ; cabal repl --ghc-options=-fno-code
-cabal repl
-cabal repl --fno-code
-cabal repl --ghc-options=-fno-code
-hpack
-cabal repl --ghc-options=-fno-code
-:q
-exit
-cabal repl --ghc-options=-fno-code
-exit
-cabal repl --ghc-options=-fno-code
-exit
-hpack
-cabal repl --ghc-options=-fno-code
-exit
-rg _string
-cabal repl
-exit
-cabal repl --ghc-options=-fno-code
-exit
-cabal repl --ghc-options=-fno-code
-exit
-hpack
-cabal repl --ghc-options=-fno-code
-exit
-hpack
-cabal repl --ghc-options=-fno-code
-exit
-cabal repl --ghc-options=-fno-code
-exit
-hpack
-cabal repl --ghc-options=-fno-code
-hpack
-cabal repl --ghc-options=-fno-code
-exit
-hpack
-cabal repl --ghc-options=-fno-code
-exit
-hpack
-cabal repl --ghc-options=-fno-code
-hpack
-cabal repl --ghc-options=-fno-code
-exit
-cabal repl --ghc-options=-fno-code
-exit
-cabal repl --ghc-options=-fno-code
-exit
-cabal repl --ghc-options=-fno-code
-exit
-cabal repl --ghc-options=-fno-code
-exit
-cabal repl --ghc-options=-fno-code
-exit
-cabal repl --ghc-options=-fno-code
-:q
-exit
-cabal repl --ghc-options=-fno-code
-hpack
-cabal repl --ghc-options=-fno-code
 hpack
 cabal repl --ghc-options=-fno-code
 exit
@@ -497,4 +200,301 @@ hpack
 cabal bui
 exit
 cabal build
+exit
+hpack
+hpack --force
+cabal build
+reboot
+cabal new-repl
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+exit
+cabal build
+hpack
+cabal build
+$(date)
+date
+cabal build ; date
+hpack
+cabal build ; date
+hpack
+cabal build ; date
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+git add .
+git commit -m "incomingWebhookService compiles safely)
+"
+cabal build
+cabal build ; date
+cabal build
+cabal build ; date
+exit
+cabal build
+exit
+cabal build ; date
+nix build
+euler update
+nix build
+
+nix build
+exit
+cabal build
+exit
+cabal build
+cabal build ; date
+cabal build
+cabal build ; date
+exit
+cabal build ; date
+hpack
+cabal build ; date
+hpack
+cabal build ; date
+hpack
+cabal build ; date
+cabal build ; date 
+hpack
+cabal build ; date 
+exit
+cabal repl
+exit
+cabal repl
+hpack
+cabal build
+hpack
+cabal build
+hpack
+cabal build
+exit
+hpack
+rm ./*.cabal
+hpack
+cabal build
+exit
+cabal build
+exit
+hpack
+cabal build
+hpack
+cabal build
+nix-collect-garbage 
+exit
+cabal build
+hpack
+rm *.cabal
+hpack
+exit
+cabal build
+exit
+cabal build
+exit
+cabal build
+exit
+cabal build
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+hpack
+hpack --force
+exit
+cabal repl
+exit
+cabal repl
+hpack --force
+exit
+cabal repl
+exit
+cabal repl
+hpack --force
+cabal repl
+exit
+hpack
+exit
+cabal repl
+exit
+cabal repl
+hpack
+cabal repl
+exiit
+exit
+cabal repl
+hpack
+cabal repl
+exit
+hpack
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+hpack
+cabal repl
+reboot
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+hpack
+cabal repl
+hpack
+cabal repl
+exit
+cabal test
+hpack
+hpack --force
+cabal test
+exit
+cabal test
+hpack --force
+exit
+cabal test
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal test
+exit
+cabal test
+:q
+exit
+cabal test
+exit
+cabal test
+Building library for euler-api-gateway-0.1.0.1..
+10026 <command line>: Could not find module ‘RecordDotPreprocessor’
+10027 Perhaps you haven't installed the profiling libraries for package ‘record-dot-preprocess
+10028 or-0.2.7’?
+exit
+cabal test
+cabal repl
+cabal test
+exit
+hpack
+exit
+cabal build
+exit
+cabal repl
+cabal test pascal-test
+exit
+cabal repl
+exit
+cabal test
+cabal repl
+cabal test
+:q
+exit
+cabal repl
+exit
+cabal repl
+exit
+ghcid
+exit
+ghcid
+exit
+ghcid
+exit
+cabal repl
+ghcid
+cabal repl
+ghcid
+cabal repl
+ghcid
+cabal repl
+exit
+ghcid
+cabal repl
+exit
+cabal repl
+hpack
+ls
+hpack
+euler build
+exit
+cabal repl
+exit
+cabal repl
+rm -r ./dist-newstyle/
+cabal repl --disable-optimization
+cabal repl --disable-optimization --repl-options=-fobject-code
+cabal repl --disable-optimization --repl-options=-fobject-code --repl-options=-idir ./temp-interface/
+cabal repl --disable-optimization --repl-options=-fobject-code --repl-options="-idir ./temp-interface/"
+rg -i "payu.flows.emi" ./src
+rg -i "payu.flows" ./src
+cabal repl --disable-optimization --repl-options=-fobject-code --repl-options="-idir ./temp-interface/"
+cabal repl --disable-optimization --repl-options=-fobject-code
+exit
+cabal repl
+
+exit
+cabal repl
+cabal build
+exit
+cabal build
+exit
+cabal clean -f
+cabal clean
+cabal build
+exit
+cabal repl
+exit
+history
+ghcid --command=\"cabal new-repl --disable-optimization --repl-options=-fobject-code --ghc-options'-j'\" --allow-eval
+cabal new-repl --disable-optimization --repl-options=-fobject-code --ghc-options'-j':l Main
+cabal new-repl --disable-optimization --repl-options=-fobject-code --ghc-options'-j'
+cabal v2-repl --disable-optimization --repl-options=-fobject-code --ghc-options'-j'
+cabal new repl --disable-optimization --repl-options=-fobject-code --ghc-options'-j'
+cabal repl --disable-optimization --repl-options=-fobject-code --ghc-options'-j'
+cabal repl
+cabal repl --disable-optimization --repl-options=-fobject-code
+cabal new-repl --disable-optimization --repl-options=-fobject-code
+ls
+exit
+ghcid
+exit
+cabal repl pascal-test
+exit
+cabal repl pascal-test
+exit
+cabal repl
+exit
+cabal repl pascal-test
+exit
+cabal repl
+make fmt
 exit

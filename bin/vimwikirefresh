@@ -108,10 +108,10 @@ rebuildTodoFile (newtime, newday) contents = List.reverse $ foldl go [] contents
     go acc (DateLine s)              = ("### " <> showDayOfWeek newday <> ", " <> dateFmtShort newtime :: String) : acc
     go acc (OTHER s)                 = s : acc
     go acc (SECTIONHEADER _ s)       = s : acc
+    go acc (TODO ImmediateWork True _ _) = acc
+    go acc (TODO ImmediateWork False _ s) = s : acc
+    go acc (TODO Immediate False _ s) = s : acc
     go acc (TODO Immediate True _ _) = acc
-    go acc (TODO ImmediateWork False _ _) = s : acc
-    go acc (TODO Immediate True _ _) = acc
-    go acc (TODO Immediate False _ _) = s : acc
     go acc (TODO Daily True _ s)     = unmarkDone s : acc
     go acc (TODO _ _ _ s)            = s : acc
 

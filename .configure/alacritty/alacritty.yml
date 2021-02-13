@@ -75,7 +75,7 @@ scrolling:
 
   # Number of lines the viewport will move for every line scrolled when
   # scrollback is enabled (history > 0).
-  multiplier: 3
+  multiplier: 5
 
   # Faux Scrolling
   #
@@ -85,8 +85,6 @@ scrolling:
   #
   # Specifying `0` will disable faux scrolling.
   # faux_multiplier: 3
-
-  # Scroll to the bottom when new text is written to the terminal.
 
 # Spaces per Tab (changes require restart)
 #
@@ -506,6 +504,7 @@ debug:
 #   - AppCursor
 #   - ~AppKeypad
 #   - AppKeypad
+#   keybindings bindings:
 key_bindings:
   # (Windows/Linux only)
   #- { key: V,        mods: Control|Shift, action: Paste            }
@@ -557,23 +556,23 @@ key_bindings:
   - { key: Back,     mods: Alt,     chars: "\x1b\x7f"                        }
   - { key: Insert,                  chars: "\x1b[2~"                         }
   - { key: Delete,                  chars: "\x1b[3~"                         }
-  - { key: Left,     mods: Shift,   chars: "\x1b[1;2D"                       }
-  - { key: Left,     mods: Control, chars: "\x1b[1;5D"                       }
+  # - { key: Left,     mods: Shift,   chars: "\x1b[1;2D"                       }
+  # - { key: Left,     mods: Control, chars: "\x1b[1;5D"                       }
   - { key: Left,     mods: Alt,     chars: "\x1b[1;3D"                       }
   - { key: Left,                    chars: "\x1b[D",        mode: ~AppCursor }
   - { key: Left,                    chars: "\x1bOD",        mode: AppCursor  }
-  - { key: Right,    mods: Shift,   chars: "\x1b[1;2C"                       }
-  - { key: Right,    mods: Control, chars: "\x1b[1;5C"                       }
+  # - { key: Right,    mods: Shift,   chars: "\x1b[1;2C"                       }
+  # - { key: Right,    mods: Control, chars: "\x1b[1;5C"                       }
   - { key: Right,    mods: Alt,     chars: "\x1b[1;3C"                       }
   - { key: Right,                   chars: "\x1b[C",        mode: ~AppCursor }
   - { key: Right,                   chars: "\x1bOC",        mode: AppCursor  }
   - { key: Up,       mods: Shift,   chars: "\x1b[1;2A"                       }
-  - { key: Up,       mods: Control, chars: "\x1b[1;5A"                       }
-  - { key: Up,       mods: Alt,     chars: "\x1b[1;3A"                       }
+  # - { key: Up,       mods: Control, chars: "\x1b[1;5A"                       }
+  # - { key: Up,       mods: Alt,     chars: "\x1b[1;3A"                       }
   - { key: Up,                      chars: "\x1b[A",        mode: ~AppCursor }
   - { key: Up,                      chars: "\x1bOA",        mode: AppCursor  }
-  - { key: Down,     mods: Shift,   chars: "\x1b[1;2B"                       }
-  - { key: Down,     mods: Control, chars: "\x1b[1;5B"                       }
+  # - { key: Down,     mods: Shift,   chars: "\x1b[1;2B"                       }
+  # - { key: Down,     mods: Control, chars: "\x1b[1;5B"                       }
   - { key: Down,     mods: Alt,     chars: "\x1b[1;3B"                       }
   - { key: Down,                    chars: "\x1b[B",        mode: ~AppCursor }
   - { key: Down,                    chars: "\x1bOB",        mode: AppCursor  }
@@ -639,3 +638,6 @@ key_bindings:
   - { key: F12,      mods: Super,   chars: "\x1b[24;3~"                      }
   - { key: NumpadEnter,             chars: "\n"                              }
   - { key: N,        mods: Control|Shift,    action: SpawnNewInstance    }
+  - { key: Up,       mods: Control, action: ScrollPageUp                     }
+  - { key: Down,     mods: Control, action: ScrollPageDown                   }
+  - { key: Home,     mods: Control, action: ScrollToBottom                   }

@@ -235,3 +235,161 @@ d
                                 normal, dock, toolbar, utility, desktop
     --xsync                     operate on X server synchronously (SLOW)
 
+
+stalonetray 0.8.3 [ XPM:yes DEBUG:yes KDE:yes ]
+
+Usage: stalonetray [options...]
+
+For short options argument can be specified as -o value or -ovalue.
+For long options argument can be specified as --option value or
+--option=value. All flag-options have expilicit optional boolean 
+argument, which can be true (1, yes) or false (0, no).
+
+Possible options are:
+    -display <display>          use X display <display>
+    -bg, --background <color>   select background color (default: #777777)
+    -c, --config <filename>     read configuration from <file>
+                                (instead of default $HOME/.stalonetrayrc)
+    -d, --decorations <deco>    set what part of window decorations are
+                                visible; deco can be: none (default),
+                                title, border, all
+    --dockapp-mode [<mode>]     enable dockapp mode; mode can be none (default),
+                                simple (default if no mode specified), or wmaker
+    -f, --fuzzy-edges [<level>] set edges fuzziness level from
+                                0 (disabled) to 3 (maximum); works with
+                                tinting and/or pixmap background;
+                                if not specified, level defaults to 2
+    [-]-geometry <geometry>     set initial tray`s geometry (width and height
+                                are defined in icon slots; offsets are defined
+                                in pixels)
+    --grow-gravity <gravity>    set tray`s grow gravity,
+                                either to N, S, W, E, NW, NE, SW, or SE
+    --icon-gravity <gravity>    icon positioning gravity (NW, NE, SW, SE)
+    -i, --icon-size <n>         set basic icon size to <n>; default is 24
+    -h, --help                  show this message
+    --log-level <level>         set the level of output to either err
+                                (default), info, or trace
+    --kludges <list>            enable specific kludges to work around
+                                non-conforming WMs and/or stalonetray bugs;
+                                argument is a comma-separated list of:
+                                 - fix_window_pos (fix window position),
+                                 - force_icons_size (ignore icon resizes),
+                                 - use_icons_hints (use icon size hints)
+    --max-geometry <geometry>   set tray maximal width and height; 0 indicates
+                                no limit in respective direction
+    --no-shrink                 do not shrink window back after icon removal
+    -p, --parent-bg             use parent for background
+    --pixmap-bg <pixmap>        use pixmap for tray`s window background
+    -r, --remote-click-icon <name> remote control (assumes an instance of
+                                stalonetray is already an active tray on this
+                                screen); sends click to icon which window's 
+                                name is <name>
+    --remote-click-button <n>   defines mouse button for --remote-click-icon
+    --remote-click-position <x>x<y> defines position for --remote-click-icon
+    --remote-click-type <type>  defines click type for --remote-click-icon;
+                                type can be either single, or double
+    --scrollbars <mode>         set scrollbar mode either to all, horizontal,
+                                vertical, or none
+    --scrollbars-highlight <mode> set scrollbar highlighting mode which can
+                                be either color spec (default color is red)
+                                or disable
+    --scrollbars-step <n>       set scrollbar step to n pixels
+    --scrollbars-size <n>       set scrollbar size to n pixels
+    --slot-size <n>             set icon slot size to n
+    --skip-taskbar              hide tray`s window from the taskbar
+    --sticky                    make tray`s window sticky across multiple
+                                desktops/pages
+    -t, --transparent           enable root transparency
+    --tint-color <color>        tint tray background with color (not useCould not parse command line
+d
+                                with plain color background)
+    --tint-level <level>        set tinting level from 0 to 255
+    -v, --vertical              use vertical layout of icons (horizontal
+                                layout is used by default)
+    --window-layer <layer>      set tray`s window EWMH layer
+                                either to bottom, normal, or top
+    --window-strut <mode>       set window strut mode to either auto,
+                                left, right, top, or bottom
+    --window-type <type>        set tray`s window EWMH type to either
+                                normal, dock, toolbar, utility, desktop
+    --xsync                     operate on X server synchronously (SLOW)
+
+
+stalonetray 0.8.3 [ XPM:yes DEBUG:yes KDE:yes ]
+
+Usage: stalonetray [options...]
+
+For short options argument can be specified as -o value or -ovalue.
+For long options argument can be specified as --option value or
+--option=value. All flag-options have expilicit optional boolean 
+argument, which can be true (1, yes) or false (0, no).
+
+Possible options are:
+    -display <display>          use X display <display>
+    -bg, --background <color>   select background color (default: #777777)
+    -c, --config <filename>     read configuration from <file>
+                                (instead of default $HOME/.stalonetrayrc)
+    -d, --decorations <deco>    set what part of window decorations are
+                                visible; deco can be: none (default),
+                                title, border, all
+    --dockapp-mode [<mode>]     enable dockapp mode; mode can be none (default),
+                                simple (default if no mode specified), or wmaker
+    -f, --fuzzy-edges [<level>] set edges fuzziness level from
+                                0 (disabled) to 3 (maximum); works with
+                                tinting and/or pixmap background;
+                                if not specified, level defaults to 2
+    [-]-geometry <geometry>     set initial tray`s geometry (width and height
+                                are defined in icon slots; offsets are defined
+                                in pixels)
+    --grow-gravity <gravity>    set tray`s grow gravity,
+                                either to N, S, W, E, NW, NE, SW, or SE
+    --icon-gravity <gravity>    icon positioning gravity (NW, NE, SW, SE)
+    -i, --icon-size <n>         set basic icon size to <n>; default is 24
+    -h, --help                  show this message
+    --log-level <level>         set the level of output to either err
+                                (default), info, or trace
+    --kludges <list>            enable specific kludges to work around
+                                non-conforming WMs and/or stalonetray bugs;
+                                argument is a comma-separated list of:
+                                 - fix_window_pos (fix window position),
+                                 - force_icons_size (ignore icon resizes),
+                                 - use_icons_hints (use icon size hints)
+    --max-geometry <geometry>   set tray maximal width and height; 0 indicates
+                                no limit in respective direction
+    --no-shrink                 do not shrink window back after icon removal
+    -p, --parent-bg             use parent for background
+    --pixmap-bg <pixmap>        use pixmap for tray`s window background
+    -r, --remote-click-icon <name> remote control (assumes an instance of
+                                stalonetray is already an active tray on this
+                                screen); sends click to icon which window's 
+                                name is <name>
+    --remote-click-button <n>   defines mouse button for --remote-click-icon
+    --remote-click-position <x>x<y> defines position for --remote-click-icon
+    --remote-click-type <type>  defines click type for --remote-click-icon;
+                                type can be either single, or double
+    --scrollbars <mode>         set scrollbar mode either to all, horizontal,
+                                vertical, or none
+    --scrollbars-highlight <mode> set scrollbar highlighting mode which can
+                                be either color spec (default color is red)
+                                or disable
+    --scrollbars-step <n>       set scrollbar step to n pixels
+    --scrollbars-size <n>       set scrollbar size to n pixels
+    --slot-size <n>             set icon slot size to n
+    --skip-taskbar              hide tray`s window from the taskbar
+    --sticky                    make tray`s window sticky across multiple
+                                desktops/pages
+    -t, --transparent           enable root transparency
+    --tint-color <color>        tint tray background with color (not useCould not parse command line
+d
+                                with plain color background)
+    --tint-level <level>        set tinting level from 0 to 255
+    -v, --vertical              use vertical layout of icons (horizontal
+                                layout is used by default)
+    --window-layer <layer>      set tray`s window EWMH layer
+                                either to bottom, normal, or top
+    --window-strut <mode>       set window strut mode to either auto,
+                                left, right, top, or bottom
+    --window-type <type>        set tray`s window EWMH type to either
+                                normal, dock, toolbar, utility, desktop
+    --xsync                     operate on X server synchronously (SLOW)
+
