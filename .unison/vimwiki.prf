@@ -1,0 +1,6 @@
+   # Roots of the synchronization
+    root = /home/ben/
+    root = ssh://root@172.105.101.197//home/ben/
+
+    # Paths to synchronize 
+    path = vimwiki
