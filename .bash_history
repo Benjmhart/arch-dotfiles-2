@@ -1,33 +1,3 @@
-hpack
-cabal repl --ghc-options=-fno-code
-exit
-cabal build
-ghc --make -auto-all -prof your-program.hs
-./your-program +RTS -p -RTS
-ghc --make -auto-all -prof .hs
-cabal build
-exit
-cabal v2-run
-cabal v2-run euler-api-gateway
-cabal configure --enable-library-profiling --enable-executable-profiling --enable-tests --enable-benchmarks
-cabal v2-run euler-api-gateway
-cabal install --only-dependencies --enable-library-profiling
-cabal v2-run euler-api-gateway
-cabal install --enable-library-profiling
-euler-api-gateway
-cabal install --enable-library-profiling
-cabal install --only-dependencies --enable-library-profiling
-cabal install --enable-library-profiling --overwrite-policy=always
-cabal install --only-dependencies --enable-library-profiling --overwrite-policy=always
-euler-api-gateway
-cabal v2-run euler-api-gateway
-cabal v2-run euler-api-gateway --enable-library-profiling --enable-profiling
-exit
-cabal build
-exit
-cabal build
-exit
-cabal build
 exit
 cabal build
 hpack
@@ -498,3 +468,33 @@ exit
 cabal repl
 make fmt
 exit
+sudo pacman -Syyu zsh
+curl -L http://install.ohmyzsh.sh | sh
+ping 8.8.8.8
+curl -L http://install.ohmyz.sh | sh
+dot checkout
+alias dot=/usr/bin/git --git-dir=$HOME/.dot --work-tree=$HOME'
+alias dot='/usr/bin/git --git-dir=$HOME/.dot --work-tree=$HOME'
+dot checkout
+rm -rf .bash_history .zshrc
+dot checkout
+dot checkout --hard HEAD
+ls
+ls -a
+dot checkout .zshrc
+dot checkout .bash_history
+chsh -s /bin/zsh
+sudo pacman -Syyu starship
+curl -fsSL https://starship.rs/install.sh | bash
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ./.oh-my-zsh//custom/plugins/zsh-syntax-highlighting
+pacman -Syyu go
+sudo pacman -Syyu go
+mkdir -p ~/go/src
+mkdir -p ~/go/bin
+mkdir build
+git clone https://aur.archlinux.org/yay.git ./build/yay
+cd build/yay
+ls
+mkpkg -i
+makepkg -i
+reboot
