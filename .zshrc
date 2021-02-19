@@ -2,7 +2,7 @@
 # If you come from bash you might have to change your $PATH.
 source /etc/profile
 source ~/.bash_profile
-export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts:$HOME/Projects/Juspay/euler-tools/scripts
+export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts:$HOME/Projects/Juspay/euler-tools/scripts:$HOME/build/z
 
 if  [ -f /home/ben/.nix-profile/etc/profile.d/nix.sh ] ; then
   . /home/ben/.nix-profile/etc/profile.d/nix.sh
@@ -97,7 +97,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(gitfast command-not-found compleat npm cabal sudo vscode zsh-syntax-highlighting)
+plugins=(gitfast command-not-found zsh-autosuggestions compleat npm cabal sudo vscode zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 

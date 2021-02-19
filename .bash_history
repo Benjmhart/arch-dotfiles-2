@@ -1,29 +1,3 @@
-exit
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-cabal build library
-cabal build lib
-cabal build euler-x:library
-cabal build euler-x:lib
-hpack
-cabal build
-hpack
-cabal build
-hpack
-cabal build
-exit
-hpack
-cabal build
-exit
 cabal build
 hpack
 cabal build
@@ -498,3 +472,29 @@ ls
 mkpkg -i
 makepkg -i
 reboot
+ls
+cabal repl
+exit
+cabal repl
+exit
+cabal build
+cabal repl
+exit
+cabal build
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl
+exit
+cabal repl pascal-test
+euler build
+make fmt
+exit
+cabal repl
+exit
+euler test euler-x-test
+euler repl euler-x-test
+cabal test euler-x-test
+exit
