@@ -37,6 +37,7 @@ myManageHook
 
 printscreenFlameshot = ((noModMask, xK_Print), spawn "flameshot gui")
 modKKeypass = ((mod4Mask .|. shiftMask, xK_k), spawn "keepassxc")
+modKEmoji   = ((mod4Mask .|. shiftMask, xK_j), spawn "rofimoji")
 modKclipmenu = ((mod4Mask, xK_c), spawn "clipmenud")
 
 -- alt is mod1Mask
@@ -47,6 +48,7 @@ myKeys
   = concat 
     [ [printscreenFlameshot
       , modKKeypass
+      , modKEmoji
       ]
     -- , modKScreenmap
     ]

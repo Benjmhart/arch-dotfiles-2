@@ -183,7 +183,10 @@ packadd vimball
 " otherwise it would be something silly like telling you how to exit
 :nnoremap <C-c> A,<Esc>j^
 " alt-c - (Comma) add newline at comma
-:nnoremap <M-c> f,a<cr><Esc>l
+" :nnoremap <M-c> f,a<cr><Esc>l
+" add a newline before commas, for comma-leading style
+" use for tearing down a single line into proper spacing
+:nnoremap <M-c> t,a<cr><Esc>^
 
 "normal mode movement helpers
 :nnoremap Y y$ 
