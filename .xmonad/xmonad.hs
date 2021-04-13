@@ -53,6 +53,9 @@ myKeys
     -- , modKScreenmap
     ]
 
+
+-- copyq is summoned with Meta + shift + b
+-- dmenu launch is summoned with Meta + p
 myStartupHook = do
   spawnOnce "alacritty &"
   spawnOnce "copyq &"

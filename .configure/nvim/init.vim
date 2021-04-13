@@ -97,6 +97,11 @@ let maplocalleader = ","
 
 " leader-w is write/save
 nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+nnoremap <Leader>u <C-u>
+nnoremap <Leader>d <C-d>
+
+
 " reduce wait time when exiting a mode
 set updatetime=100
 
@@ -200,8 +205,7 @@ packadd vimball
 :nnoremap GT 1gT
 
 " ctrl + a appends to word
-:nnoremap <C-a> ea
-
+:nnoremap <C-a> ea 
 "mouse stuff
 " :set mouse=a
 
@@ -297,6 +301,8 @@ set laststatus=2
 " completely unfold with za by default, zA unfolds one level
 :nnoremap za zA
 :nnoremap zA za
+" disable code folding
+:set nofoldenable
 
 " utf8 encode
 if &encoding ==# 'latin1' && has('gui_running')
@@ -314,10 +320,13 @@ set viewoptions-=options
 
 " insert characters, used for fance comment blocks
 function RepeatChar()
-  let times = input("Count: ")
-  let char  = input("Char :" )
+  let times  = input("Count: ")
+  let char   = input("Char :" )
   exe ":normal a" . repeat(char, times)
 endfunction
+
+"EasyAlign shortcut for regex 
+vnoremap <leader>ea :Ea<CR><C-x>
 
 "leader - adds an 80 char line break
 nnoremap <leader>- :call RepeatChar()<CR>80<CR>-<CR>
@@ -398,7 +407,9 @@ function CommonTabs()
   :TabooOpen(nau)
   :edit ~/Projects/juspay/nau/
   :TabooOpen(gw)
-  :edit ~/Project/juspay/euler-api-gateway
+  :edit ~/Projects/juspay/euler-api-gateway/
+  :TabooOpen(Liqwid)
+  :edit ~/Projects/liqwid/
   :TabooOpen(vimwiki)
   :edit ~/vimwiki/index.wiki
   :TabooOpen(vimscript)
