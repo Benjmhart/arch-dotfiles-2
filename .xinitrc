@@ -19,6 +19,8 @@ cbatticon &
 xfce4-power-manager &
 udiskie & 
 volumeicon & 
+espanso daemon &
+
 xmodmap ~/.Xmodmap
 
 exec xmonad

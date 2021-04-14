@@ -1,5 +1,6 @@
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'junegunn/vim-easy-align' 
+Plug 'junegunn/vim-peekaboo'
 Plug 'sheerun/vim-polyglot' 
 Plug 'vmchale/dhall-vim'
 " Plug 'HerringtonDarkholme/yats.vim' 
