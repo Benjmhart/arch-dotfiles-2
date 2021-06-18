@@ -40,8 +40,8 @@ myManageHook
 printscreenFlameshot = ((noModMask, xK_Print), spawn "flameshot gui")
 modKKeypass = ((winSuperMask .|. shiftMask, xK_k), spawn "keepassxc")
 modKEmoji   = ((winSuperMask .|. shiftMask, xK_j), spawn "rofimoji")
-modKclipmenu = ((winSuperMask, xK_c), spawn "clipmenud")
 modKVolume = ((winSuperMask, xK_v), spawn  "alacritty --command pacmixer")
+modKWally = ((winSuperMask .|. shiftMask, xK_w), spawn  "wally")
 
 -- textEmail = toTextKey xK_e "Benjmhart@gmail.com"
 -- textName = toTextKey xK_n "Ben Hart"

@@ -37,6 +37,7 @@ Plug 'farmergreg/vim-lastplace'
 Plug 'vimwiki/vimwiki'
 Plug '~/Projects/vimscript/potion'
 Plug 'liuchengxu/vim-which-key'
+Plug 'terryma/vim-smooth-scroll'
 
 "my plugins:
 " Plug 'benjmhart/vim-instantinstance'
@@ -98,7 +99,7 @@ let maplocalleader = ","
 
 " leader-w is write/save
 nnoremap <Leader>w :w<CR>
-nnoremap <Leader>q :q<CR>
+nnoremap <Leader>Q :q<CR>
 nnoremap <Leader>u <C-u>
 nnoremap <Leader>d <C-d>
 
@@ -130,7 +131,7 @@ packadd vimball
 
 " Ctrl+shift+C copies to main clipboard in visual mode
 :vnoremap <C-c> "+y
-:vnoremap <C-d> "+d
+" :vnoremap <C-d> "+d
 
 " Ctrl+shift+v pastes from main clipboard in insert mode, allowing the same
 " command to enter visual block mode in normal mode
@@ -285,7 +286,8 @@ au FocusGained,BufEnter * :silent! checktime
 " control key timeout to avoid delays exiting insert mode
 if !has('nvim') && &ttimeoutlen == -1
   set ttimeout
-  set ttimeoutlen=50
+  set ttimeoutlen=100
+  set timeoutlen=400
 endif
 
 " always show status
@@ -411,6 +413,8 @@ function CommonTabs()
   :edit ~/Projects/juspay/euler-api-gateway/
   :TabooOpen(Liqwid)
   :edit ~/Projects/liqwid/
+  :TabooOpen IOHK
+  :edit ~/Projects/iohk/
   :TabooOpen(vimwiki)
   :edit ~/vimwiki/index.wiki
   :TabooOpen(vimscript)
@@ -426,9 +430,16 @@ nnoremap <leader>vwr :!vimwikirefresh<cr>
 nnoremap <leader>zsh :e ~/.zshrc<cr>
 
 nnoremap <leader>ct :call CommonTabs()<cr>
-
+" pgup  and down
+nnoremap <PageUp> :call smooth_scroll#up(&scroll, 20, 4)<CR>
+nnoremap <PageDown> :call smooth_scroll#down(&scroll, 20, 4)<CR>
+nnoremap <c-u> :call smooth_scroll#up(&scroll, 20, 4)<CR>
+nnoremap <c-d> :call smooth_scroll#down(&scroll, 20, 4)<CR>
+"less obnoxious chord for window/split switches
+nnore map gw <c-w>w
 
 
 " TODO - find out why/where ctrl-i got remapped
 " forces ctrl-i to in/out jump navigation
 nnoremap <c-i> <c-i>
+nnoremap <c-o> <c-o>

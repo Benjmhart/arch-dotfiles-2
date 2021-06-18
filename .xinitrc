@@ -21,6 +21,6 @@ udiskie &
 volumeicon & 
 espanso daemon &
 
-xmodmap ~/.Xmodmap
+# xmodmap ~/.Xmodmap
 
 exec xmonad

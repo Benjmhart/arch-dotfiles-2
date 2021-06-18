@@ -15,11 +15,11 @@
             600,
             400
         ],
-        "hPanePosition": 150,
+        "hPanePosition": 260,
         "columnWidths": [
-            150,
-            50,
-            100
+            109,
+            38,
+            107
         ],
         "showToolbar": true,
         "notificationIcon": "autokey-status",
@@ -40,8 +40,10 @@
     "configHotkey": {
         "enabled": true,
         "modifiers": [
+            "<alt>",
+            "<ctrl>",
             "<super>"
         ],
-        "hotKey": "k"
+        "hotKey": "a"
     }
 }
