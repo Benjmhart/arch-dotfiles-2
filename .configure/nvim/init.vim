@@ -1,22 +1,17 @@
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'junegunn/vim-easy-align' 
 Plug 'junegunn/vim-peekaboo'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'vmchale/dhall-vim'
-" Plug 'HerringtonDarkholme/yats.vim' 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-abolish'
-"Plug 'mhartington/nvim-typescript' 
-" Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 if has('nvim') || has('patch-8.0.902')
   Plug 'mhinz/vim-signify'
 else
   Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 endif
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'maxmellon/vim-jsx-pretty'
-" Plug 'leafgarland/typescript-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdtree' 
 Plug 'scrooloose/nerdcommenter' 
@@ -35,9 +30,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'farmergreg/vim-lastplace'
 Plug 'vimwiki/vimwiki'
-Plug '~/Projects/vimscript/potion'
-Plug 'liuchengxu/vim-which-key'
-Plug 'terryma/vim-smooth-scroll'
+
 
 "my plugins:
 " Plug 'benjmhart/vim-instantinstance'
@@ -407,20 +400,26 @@ endfunction
 
 
 function CommonTabs()
-  :TabooOpen(nau)
-  :edit ~/Projects/juspay/nau/
-  :TabooOpen(gw)
-  :edit ~/Projects/juspay/euler-api-gateway/
   :TabooOpen(Liqwid)
   :edit ~/Projects/liqwid/
   :TabooOpen IOHK
   :edit ~/Projects/iohk/
+  :TabooOpen(CS)
+  :edit ~/Projects/cardstarter/
+  :TabooOpen Gen-gov
+  :edit ~/Projects/gov/
+  :TabooOpen Ardana
+  :edit ~/Projects/ardana/
+  :TabooOpen Gero
+  :edit ~/Projects/gero/
+  :TabooOpen ICO
+  :edit ~/Projects/ico/
+  :TabooOpen Sundae
+  :edit ~/Projects/sundae/
   :TabooOpen(vimwiki)
   :edit ~/vimwiki/index.wiki
   :TabooOpen(vimscript)
   :edit ~/.configure/nvim/init.vim
-  :TabooOpen(stonks)
-  :edit ~/Projects/stonks/
   :normal Gt
   :tabclose
 
@@ -431,14 +430,8 @@ nnoremap <leader>zsh :e ~/.zshrc<cr>
 
 nnoremap <leader>ct :call CommonTabs()<cr>
 " pgup  and down
-nnoremap <PageUp> :call smooth_scroll#up(&scroll, 20, 4)<CR>
-nnoremap <PageDown> :call smooth_scroll#down(&scroll, 20, 4)<CR>
-nnoremap <c-u> :call smooth_scroll#up(&scroll, 20, 4)<CR>
-nnoremap <c-d> :call smooth_scroll#down(&scroll, 20, 4)<CR>
-"less obnoxious chord for window/split switches
-nnore map gw <c-w>w
-
-
+nnoremap <PageUp> <c-u>
+nnoremap <PageDown> <c-d>
 " TODO - find out why/where ctrl-i got remapped
 " forces ctrl-i to in/out jump navigation
 nnoremap <c-i> <c-i>

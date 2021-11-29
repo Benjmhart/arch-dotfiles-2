@@ -4,10 +4,6 @@ source /etc/profile
 source ~/.bash_profile
 export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts:$HOME/Projects/Juspay/euler-tools/scripts:/home/ben/moonlander
 
-if  [ -f /home/ben/.nix-profile/etc/profile.d/nix.sh ] ; then
-  . /home/ben/.nix-profile/etc/profile.d/nix.sh
-fi
-
 . $HOME/build/z/z.sh
 
 export VIFM=$HOME/.configure/vifm
@@ -193,10 +189,16 @@ eval $(thefuck --alias)
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/ben/.sdkman"
 [[ -s "/home/ben/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ben/.sdkman/bin/sdkman-init.sh"
-[ -f "/home/ben/.ghcup/env" ] && source "/home/ben/.ghcup/env" # ghcup-env
+#[ -f "/home/ben/.ghcup/env" ] && source "/home/ben/.ghcup/env" # ghcup-env
 
 #use the startship prompt
 eval "$(starship init zsh)"
 
 
 export CARDANO_NODE_SOCKET_PATH=~/Projects/iohk/cardano/db/node.socket
+[ -f "/home/ben/.ghcup/env" ] && source "/home/ben/.ghcup/env" # ghcup-env
+export LD_LIBRARY_PATH=/usr/local/lib:
+export NODE_HOME=/home/ben/cardano-my-node
+export NODE_BUILD_NUM=7006939
+export CARDANO_NODE_SOCKET_PATH=/home/ben/cardano-my-node/cardano-private-network/example/node-bft1/node.sock
+nvm use v12.12
