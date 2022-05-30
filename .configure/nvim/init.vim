@@ -5,36 +5,43 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot' 
 Plug 'vmchale/dhall-vim'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-abolish'
-Plug 'tpope/vim-fugitive'
-if has('nvim') || has('patch-8.0.902')
-  Plug 'mhinz/vim-signify'
-else
-  Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
-endif
+Plug 'petertriho/nvim-scrollbar'
+" Plug 'tpope/vim-abolish'
+" Plug 'tpope/vim-fugitive'
+" if has('nvim') || has('patch-8.0.902')
+  " Plug 'mhinz/vim-signify'
+" else
+  " Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+" endif
 Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdtree' 
 Plug 'scrooloose/nerdcommenter' 
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'dyng/ctrlsf.vim'
+" Plug 'dyng/ctrlsf.vim'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'purescript-contrib/purescript-vim'
 Plug 'gioele/vim-autoswap'
 Plug 'rhysd/conflict-marker.vim'
 Plug 'itchyny/lightline.vim'
-Plug 'easymotion/vim-easymotion'
-Plug 'ap/vim-css-color'
+" Plug 'easymotion/vim-easymotion'
+" Plug 'ap/vim-css-color'
 Plug 'gcmt/taboo.vim'
 Plug 'ryanoasis/vim-devicons'
-Plug 'nathanaelkane/vim-indent-guides'
+" Plug 'nathanaelkane/vim-indent-guides'
 Plug 'farmergreg/vim-lastplace'
 Plug 'vimwiki/vimwiki'
-
+Plug 'xolox/vim-session'
 
 "my plugins:
 " Plug 'benjmhart/vim-instantinstance'
-Plug '~/Projects/vim-instantinstance'
+" Plug '~/Projects/vim-instantinstance'
+
+" vim-session setup
+let g:session_autoload = "prompt"
+let g:session_autosave = "yes"
+let g:session_autosave_periodic = 5
+
 
 call plug#end()
 
