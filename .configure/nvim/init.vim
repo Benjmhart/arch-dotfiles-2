@@ -31,6 +31,7 @@ Plug 'ryanoasis/vim-devicons'
 " Plug 'nathanaelkane/vim-indent-guides'
 Plug 'farmergreg/vim-lastplace'
 Plug 'vimwiki/vimwiki'
+Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
 "my plugins:

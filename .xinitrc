@@ -16,11 +16,9 @@ nm-applet --sm-disable &
 picom &
 flameshot &
 cbatticon &
-xfce4-power-manager &
 udiskie & 
 volumeicon & 
-espanso daemon &
 
-# xmodmap ~/.Xmodmap
+xmodmap ~/.Xmodmap
 
 exec xmonad

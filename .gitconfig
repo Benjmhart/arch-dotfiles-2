@@ -1,6 +1,6 @@
 [user]
-	name = Ben Hart
-	email = Benjmhart@gmail.com
+	name = benjmhart
+	email = benjmhart@gmail.com
 [core]
 	editor = nvim
 	pager = less -F -X

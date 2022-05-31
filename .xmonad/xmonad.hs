@@ -18,7 +18,7 @@ import GHC.Word (Word64)
 winSuperMask = mod4Mask
 altMask = mod3Mask
 main = do
-  xmproc <- spawnPipe "/home/ben/.local/bin/xmobar ~/.xmobarrc"
+  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
   xmonad $ def 
     { terminal = "alacritty"
     , manageHook = myManageHook <+> manageDocks 
