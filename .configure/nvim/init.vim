@@ -433,6 +433,10 @@ function CommonTabs()
 endfunction
 
 nnoremap <leader>vwr :!vimwikirefresh<cr>
+" set vimwiki to use obsidian
+
+let g:vimwiki_list = [{'path': '~/Obsidian\ Vault/', 'ext':'.md', 'index': '000-index' }]
+
 nnoremap <leader>zsh :e ~/.zshrc<cr>
 
 nnoremap <leader>ct :call CommonTabs()<cr>

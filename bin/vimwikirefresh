@@ -31,7 +31,7 @@ import qualified System.IO               as IO
 -- anything that starts with ### will be overwritten by the date
 
 dailyTodoPath :: String
-dailyTodoPath = "/home/ben/vimwiki/daily-todo.wiki" 
+dailyTodoPath = "/home/ben/Obsidian Vault/010-daily-todo.md" 
 
 dailyTodoPath' :: FilePath
 dailyTodoPath' = decodeString dailyTodoPath
@@ -43,19 +43,20 @@ cronlogPath' :: FilePath
 cronlogPath' = decodeString cronlogPath
 
 usageLogPath :: String
-usageLogPath = "/home/ben/vimwiki/usage-log.wiki"
+usageLogPath = "/home/ben/Obsidian Vault/usage-log.wiki"
 
 usageLogPath' :: FilePath
 usageLogPath' = decodeString usageLogPath
 
 archiveBasePath :: String
-archiveBasePath = "/home/ben/vimwiki/.todo-archive/" 
+archiveBasePath = "/home/ben/Obsidian Vault/.todo-archive/" 
 
 main = do
   shellScript
 
 shellScript :: IO ()
 shellScript = do
+  print "starting"
   date <- Chronos.yesterday
   newDate <- Chronos.today
   newDateDay <- Chronos.todayDayOfWeek
@@ -64,6 +65,8 @@ shellScript = do
     monthpath = (show $ (+ 1) $ Chronos.getMonth $ Chronos.dateMonth $ Chronos.dayToDate $ date) <> "/"
     archiveDir = archiveBasePath <> yearpath <> monthpath
     archivePath = archiveDir <> (dateFmtShort $ Chronos.dayToDate date :: String)
+
+  print ("mkdir -p " <> archiveDir)
   Process.callCommand ("mkdir -p " <> archiveDir)
   nc <- IO.withFile dailyTodoPath IO.ReadMode $ \fileHandle -> do
     fileContents <- IO.hGetContents fileHandle
@@ -71,6 +74,7 @@ shellScript = do
     let structuredData = parseTodoFile $ lines fileContents
     let newContents = unlines $ rebuildTodoFile (Chronos.dayToDate newDate, newDateDay) $ structuredData
     pure $ force newContents
+  print "finished with archiving, writing to new file"
   IO.writeFile dailyTodoPath nc
   let echoLine = showDayOfWeek newDateDay <> " - vimwiki daily-todo archive script"
   print echoLine
