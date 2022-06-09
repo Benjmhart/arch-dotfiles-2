@@ -66,8 +66,10 @@ shellScript = do
     archiveDir = archiveBasePath <> yearpath <> monthpath
     archivePath = archiveDir <> (dateFmtShort $ Chronos.dayToDate date :: String)
 
-  print ("mkdir -p " <> archiveDir)
-  Process.callCommand ("mkdir -p " <> archiveDir)
+  print archiveDir
+  let command = "mkdir -p '" <> archiveDir <> "'"
+  print command
+  Process.callCommand command
   nc <- IO.withFile dailyTodoPath IO.ReadMode $ \fileHandle -> do
     fileContents <- IO.hGetContents fileHandle
     IO.writeFile archivePath fileContents

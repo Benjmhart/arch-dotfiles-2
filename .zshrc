@@ -179,6 +179,7 @@ alias dot="/usr/bin/git --git-dir=$HOME/.dot/ --work-tree=$HOME"
 alias dotadd="dot add -u"
 alias cronlog="cat ~/Desktop/cronlog"
 alias vifmrc="nvim ~/.configure/vifm/vifmrc"
+alias todo="cd ~/Obsidian\ Vault/ && nvim './000-index.md'"
 eval $(thefuck --alias)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
