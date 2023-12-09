@@ -167,8 +167,8 @@ alias please='sudo $(fc -ln -1)'
 alias singletray="stalonetray --config ~/.stalonetrayrc-single"
 alias tmux="tmux -u"
 unalias la
-alias la="exa -a"
-alias ls="exa"
+alias la="eza -a"
+alias ls="eza"
 alias bc="eva"
 alias cat="bat"
 alias clip="xclip -sel clip"

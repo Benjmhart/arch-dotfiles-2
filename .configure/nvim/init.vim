@@ -297,6 +297,9 @@ set laststatus=2
 " show when a column exceeds 80 char
 :set colorcolumn=81
 :set ruler
+:nmap <leader>kk :set colorcolumn=0<Enter>
+:nmap <leader>kkk :set colorcolumn=81<Enter>
+
 
 " apparently this makes the ruler only show when it gets crossed
 " highlight ColorColumn ctermbg=red
