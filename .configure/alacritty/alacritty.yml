@@ -106,8 +106,8 @@ font:
     #   - (Windows) Consolas
     # family: Monoid Nerd Font
     # family: Hack
-    # family: Iosevka Term
-    family: Fira Code Nerd Font Mono
+     family: Iosevka Term
+    # family: Fira Code Nerd Font Mono
 
     # The `style` can be specified to pick a specific face.
     #style: Regular
@@ -120,8 +120,8 @@ font:
     # value specified for the normal font.
     # family: Monoid Nerd Font
     # family: Hack
-    # family: Iosevka Term
-    family: Fira Code Nerd Font Mono
+    family: Iosevka Term
+    # family: Fira Code Nerd Font Mono
 
     # The `style` can be specified to pick a specific face.
     style: Bold
@@ -134,8 +134,8 @@ font:
     # value specified for the normal font.
     # family: Monoid Nerd Font
     # family: Hack
-    # family: Iosevka Term
-    family: Fira Code Nerd Font Mono
+    family: Iosevka Term
+    # family: Fira Code Nerd Font Mono
 
     # The `style` can be specified to pick a specific face.
     style: Italic

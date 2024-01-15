@@ -165,6 +165,7 @@ alias xampp="sudo /opt/lampp/manager-linux-x64.run"
 alias capset="xmodmap ~/.Xmodmap"
 alias please='sudo $(fc -ln -1)'
 alias singletray="stalonetray --config ~/.stalonetrayrc-single"
+alias alacrittyconfig="nvim ~/.configure/alacritty/alacritty.toml"
 alias tmux="tmux -u"
 unalias la
 alias la="eza -a"
@@ -199,4 +200,5 @@ export LD_LIBRARY_PATH=/usr/local/lib:
 export NODE_HOME=/home/ben/cardano-my-node
 export NODE_BUILD_NUM=7006939
 export CARDANO_NODE_SOCKET_PATH=/home/ben/cardano-my-node/cardano-private-network/example/node-bft1/node.sock
-nvm use v12.12
+nvm use v16.18
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
