@@ -2,7 +2,7 @@
 # If you come from bash you might have to change your $PATH.
 source /etc/profile
 source ~/.bash_profile
-export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts:$HOME/Projects/Juspay/euler-tools/scripts:/home/ben/moonlander
+export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts:$HOME/Projects/Juspay/euler-tools/scripts:/home/ben/moonlander:/nix:/usr/lib/nix:/etc/nix
 
 
 export VIFM=$HOME/.configure/vifm
@@ -202,3 +202,6 @@ export NODE_BUILD_NUM=7006939
 export CARDANO_NODE_SOCKET_PATH=/home/ben/cardano-my-node/cardano-private-network/example/node-bft1/node.sock
 nvm use v16.18
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export $XDG_CONFIG_HOME='/home/ben/.config'
+export LUA_PATH='~/.config/nvim/lua'
