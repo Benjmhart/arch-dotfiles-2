@@ -3,9 +3,9 @@
 -- Add any additional keymaps here
 
 -- disable highlight
-vim.keymap.set("n", "<C-H>", ":nohls<Enter>")
+vim.keymap.set("n", "<C-H>", ":nohls<Enter>", { desc = "clear highlight" })
 -- lazy write file
-vim.keymap.set("n", "<leader>w", ":w<Enter>")
+vim.keymap.set("n", "<leader>w", ":w<Enter>", { desc = "write buffer" })
 
 -- toggle comments
 -- this isn't working because it's owned by mini.comment plugin
@@ -16,4 +16,4 @@ vim.keymap.set("n", "<leader>w", ":w<Enter>")
 -- this is remapped in plugins/neotree
 
 -- paste with ctrl-v in insert mode
-vim.keymap.set("i", "<C-v>", "<C-r>+")
+vim.keymap.set("i", "<C-v>", "<C-r>+", { desc = "paste from clipboard" })

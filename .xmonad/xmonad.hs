@@ -39,11 +39,11 @@ myManageHook
 
 printscreenFlameshot = ((noModMask, xK_Print), spawn "flameshot gui")
 modKKeypass = ((winSuperMask .|. shiftMask, xK_k), spawn "keepassxc")
-modKEmoji   = ((winSuperMask .|. shiftMask, xK_j), spawn "rofimoji")
 -- unfortunately pacmixer went out of sync with libgnustep
 -- modKVolume = ((winSuperMask, xK_v), spawn  "alacritty --command pacmixer")
 modKVolume = ((winSuperMask, xK_v), spawn  "pavucontrol")
 modKWally = ((winSuperMask .|. shiftMask, xK_w), spawn  "wally")
+modKEmoji = ((winSuperMask .|. shiftMask, xK_m), spawn "bemoji")
 
 -- textEmail = toTextKey xK_e "Benjmhart@gmail.com"
 -- textName = toTextKey xK_n "Ben Hart"
@@ -51,6 +51,7 @@ modKWally = ((winSuperMask .|. shiftMask, xK_w), spawn  "wally")
 -- toTextKey :: MonadIO m => Word64 -> String -> ((KeyMask, KeySym), m ())
 -- toTextKey k t = ((winSuperMask .|. altMask .|. controlMask, k), spawn ("sleep 2 && xdotool type " <> t))
 
+modKClipboard = ((winSuperMask, xK_b), spawn "clipmenu")
 -- alt is mod1Mask
 modKScreenmap = [((mod4Mask .|. mod1Mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
   | (key, sc) <- zip [xK_w, xK_e, xK_r] [1, 0, 2]
@@ -60,6 +61,7 @@ myKeys
     , modKKeypass
     , modKEmoji
     , modKVolume
+    , modKClipboard
     -- , textEmail
     -- , textName
     ]

@@ -14,9 +14,8 @@ return {
   dependencies = {
     -- Required.
     "nvim-lua/plenary.nvim",
-
-    -- see below for full list of optional dependencies 👇
   },
+  keys = { { "<leader>os", ":ObsidianSearch<cr>", desc = "obsidian search" } },
   opts = {
     workspaces = {
       {
@@ -24,7 +23,8 @@ return {
         path = "~/BRAIN",
       },
     },
-
-    -- see below for full list of options 👇
+    note_id_func = function(title)
+      return title
+    end,
   },
 }

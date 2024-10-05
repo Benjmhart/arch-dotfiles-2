@@ -17,6 +17,7 @@ picom &
 flameshot &
 cbatticon &
 udiskie & 
+clipmenud &
 volumeicon & 
 
 xmodmap ~/.Xmodmap
