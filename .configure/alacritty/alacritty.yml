@@ -106,7 +106,7 @@ font:
     #   - (Windows) Consolas
     # family: Monoid Nerd Font
     # family: Hack
-     family: Iosevka Term
+    family: Iosevka Term
     # family: Fira Code Nerd Font Mono
 
     # The `style` can be specified to pick a specific face.

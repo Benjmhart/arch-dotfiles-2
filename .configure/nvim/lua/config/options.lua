@@ -11,3 +11,10 @@ vim.g.vim_markdown_edit_url_in = "current"
 -- command pallet autocomplete
 vim.opt.wildmode = "longest,list,full"
 vim.opt.wildmenu = true
+
+-- turning off autoformat in hops it prevents the issue where {} cant be
+-- split by a newline without stuff in it
+
+vim.g.autoformat = false
+
+

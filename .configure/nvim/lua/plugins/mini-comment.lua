@@ -10,6 +10,7 @@ return {
       },
       mappings = {
         comment_line = "//",
+        comment_visual ="//"
       },
     },
   },

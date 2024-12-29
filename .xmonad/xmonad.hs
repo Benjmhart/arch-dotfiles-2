@@ -69,14 +69,10 @@ myKeys
 
 
 
--- copyq is summoned with Meta + shift + b
 -- dmenu launch is summoned with Meta + p
 myStartupHook = do
   spawnOnce "alacritty &"
-  spawnOnce "copyq &"
+  -- spawnOnce "copyq &" --remove? use clipmenu now
   -- spawnOnce "clipmenud &"
   spawnOnce "stalonetray &"
 
--- wishlist 
--- 3. hotkey for tile screenshot
--- 4. hotkey to cycle through workspaces

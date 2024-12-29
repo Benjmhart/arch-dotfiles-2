@@ -7,6 +7,10 @@ vim.keymap.set("n", "<C-H>", ":nohls<Enter>", { desc = "clear highlight" })
 -- lazy write file
 vim.keymap.set("n", "<leader>w", ":w<Enter>", { desc = "write buffer" })
 
+-- indent in visual mode
+vim.keymap.set("v", ">", ">gv", {desc = "indent right visual"})
+vim.keymap.set("v", "<", "<gv", {desc = "indent left visual"})
+
 -- toggle comments
 -- this isn't working because it's owned by mini.comment plugin
 -- remapped in plugins/mini-comment
