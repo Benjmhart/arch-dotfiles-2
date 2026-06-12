@@ -23,6 +23,9 @@ return {
         path = "~/BRAIN",
       },
     },
+    picker = {
+      name = "telescope.nvim"
+    },
     note_id_func = function(title)
       return title
     end,

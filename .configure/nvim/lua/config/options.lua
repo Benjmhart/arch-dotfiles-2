@@ -8,6 +8,7 @@ vim.opt.relativenumber = false
 -- set to follow markdown links
 vim.g.vim_markdown_edit_url_in = "current"
 
+vim.g.lazyvim_picker = "telescope"
 -- command pallet autocomplete
 vim.opt.wildmode = "longest,list,full"
 vim.opt.wildmenu = true
