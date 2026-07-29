@@ -3,6 +3,6 @@
 	email = benjmhart@gmail.com
 [core]
 	editor = nvim
-	pager = least
+	pager = less
 [pull]
 	rebase = false
