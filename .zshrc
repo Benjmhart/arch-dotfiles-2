@@ -201,7 +201,7 @@ export LD_LIBRARY_PATH=/usr/local/lib:
 export NODE_HOME=/home/ben/cardano-my-node
 export NODE_BUILD_NUM=7006939
 export CARDANO_NODE_SOCKET_PATH=/home/ben/cardano-my-node/cardano-private-network/example/node-bft1/node.sock
-nvm use v16.18
+nvm use v24
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 export LUA_PATH='~/.config/nvim/lua'
