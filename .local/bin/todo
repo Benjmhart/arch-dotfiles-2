@@ -1,0 +1,4 @@
+#!/bin/sh
+# Open the BRAIN vault index in nvim.
+# Promoted from a zsh alias so xmonad (and any non-interactive shell) can launch it.
+cd "$HOME/BRAIN" && exec nvim ./000-index.md

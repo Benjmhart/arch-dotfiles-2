@@ -3,7 +3,7 @@
 -- valirt@gmail.cojjjdate syntax: `ghcid` or `xmonad --recompile`
 {-# LANGUAGE NoMonomorphismRestriction #-} -------------------------------------------------------------------
 import XMonad
-import XMonad.Actions.SpawnOn (spawnOn)
+import XMonad.Actions.SpawnOn (spawnOn, manageSpawn)
 import XMonad.Actions.WindowGo (runOrRaise)
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
@@ -21,7 +21,7 @@ main = do
   xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
   xmonad $ def 
     { terminal = "alacritty"
-    , manageHook = myManageHook <+> manageDocks 
+    , manageHook = manageSpawn <+> myManageHook <+> manageDocks
     , startupHook = myStartupHook
     , layoutHook = avoidStruts $ layoutHook def
     , logHook = dynamicLogWithPP xmobarPP 
@@ -75,4 +75,11 @@ myStartupHook = do
   -- spawnOnce "copyq &" --remove? use clipmenu now
   -- spawnOnce "clipmenud &"
   spawnOnce "stalonetray &"
+  -- Session apps, each pinned to a workspace.
+  -- spawnOnOnce = place on workspace + don't respawn on xmonad restart.
+  -- Requires manageSpawn in manageHook (above) or the workspace is ignored.
+  spawnOnOnce "9" "alacritty -e todo"   -- todo = ~/.local/bin/todo (nvim on the BRAIN index)
+  spawnOnOnce "8" "obsidian"            -- drop once the headless sync daemon is live
+  spawnOnOnce "5" "rambox"
+  spawnOnOnce "4" "vivaldi"
 
