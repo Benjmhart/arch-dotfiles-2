@@ -33,9 +33,15 @@ main = do
     } `additionalKeys` 
       myKeys
 
-myManageHook 
+myManageHook
   = composeAll
-    [ ]
+    -- Rambox is Electron and reparents its window after mapping, which defeats
+    -- spawnOnOnce/manageSpawn (it landed on ws 1 instead of 5 after a reboot).
+    -- Matching on the window's own WM_CLASS is reliable where the spawner isn't.
+    -- xprop reports both "Rambox" and "rambox" as res_class, so match either.
+    [ className =? "Rambox" --> doShift "5"
+    , className =? "rambox" --> doShift "5"
+    ]
 
 printscreenFlameshot = ((noModMask, xK_Print), spawn "flameshot gui")
 modKKeypass = ((winSuperMask .|. shiftMask, xK_k), spawn "keepassxc")
