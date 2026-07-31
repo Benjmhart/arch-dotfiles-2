@@ -1,0 +1,37 @@
+[Unit]
+Description=Obsidian Sync (headless, continuous)
+Documentation=https://obsidian.md/help/sync/headless
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Call `node` EXPLICITLY with cli.js -- do not use the `ob` wrapper here.
+# `ob` is a symlink to cli.js, whose shebang is `#!/usr/bin/env node`. An absolute path to
+# `ob` therefore pins the SCRIPT but not the INTERPRETER: env resolves `node` from PATH,
+# and systemd's PATH (/usr/local/bin:/usr/bin) finds Arch's system node, not nvm's.
+# That mismatch crash-loops the service -- better-sqlite3 is built for nvm's v24.15.0
+# (NODE_MODULE_VERSION 137); system node v26 wants 147 and aborts with ERR_DLOPEN_FAILED.
+ExecStart=/home/ben/.nvm/versions/node/v24.15.0/bin/node \
+    /home/ben/.nvm/versions/node/v24.15.0/lib/node_modules/obsidian-headless/cli.js \
+    sync --path /home/ben/BRAIN --continuous
+
+# Belt and braces: also put nvm's node first on PATH so any child process this spawns
+# resolves the same interpreter.
+Environment=PATH=/home/ben/.nvm/versions/node/v24.15.0/bin:/usr/local/bin:/usr/bin
+
+# REQUIRED. `ob` resolves its credential/vault store to $XDG_CONFIG_HOME/obsidian-headless
+# on Linux, falling back to ~/.config when unset. This machine sets
+# XDG_CONFIG_HOME=$HOME/.configure in ~/.zshrc, so `ob login` writes to
+# ~/.configure/obsidian-headless/ -- but the systemd user manager does NOT inherit it.
+# Without this line the daemon reads ~/.config/obsidian-headless/, finds no credentials,
+# and fails. (Unrelated to the unit file's own location, which is always ~/.config.)
+Environment=XDG_CONFIG_HOME=/home/ben/.configure
+Restart=on-failure
+RestartSec=30
+
+# Do not run this alongside desktop Obsidian's own Sync -- the official docs
+# warn against two sync clients on the same device.
+
+[Install]
+WantedBy=default.target

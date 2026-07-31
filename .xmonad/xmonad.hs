@@ -85,7 +85,10 @@ myStartupHook = do
   -- spawnOnOnce = place on workspace + don't respawn on xmonad restart.
   -- Requires manageSpawn in manageHook (above) or the workspace is ignored.
   spawnOnOnce "9" "alacritty -e todo"   -- todo = ~/.local/bin/todo (nvim on the BRAIN index)
-  spawnOnOnce "8" "obsidian"            -- drop once the headless sync daemon is live
+  -- Obsidian dropped 2026-07-31: obsidian-sync.service now syncs ~/BRAIN headlessly,
+  -- so the desktop app no longer needs to be running. Launch it by hand when you
+  -- actually want the GUI -- but if you do, leave Sync DISABLED inside the app;
+  -- two sync clients on one device is unsupported.
   spawnOnOnce "5" "rambox"
   spawnOnOnce "4" "vivaldi"
 
