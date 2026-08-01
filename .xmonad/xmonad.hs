@@ -45,9 +45,10 @@ myManageHook
 
 printscreenFlameshot = ((noModMask, xK_Print), spawn "flameshot gui")
 modKKeypass = ((winSuperMask .|. shiftMask, xK_k), spawn "keepassxc")
--- unfortunately pacmixer went out of sync with libgnustep
--- modKVolume = ((winSuperMask, xK_v), spawn  "alacritty --command pacmixer")
-modKVolume = ((winSuperMask, xK_v), spawn  "pavucontrol")
+-- pacmixer's libgnustep breakage is fixed as of 0.6.4-2 -- verified 2026-07-31, it
+-- links against libgnustep-base.so.1.31 and enumerates PulseAudio devices fine.
+-- (pavucontrol was the stopgap, and was never actually installed on this box.)
+modKVolume = ((winSuperMask, xK_v), spawn  "alacritty --command pacmixer")
 modKWally = ((winSuperMask .|. shiftMask, xK_w), spawn  "wally")
 modKEmoji = ((winSuperMask .|. shiftMask, xK_m), spawn "bemoji")
 
@@ -91,4 +92,10 @@ myStartupHook = do
   -- two sync clients on one device is unsupported.
   spawnOnOnce "5" "rambox"
   spawnOnOnce "4" "vivaldi"
+  -- herdr = terminal multiplexer / workspace manager for coding agents.
+  -- NOTE: ~/.local/bin/herdr is a self-distributed binary that updates itself
+  -- (`herdr update`). It is NOT tracked here and NOT installed by pacman/AUR, so
+  -- arch-bootstrap installs it in stage 25 -- otherwise this line fails at login
+  -- with "command not found" on a rebuilt machine, the way `todo` would have.
+  spawnOnOnce "2" "alacritty -e herdr"
 
