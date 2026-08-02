@@ -1,8 +1,42 @@
 # this lives in ~/.zshrc
-# If you come from bash you might have to change your $PATH.
+
+# Keep PATH deduplicated. zsh ties the `path` array to the `PATH` string; -U makes
+# it a unique set, dropping later duplicates and keeping the FIRST occurrence, so
+# search precedence is preserved. Set before the sources below so that whatever
+# they add is deduplicated too.
+#
+# This is load-bearing, not tidiness. The previous single-line PATH interpolated
+# $PATH into itself twice, and .zshrc is re-read by every interactive shell, so
+# each nested shell doubled the list. The long-running herdr server had ended up
+# with the same entries repeated a dozen times. Fixed 2026-08-02; see
+# station-maintenance, beast-arch.
+typeset -U path PATH
+
 source /etc/profile
 source ~/.bash_profile
-export PATH=$HOME/bin:/usr/local/bin:$PATH:/bin:/usr/bin:/usr/local/bin:${PATH}:/$HOME/.local/bin:$HOME/.cabal/config:$HOME/.zshscripts:$HOME/.nvm:/snap/bin:$HOME/.stack:$HOME/go/bin:$HOME/.cargo/bin:/home/ben/.nvm/versions/node/v10.16.3:$HOME/Projects/juspay/euler-test/scripts:$HOME/Projects/juspay/euler-tools/scripts:$HOME/Projects/Juspay/euler-tools/scripts:/home/ben/moonlander:/nix:/usr/lib/nix:/etc/nix:/home/ben/.cargo/bin:/home/ben/.local/share/gem/ruby/3.4.0/bin
+
+# Prepended to whatever /etc/profile and ~/.bash_profile establish.
+#
+# Removed 2026-08-02 -- verified not to exist on this machine:
+#   ~/.cabal/config (a file, not a directory)  ~/.zshscripts   /snap/bin
+#   ~/.nvm/versions/node/v10.16.3              /usr/lib/nix    ~/moonlander
+#   ~/Projects/juspay/euler-test/scripts       ~/Projects/{j,J}uspay/euler-tools/scripts
+#
+# Also removed -- these exist but hold no executables meant to be run by bare name:
+#   /nix, /etc/nix, ~/.stack, and ~/.nvm (nvm is used through the shell function
+#   sourced further down; only ~/.nvm/nvm-exec was ever reachable this way).
+#
+# ~/.cargo/bin is kept although it does not currently exist -- rustup recreates it.
+path=(
+  $HOME/bin
+  $HOME/.local/bin
+  $HOME/.cargo/bin
+  $HOME/go/bin
+  $HOME/.local/share/gem/ruby/3.4.0/bin
+  /usr/local/bin
+  $path
+)
+export PATH
 
 export GEM_HOME="$HOME/.ruby"
 
@@ -179,6 +213,9 @@ alias localec="LC_ALL='C'"
 alias localen="LC_ALL='en_US.UTF-8'"
 alias dot="/usr/bin/git --git-dir=$HOME/.dot/ --work-tree=$HOME"
 alias dotadd="dot add -u"
+# `system status` / `system push` across every system repo -- see
+# ~/projects/station-maintenance/REPOS.md. Pushes need a real terminal.
+alias system="$HOME/projects/station-maintenance/bin/system"
 alias cronlog="cat ~/Desktop/cronlog"
 alias vifmrc="nvim ~/.configure/vifm/vifmrc"
 alias todo="cd ~/BRAIN/ && nvim './000-index.md'"
