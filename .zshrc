@@ -50,6 +50,18 @@ compinit
 export XDG_CONFIG_HOME=$HOME/.configure
 export XDG_CACHE_HOME=$HOME/.cache
 
+# Point every shell at the one systemd-managed ssh-agent
+# (`systemctl --user enable --now ssh-agent.socket`, enabled 2026-08-02).
+# Combined with `AddKeysToAgent 8h` in ~/.ssh/config this means the key
+# passphrase is typed once per working day instead of once per push, and every
+# terminal shares the same unlocked agent.
+#
+# Guarded, so an agent inherited from elsewhere still wins -- notably a
+# forwarded agent over `ssh -A`, which must not be shadowed by the local one.
+if [[ -z ${SSH_AUTH_SOCK:-} && -S ${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket ]]; then
+  export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket"
+fi
+
 export EDITOR=/bin/nvim
 export BROWSER=/usr/bin/vivaldi-stable
 
