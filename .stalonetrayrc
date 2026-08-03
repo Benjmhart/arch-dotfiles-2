@@ -1,16 +1,25 @@
 decorations none
 transparent false
 dockapp_mode none
-geometry 8x1-2000+0
-max_geometry 9x1-1000+0
+# Top edge of the LEFT monitor (HDMI-A-0, 1920x1080 at +0+0), sitting on top of xmobar.
+# Absolute +x+y, not the old -2000+0: a negative offset is measured from the right edge of
+# the whole 3000x1920 X screen, which moves whenever the monitor layout changes.
+# 1660 leaves ~18px of clearance before xmobar's right-aligned clock (~1808-1920).
+# Move the tray by changing 1660 alone; +1 centres the 15px icons in the 17px bar.
+geometry 8x1+1660+1
+max_geometry 9x1+1660+1
 background "#000000"
 kludges fix_window_pos
 grow_gravity NE
 icon_gravity NE
 icon_size 15
 sticky true
-#window_strut none
+# No strut: the tray deliberately overlaps xmobar rather than reserving its own 15px,
+# which would make xmonad's avoidStruts push every window down a second time.
+window_strut none
 window_type dock
-window_layer bottom
+# top, not bottom: xmobar is also a dock at y=0, so `bottom` left the tray drawn
+# underneath it and therefore invisible.
+window_layer top
 #no_shrink false
 skip_taskbar true

@@ -3,12 +3,22 @@
 set -o errexit
 set -o nounset
 
+# The stalonetray kill-and-relaunch pair that used to live here is gone (2026-08-03).
+# It could never work: the relaunch read
+#     nohup stalonetray --config ~/.stalonetrayrc 2>&1 /dev/null &
+# where `2>&1 /dev/null` is a typo for `>/dev/null 2>&1`, so /dev/null was passed to
+# stalonetray as a positional argument. It rejects that with
+#     unknown command line option "/dev/null"
+# and exits 255 -- silently, because the command is backgrounded and errexit does not
+# see it. Every run of this script therefore killed the tray that xmonad's
+# `spawnOnce "stalonetray &"` had started at login and left nothing in its place, and
+# spawnOnce will not respawn it. Introduced in 8165df0 (2020-07-31); never worked.
+#
+# Nothing replaces it: xmonad owns tray startup. If the tray ever needs to come up
+# after the monitor layout again, fix the ordering at login instead of restarting it
+# here -- see beast-arch task 14.
 main() {
-  if pgrep stalonetray ; then
-    killall stalonetray
-  fi
   bash ~/.screenlayout/double.sh
-  nohup stalonetray --config ~/.stalonetrayrc 2>&1 /dev/null &
   nitrogen --set-scaled --random ~/dotfiles/bg &
 }
 
