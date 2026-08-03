@@ -2,13 +2,20 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        , bgColor = "black"
        , fgColor = "grey"
        , position = Top
-       , commands = 
+       , commands =
          [ Run Date "%a %b %_d %l:%M" "date" 10
+         -- Locks prints CAPS / NUM / SCROLL only while that lock is ON, and nothing
+         -- otherwise, so the bar stays quiet until it has something to say.
+         , Run Locks
          , Run StdinReader
          ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ <fc=#ee9a00>%date%</fc>"
+       -- %locks% goes in the CENTRE section (between } and {), deliberately.
+       -- Putting it in the right section next to the clock would push the clock
+       -- leftwards every time CAPS appears, into the stalonetray icons that now sit
+       -- at x 1660-1788. The centre is empty, fixed, and hard to miss.
+       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#ee9a00>%date%</fc>"
        }
        -- wishlist
        -- 1) clickable workspaces
