@@ -1,0 +1,9 @@
+# beast-arch task 29 — added 2026-08-03.
+# Section is [mgr]; it was [manager] in older yazi, and a stale example using the
+# old name parses as an unknown table rather than erroring loudly.
+[mgr]
+sort_by        = "mtime"    # last modified time
+sort_reverse   = true       # newest first
+sort_dir_first = true       # directories stay at the top; set false to mix them into the ordering
+linemode       = "mtime"    # show the modified time beside each entry
+                            # (none | size | btime | mtime | permissions | owner)
