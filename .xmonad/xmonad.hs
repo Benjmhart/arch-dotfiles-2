@@ -6,6 +6,7 @@ import XMonad
 import XMonad.Actions.SpawnOn (spawnOn, manageSpawn)
 import XMonad.Actions.WindowGo (runOrRaise)
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Hooks.ManageDocks
 import XMonad.StackSet as W
 import XMonad.Util.Run (spawnPipe)
@@ -19,7 +20,13 @@ winSuperMask = mod4Mask
 altMask = mod3Mask
 main = do
   xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
-  xmonad $ def 
+  -- `ewmh` publishes _NET_CLIENT_LIST / _NET_ACTIVE_WINDOW / _NET_CURRENT_DESKTOP.
+  -- Without it xmonad advertises nothing, and anything that enumerates windows --
+  -- notably Zoom's "Share Screen" window picker (task 15) -- sees an empty list.
+  -- xmonad-contrib 0.16 exports `ewmh` but NOT `ewmhFullscreen`; the fullscreen
+  -- half is a separate `fullscreenEventHook` in handleEventHook, left off on
+  -- purpose so this change has one variable.
+  xmonad $ ewmh $ def
     { terminal = "alacritty"
     , manageHook = manageSpawn <+> myManageHook <+> manageDocks
     , startupHook = myStartupHook

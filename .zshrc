@@ -63,7 +63,15 @@ if [[ -z ${SSH_AUTH_SOCK:-} && -S ${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.s
 fi
 
 export EDITOR=/bin/nvim
-export BROWSER=/usr/bin/vivaldi-stable
+# Removed 2026-08-04 (beast-arch task 32): `export BROWSER=/usr/bin/vivaldi-stable`.
+# It was actively preventing Vivaldi from becoming the default browser --
+# `xdg-settings set` refuses to run at all while $BROWSER is set (exit 4), and
+# Vivaldi's "set as default" button shells out to exactly that, so the click
+# silently did nothing. It also made `xdg-settings get` report vivaldi (it reads
+# $BROWSER) while `xdg-settings check` said no (it reads the MIME handlers),
+# which is what made this hard to see.
+# The MIME database is now the single source of truth: xdg-open resolves
+# x-scheme-handler/http|https and text/html to vivaldi-stable.desktop.
 
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
