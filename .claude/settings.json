@@ -1,0 +1,34 @@
+{
+  "model": "sonnet",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/home/ben/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "/home/ben/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "bmad-planning-orchestrator@bmad-method-harness": true
+  },
+  "extraKnownMarketplaces": {
+    "bmad-method-harness": {
+      "source": {
+        "source": "github",
+        "repo": "aj-geddes/claude-code-bmad-skills"
+      }
+    }
+  },
+  "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true
+}
