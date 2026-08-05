@@ -19,7 +19,17 @@ xsetroot -solid midnightblue
 # and the wallpaper is sized for the pre-rotation layout.
 # double.sh also carries the --primary flag (task 15) -- without this line the
 # primary stays on the disconnected DisplayPort-0 until start2 runs.
-bash ~/.screenlayout/double.sh
+#
+# GUARDED BY HOSTNAME (2026-08-05). .xinitrc is tracked in the dotfiles repo and
+# travels to every machine, but double.sh names outputs that exist only here
+# (HDMI-A-0 / HDMI-A-1, second monitor rotated right). Running it elsewhere
+# would fail, or worse, half-apply a layout for hardware that is not present.
+# Read /etc/hostname rather than calling `hostname` -- the inetutils `hostname`
+# binary is NOT installed on this box (checked 2026-08-05), so a `hostname`-based
+# guard would silently never match and the layout would stop being applied here.
+if [ "$(cat /etc/hostname 2>/dev/null)" = "beast-arch" ] && [ -r "$HOME/.screenlayout/double.sh" ]; then
+  sh "$HOME/.screenlayout/double.sh"
+fi
 
 # Set background image with feh
 # feh --bg-scale ~/dotfiles/bg/valley.jpg &

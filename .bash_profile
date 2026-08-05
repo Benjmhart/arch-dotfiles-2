@@ -5,7 +5,10 @@
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 export PATH=$PATH:~/go/bin
 export EDITOR=nvim
-export TERMINAL=konsole
+# Changed 2026-08-04 (beast-arch task 32): was `konsole`, which is not installed
+# on this machine. The terminal here is alacritty -- xmonad's `terminal` setting,
+# .xinitrc and every startup hook all use it.
+export TERMINAL=alacritty
 # Removed 2026-08-04 (beast-arch task 32): `export BROWSER=firefox`.
 # This was the SECOND setter -- .zshrc sources this file at line 16 and then
 # re-exported BROWSER at line 66, so vivaldi only won by running later. Any
