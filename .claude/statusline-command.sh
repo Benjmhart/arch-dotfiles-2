@@ -11,50 +11,38 @@ statusline recipe in the wild pipes through jq; all of them would fail silently
 here, because Claude Code renders a failing statusline command as an empty line
 rather than an error. python3 is in the base install and needs no dependency.
 
-Every field below is optional in the contract except session_id/model/workspace,
-so each one is guarded. A KeyError here costs a blank status bar, not a crash.
+Every field read below is optional in the contract, so each one is guarded. A
+KeyError here costs a blank status bar, not a crash -- Claude Code renders a
+failing statusline command as an empty line and says nothing.
+
+Shows, left to right: vim mode, model, context remaining, reasoning effort,
+subscription limits. Working directory and git branch were dropped 2026-08-05.
 """
 
 import json
-import os
-import subprocess
 import sys
 
 # --- ANSI ------------------------------------------------------------------
 DIM = "\033[2m"
 RESET = "\033[0m"
+BOLD = "\033[1m"
 CYAN = "\033[36m"
 GREEN = "\033[32m"
 YELLOW = "\033[33m"
 RED = "\033[31m"
+MAGENTA = "\033[35m"
 SEP = f"{DIM} · {RESET}"
 
-
-def git_info(cwd):
-    """(branch, dirty) for cwd, or (None, False) if not a repo / git is slow.
-
-    --no-optional-locks keeps a status line that renders on every keystroke from
-    fighting a real git command for the index lock.
-    """
-    def run(args):
-        return subprocess.run(
-            ["git", "--no-optional-locks", "-C", cwd] + args,
-            capture_output=True, text=True, timeout=1,
-        )
-
-    try:
-        p = run(["rev-parse", "--abbrev-ref", "HEAD"])
-        if p.returncode != 0:
-            return None, False
-        branch = p.stdout.strip()
-        # Detached HEAD prints "HEAD"; show the short sha instead.
-        if branch == "HEAD":
-            s = run(["rev-parse", "--short", "HEAD"])
-            branch = s.stdout.strip() or "detached"
-        dirty = run(["diff", "--quiet", "HEAD"]).returncode != 0
-        return branch, dirty
-    except (subprocess.TimeoutExpired, OSError):
-        return None, False
+# Vim mode -> colour. Deliberately distinct hues rather than shades: this is read
+# with peripheral vision, and "which mode am I in" is the whole point of showing it.
+# Claude Code only sends the `vim` object at all when editorMode is "vim", and it
+# defaults the value to INSERT, so an unknown mode is far more likely to be a new
+# mode name than a bug -- fall back to plain rather than dropping it.
+VIM_COLOURS = {
+    "NORMAL": GREEN,
+    "INSERT": YELLOW,
+    "VISUAL": MAGENTA,
+}
 
 
 def main():
@@ -65,24 +53,25 @@ def main():
 
     parts = []
 
+    # Vim mode FIRST. Added 2026-08-05 with editorMode="vim". It leads because it is
+    # the field that changes most often and the one a mistake is most expensive on --
+    # typing a sentence into NORMAL mode fires a scatter of one-key commands. The
+    # `vim` key is absent entirely unless editorMode is "vim", so this costs nothing
+    # and renders nothing when vim mode is off.
+    vim = (d.get("vim") or {}).get("mode")
+    if vim:
+        parts.append(f"{VIM_COLOURS.get(vim, '')}{BOLD}{vim}{RESET}")
+
     # Model.
     model = (d.get("model") or {}).get("display_name")
     if model:
         parts.append(f"{CYAN}{model}{RESET}")
 
-    # Working directory, as a basename -- the full path is already in the prompt.
-    ws = d.get("workspace") or {}
-    cwd = ws.get("current_dir") or d.get("cwd") or ""
-    if cwd:
-        parts.append(os.path.basename(cwd.rstrip("/")) or cwd)
-
-    # Git branch. Worktree name wins if we are in one, since that is the thing
-    # that is easy to forget you are inside.
-    wt = (d.get("worktree") or {}).get("name") or ws.get("git_worktree")
-    branch, dirty = git_info(cwd) if cwd else (None, False)
-    if branch:
-        label = f"{wt}:{branch}" if wt else branch
-        parts.append(f"{GREEN}{label}{'*' if dirty else ''}{RESET}")
+    # Removed 2026-08-05 at Ben's request: working directory and git branch. Both are
+    # already visible elsewhere -- the shell prompt carries the path, and the branch is
+    # a `git status` away. Dropping the branch also removes the only subprocess this
+    # script ran, so the status line no longer forks two `git` processes on a line that
+    # re-renders on every keystroke.
 
     # Context remaining. Explicit `is not None` -- 0 is a real, and alarming, value.
     ctx = d.get("context_window") or {}
@@ -110,11 +99,6 @@ def main():
         )
         colour = RED if worst >= 90 else YELLOW if worst >= 75 else DIM
         parts.append(f"{colour}{' '.join(bits)}{RESET}")
-
-    # Vim mode, only when vim mode is on.
-    vim = (d.get("vim") or {}).get("mode")
-    if vim:
-        parts.append(f"{YELLOW}{vim}{RESET}")
 
     sys.stdout.write(SEP.join(parts))
 

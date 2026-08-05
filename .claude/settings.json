@@ -1,5 +1,6 @@
 {
   "model": "sonnet",
+  "editorMode": "vim",
   "hooks": {
     "SessionStart": [
       {
