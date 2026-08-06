@@ -1,6 +1,5 @@
 {
-  "model": "sonnet",
-  "editorMode": "vim",
+  "model": "opus[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -31,5 +30,6 @@
     }
   },
   "tui": "fullscreen",
-  "skipWorkflowUsageWarning": true
+  "skipWorkflowUsageWarning": true,
+  "editorMode": "vim"
 }
