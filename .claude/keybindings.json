@@ -1,6 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-keybindings.json",
   "$docs": "https://code.claude.com/docs/en/keybindings",
+  "_comment": "PROBE, 2026-08-08, beast-arch task 28. ctrl+up/ctrl+down are temporarily bound to unmistakable toggles to find out whether (a) this file loads at all and (b) ctrl+arrows are decoded. Revert to scroll bindings once answered.",
   "bindings": [
     {
       "context": "Chat",
@@ -14,22 +15,9 @@
     {
       "context": "Global",
       "bindings": {
-        "ctrl+up": null,
-        "ctrl+down": null
-      }
-    },
-    {
-      "context": "Scroll",
-      "bindings": {
-        "ctrl+up": "scroll:pageUp",
-        "ctrl+down": "scroll:pageDown"
-      }
-    },
-    {
-      "context": "Transcript",
-      "bindings": {
-        "ctrl+up": "scroll:fullPageUp",
-        "ctrl+down": "scroll:fullPageDown"
+        "ctrl+up": "app:toggleTranscript",
+        "ctrl+down": "app:toggleTodos",
+        "alt+j": "app:toggleTranscript"
       }
     }
   ]
