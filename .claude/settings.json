@@ -31,5 +31,8 @@
   },
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
-  "editorMode": "vim"
+  "editorMode": "vim",
+  "permissions": {
+    "defaultMode": "auto"
+  }
 }
