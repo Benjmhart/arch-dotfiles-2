@@ -1,6 +1,12 @@
 Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        , bgColor = "black"
        , fgColor = "grey"
+       -- Deliberately NOT `OnScreen n`: this one config is shared by TWO xmobar
+       -- processes, one per monitor, and each is pointed at its screen with `-x N`
+       -- on the command line in ~/.xmonad/xmonad.hs. Hardcoding OnScreen here would
+       -- fight the flag. `Top` means "top of whichever screen -x selected".
+       -- 2026-08-07: briefly was `OnScreen 1 Top` (single bar on the vertical
+       -- monitor) before Ben clarified he wanted a bar on both.
        , position = Top
        , commands =
          [ Run Date "%a %b %_d %l:%M" "date" 10
@@ -13,8 +19,15 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        , alignSep = "}{"
        -- %locks% goes in the CENTRE section (between } and {), deliberately.
        -- Putting it in the right section next to the clock would push the clock
-       -- leftwards every time CAPS appears, into the stalonetray icons that now sit
-       -- at x 1660-1788. The centre is empty, fixed, and hard to miss.
+       -- leftwards every time CAPS appears, into the stalonetray icons that sit
+       -- at x 1660-1788 on the LEFT monitor. The centre is empty, fixed, and hard
+       -- to miss.
+       --
+       -- Note this config now drives two bars of DIFFERENT widths -- 1920px on
+       -- HDMI-A-0, 1080px on the vertical HDMI-A-1. The tray only overlaps the
+       -- left one. Anything tuned by pixel offset here is tuned for the wide bar
+       -- and is tighter on the narrow one; `shorten 50` on ppTitle is the most
+       -- likely thing to look cramped on the vertical monitor.
        , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#ee9a00>%date%</fc>"
        }
        -- wishlist

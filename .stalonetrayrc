@@ -6,6 +6,10 @@ dockapp_mode none
 # the whole 3000x1920 X screen, which moves whenever the monitor layout changes.
 # 1660 leaves ~18px of clearance before xmobar's right-aligned clock (~1808-1920).
 # Move the tray by changing 1660 alone; +1 centres the 15px icons in the 17px bar.
+#
+# 2026-08-07: briefly moved to +2740+1 to follow xmobar onto the vertical monitor, then
+# put back when Ben clarified he wanted xmobar on BOTH screens with the tray where it was.
+# There are now two bars; the tray belongs to the left one. Restored value, not a new guess.
 geometry 8x1+1660+1
 max_geometry 9x1+1660+1
 background "#000000"

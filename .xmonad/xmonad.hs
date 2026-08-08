@@ -19,7 +19,17 @@ import GHC.Word (Word64)
 winSuperMask = mod4Mask
 altMask = mod3Mask
 main = do
-  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmobarrc"
+  -- One xmobar per monitor, 2026-08-07. `-x N` is a Xinerama index, taken from
+  -- `xrandr --listmonitors`: 0 = HDMI-A-0 (1920x1080, left), 1 = HDMI-A-1 (the
+  -- vertical 1080x1920). Both read the same ~/.xmobarrc, which therefore says
+  -- `position = Top` rather than `OnScreen n` -- otherwise the config would
+  -- override the flag and both bars would land on the same screen.
+  --
+  -- The index is positional: if the monitor layout is ever reordered, this points
+  -- at the wrong screen silently rather than failing. If a monitor is absent, that
+  -- bar simply has nowhere to draw -- it does not take the other one down.
+  xmproc0 <- spawnPipe "/usr/bin/xmobar -x 0 ~/.xmobarrc"
+  xmproc1 <- spawnPipe "/usr/bin/xmobar -x 1 ~/.xmobarrc"
   -- `ewmh` publishes _NET_CLIENT_LIST / _NET_ACTIVE_WINDOW / _NET_CURRENT_DESKTOP.
   -- Without it xmonad advertises nothing, and anything that enumerates windows --
   -- notably Zoom's "Share Screen" window picker (task 15) -- sees an empty list.
@@ -31,8 +41,10 @@ main = do
     , manageHook = manageSpawn <+> myManageHook <+> manageDocks
     , startupHook = myStartupHook
     , layoutHook = avoidStruts $ layoutHook def
-    , logHook = dynamicLogWithPP xmobarPP 
-      { ppOutput = hPutStrLn xmproc
+    , logHook = dynamicLogWithPP xmobarPP
+      -- Same line to both bars. Each xmobar owns its own stdin, so one write per
+      -- process is required -- writing once would leave the second bar blank.
+      { ppOutput = \s -> hPutStrLn xmproc0 s >> hPutStrLn xmproc1 s
       , ppTitle = xmobarColor "green" "" . shorten 50
       }
     , handleEventHook = handleEventHook def <+> docksEventHook
