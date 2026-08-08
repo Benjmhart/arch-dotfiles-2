@@ -10,6 +10,27 @@
         "shift+enter": "chat:submit",
         "ctrl+enter": "chat:submit"
       }
+    },
+    {
+      "context": "Global",
+      "bindings": {
+        "ctrl+up": null,
+        "ctrl+down": null
+      }
+    },
+    {
+      "context": "Scroll",
+      "bindings": {
+        "ctrl+up": "scroll:pageUp",
+        "ctrl+down": "scroll:pageDown"
+      }
+    },
+    {
+      "context": "Transcript",
+      "bindings": {
+        "ctrl+up": "scroll:fullPageUp",
+        "ctrl+down": "scroll:fullPageDown"
+      }
     }
   ]
 }
