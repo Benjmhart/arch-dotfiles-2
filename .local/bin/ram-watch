@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+"""
+ram-watch — report the beast-arch task 1 memory verification signals.
+
+WHY THIS EXISTS
+  The original watch counted only `journalctl -k | grep -c "BUG: Bad page"`. That
+  is a *logged* failure mode. On 2026-08-11 the machine hard-locked, wrote
+  nothing at all, and the counter stayed at zero for the whole week — so a clean
+  count was reported for a window containing a lock-up. A counter that cannot
+  see the failure that happened is the wrong instrument.
+
+  This adds the signal that was missing: whether each boot ENDED CLEANLY. A
+  clean shutdown's last journal line is systemd-journald's "Journal stopped".
+  The 2026-08-11 lock-up boot ends on an unrelated userspace message instead.
+  That discriminator was verified against three real boots before being relied
+  on here.
+
+  Pair this with SyncIntervalSec=10s in /etc/systemd/journald.conf.d/sync.conf.
+  journald's 5-minute default meant up to five minutes of kernel log sat
+  unflushed in the page cache and died with the freeze, which is why the
+  2026-08-11 event left a void rather than a trace.
+
+USAGE
+  ram-watch                 report the current window
+  ram-watch --restart       start a new window from now (use after a lock-up)
+  ram-watch --since DATE    ad-hoc window, e.g. --since 2026-08-04
+
+CAVEAT THAT DOES NOT GO AWAY
+  A quiet window is not proof the RAM is good. It is proof that these signals
+  stayed quiet. EDAC cannot help here: this box is non-ECC DDR4 and
+  `modprobe ie31200_edac` returns "No such device" (verified 2026-08-11), so
+  there is no corrected-error counter and never will be. The active test is an
+  overnight memtest86+, which is what actually found the bad DIMM.
+"""
+import argparse
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime, timedelta
+
+STATE = os.path.expanduser("~/.local/share/ram-watch/start")
+# The boot on which memmap= was removed — the original window's start.
+DEFAULT_START = "2026-08-04 12:57:42"
+
+FAULT_PATTERNS = [
+    ("bad-page", "BUG: Bad page"),
+    ("bad-pte", "bad pte"),
+    ("oops", "Oops"),
+    ("gpf", "general protection fault"),
+    ("kernel-bug", "kernel BUG at"),
+    ("mce", "Hardware Error"),
+]
+
+
+def run(cmd):
+    return subprocess.run(cmd, capture_output=True, text=True).stdout
+
+
+def window_start(args):
+    if args.since:
+        return datetime.strptime(args.since[:19].ljust(19, "0")
+                                 if len(args.since) > 10 else args.since + " 00:00:00",
+                                 "%Y-%m-%d %H:%M:%S")
+    if os.path.exists(STATE):
+        with open(STATE) as fh:
+            return datetime.strptime(fh.read().strip()[:19], "%Y-%m-%d %H:%M:%S")
+    return datetime.strptime(DEFAULT_START, "%Y-%m-%d %H:%M:%S")
+
+
+def main():
+    ap = argparse.ArgumentParser(add_help=True)
+    ap.add_argument("--restart", action="store_true",
+                    help="begin a new watch window from now")
+    ap.add_argument("--since", help="ad-hoc window start, YYYY-MM-DD[ HH:MM:SS]")
+    args = ap.parse_args()
+
+    if args.restart:
+        os.makedirs(os.path.dirname(STATE), exist_ok=True)
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(STATE, "w") as fh:
+            fh.write(now + "\n")
+        print(f"watch window restarted at {now}")
+        return 0
+
+    start = window_start(args)
+    boots = json.loads(run(["journalctl", "--list-boots", "-o", "json"]) or "[]")
+    boots = [b for b in boots
+             if datetime.fromtimestamp(b["last_entry"] / 1e6) >= start]
+    if not boots:
+        print("no boots in window", file=sys.stderr)
+        return 2
+
+    print(f"window start : {start:%Y-%m-%d %H:%M:%S}")
+    print(f"now          : {datetime.now():%Y-%m-%d %H:%M:%S}")
+    elapsed = datetime.now() - start
+    print(f"elapsed      : {elapsed.days}d {elapsed.seconds // 3600}h "
+          f"across {len(boots)} boot(s)\n")
+
+    hdr = f"{'boot':>5}  {'ended':<19}  {'shutdown':<9}  faults"
+    print(hdr)
+    print("-" * len(hdr))
+
+    unclean, fault_total = [], 0
+    for b in boots:
+        idx = b["index"]
+        ended = datetime.fromtimestamp(b["last_entry"] / 1e6)
+        log = run(["journalctl", "-b", str(idx), "--no-pager", "-o", "short"])
+        last = log.strip().rsplit("\n", 1)[-1] if log.strip() else ""
+
+        if idx == 0:
+            state = "running"
+        elif "Journal stopped" in last:
+            state = "clean"
+        else:
+            state = "UNCLEAN"
+            unclean.append((idx, ended, last[:70]))
+
+        klog = run(["journalctl", "-k", "-b", str(idx), "--no-pager"])
+        hits = [f"{name}={klog.count(pat)}"
+                for name, pat in FAULT_PATTERNS if klog.count(pat)]
+        fault_total += sum(klog.count(p) for _, p in FAULT_PATTERNS)
+
+        print(f"{idx:>5}  {ended:%Y-%m-%d %H:%M:%S}  {state:<9}  "
+              f"{', '.join(hits) if hits else '-'}")
+
+    print()
+    for idx, ended, last in unclean:
+        print(f"UNCLEAN boot {idx} ended {ended:%Y-%m-%d %H:%M:%S}")
+        print(f"  last journal line: {last}")
+
+    print()
+    if unclean or fault_total:
+        print(f"VERDICT: NOT CLEAN — {len(unclean)} unclean shutdown(s), "
+              f"{fault_total} kernel fault event(s).")
+        print("The window does not pass. Record it and restart with --restart.")
+        return 1
+    if elapsed >= timedelta(days=7):
+        print("VERDICT: window completed with both signals quiet.")
+        print("This is NOT proof the RAM is good — only that these signals stayed")
+        print("quiet. The active test is an overnight memtest86+.")
+        return 0
+    print(f"VERDICT: still running — {(timedelta(days=7) - elapsed).days + 1} day(s) to go. "
+          "Not evidence yet.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
