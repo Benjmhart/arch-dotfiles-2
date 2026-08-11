@@ -35,6 +35,24 @@ fi
 # feh --bg-scale ~/dotfiles/bg/valley.jpg &
 nitrogen --set-scaled --random ~/dotfiles/bg
 
+# Japanese input (fcitx5 + mozc). Guarded like the monitor block above: this
+# file travels in the dotfiles repo, and on a machine without fcitx5 the env
+# vars would make GTK/Qt apps hunt for a missing input module.
+# Exports must happen BEFORE any app launches below (and before exec xmonad) --
+# apps read *_IM_MODULE/XMODIFIERS only at startup.
+if command -v fcitx5 >/dev/null 2>&1; then
+  export GTK_IM_MODULE=fcitx
+  export QT_IM_MODULE=fcitx
+  export XMODIFIERS=@im=fcitx
+  # XDG_CONFIG_HOME is set by .zshrc (line 50), which this file never sources,
+  # so fcitx5 started here would read ~/.config/fcitx5 -- an empty path -- and
+  # silently fall back to stock defaults: no mozc in the group, Ctrl+space
+  # trigger, and typing that stays romaji. Set it for fcitx5 ONLY; exporting it
+  # session-wide would repoint every other app launched below at a different
+  # config tree.
+  XDG_CONFIG_HOME="$HOME/.configure" fcitx5 -d
+fi
+
 #screensaver -no-splash &
 nm-applet --sm-disable &
 picom &
@@ -42,7 +60,29 @@ flameshot &
 cbatticon &
 udiskie & 
 clipmenud &
-volumeicon & 
+volumeicon &
+
+# Handy (dictation, mod4+s) and Meetily (meeting transcription). Added 2026-08-11.
+#
+# WHY THESE ARE HERE AND NOT LEFT TO XDG AUTOSTART. Handy ships
+# ~/.config/autostart/Handy.desktop, and systemd does generate
+# app-Handy@autostart.service from it -- but that unit is only pulled in by
+# xdg-desktop-autostart.target, which nothing on this box ever starts: .xinitrc
+# execs xmonad directly, with no desktop environment to activate the target.
+# Verified 2026-08-11 after a reboot: the target and the unit were both
+# `inactive`, WantedBy was empty, and neither app was running. Handy had been
+# started by hand every session without anyone noticing. This file is already
+# the de-facto autostart mechanism here, so it is where they belong.
+#
+# Guarded by path, like the fcitx5 and monitor blocks above -- .xinitrc travels
+# in the dotfiles repo and neither binary exists on other machines.
+[ -x /usr/bin/handy ] && /usr/bin/handy &
+
+# Meetily writes recordings to ./meetily-recordings, RELATIVE TO ITS CWD. It was
+# once launched from a repo checkout and dropped recordings inside that repo, so
+# the cd is load-bearing, not decorative. Subshell so it does not move the cwd
+# for anything else started from this file.
+[ -x "$HOME/.local/bin/meetily" ] && ( cd "$HOME" && exec "$HOME/.local/bin/meetily" ) &
 
 # Task 27: Caps Lock becomes an additional Escape.
 # MUST run BEFORE `xmodmap` below -- setxkbmap reloads the whole keymap from XKB
