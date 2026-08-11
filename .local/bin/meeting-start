@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+#
+# meeting-start — one dmenu entry that makes Meetily ready to record a call.
+#
+# Does three things, each idempotent so it is safe to run again mid-meeting:
+#   1. brings up the mic + system-audio mix (see meeting-audio)
+#   2. starts the watcher that moves Meetily's capture stream onto that mix
+#   3. launches Meetily, or re-shows its window if it is already in the tray
+#
+# Launched from dmenu there is no terminal, so everything is logged to
+# ~/.local/share/com.meetily.ai/meeting-start.log rather than printed.
+#
+# Tear down afterwards with `meeting-stop`. The mix runs two loopback modules
+# and the watcher polls every 2s, so it is not meant to be left up permanently —
+# and that combination was live when the machine locked up on 2026-08-11, which
+# is why none of this is in .xinitrc.
+#
+set -uo pipefail
+
+LOG="$HOME/.local/share/com.meetily.ai/meeting-start.log"
+mkdir -p "$(dirname "$LOG")"
+exec >>"$LOG" 2>&1
+
+: "${DISPLAY:=:0}"
+export DISPLAY
+
+MEETILY="$HOME/.local/bin/meetily"
+PATTERN=meetily
+
+log() { printf '%s  %s\n' "$(date '+%F %T')" "$*"; }
+
+# Only notify if something actually owns the notification bus name. With no
+# daemon registered, notify-send blocks on a DBus timeout instead of failing.
+notify() {
+    if busctl --user list 2>/dev/null | grep -q org.freedesktop.Notifications; then
+        notify-send -a meeting-start "$1" "${2:-}" 2>/dev/null || true
+    fi
+}
+
+log "=== meeting-start ==="
+
+# 1. the audio mix
+if meeting-audio is-up; then
+    log "mix: already up"
+else
+    if meeting-audio up; then
+        log "mix: brought up"
+    else
+        log "mix: FAILED to come up"
+        notify "Meeting audio failed" "meeting-audio up failed — see $LOG"
+    fi
+fi
+
+# 2. the watcher, identified by pid file rather than by `pgrep -f`, which also
+# matches shells that merely mention the string.
+WATCHPID="${XDG_RUNTIME_DIR:-/tmp}/meeting-audio.watch.pid"
+if [ -f "$WATCHPID" ] && kill -0 "$(cat "$WATCHPID" 2>/dev/null)" 2>/dev/null; then
+    log "watcher: already running (pid $(cat "$WATCHPID"))"
+else
+    setsid nohup meeting-audio watch "$PATTERN" >>"$LOG" 2>&1 </dev/null &
+    log "watcher: started for '$PATTERN'"
+fi
+
+# 3. Meetily. If it is already running, this reaches the existing instance via
+# the single-instance plugin and re-shows the window — which is what we want,
+# since closing the window only hides it to the tray.
+if [ -x "$MEETILY" ]; then
+    ( cd "$HOME" && setsid nohup "$MEETILY" >>"$HOME/.local/share/com.meetily.ai/meetily.log" 2>&1 </dev/null & )
+    if pgrep -x meetily >/dev/null; then
+        log "meetily: already running — window raise requested"
+    else
+        log "meetily: launched"
+    fi
+else
+    log "meetily: NOT FOUND at $MEETILY"
+    notify "Meetily missing" "$MEETILY is not executable"
+fi
+
+sleep 2
+log "state: mix=$(meeting-audio is-up && echo UP || echo DOWN) loopbacks=$(pactl list short modules 2>/dev/null | grep -c module-loopback) meetily=$(pgrep -x meetily >/dev/null && echo up || echo DOWN)"
+notify "Meeting audio ready" "Mix up, watching for Meetily's capture stream"

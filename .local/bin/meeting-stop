@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#
+# meeting-stop — companion to meeting-start. Stops the watcher and tears the
+# mic + system-audio mix back down, leaving Meetily running in the tray.
+#
+# Worth running when the call ends: the mix holds two loopback modules open and
+# the watcher polls every 2s. Both were live when beast-arch locked up on
+# 2026-08-11, and until that is understood they should not be left running.
+#
+set -uo pipefail
+
+LOG="$HOME/.local/share/com.meetily.ai/meeting-start.log"
+mkdir -p "$(dirname "$LOG")"
+exec >>"$LOG" 2>&1
+
+log() { printf '%s  %s\n' "$(date '+%F %T')" "$*"; }
+
+notify() {
+    if busctl --user list 2>/dev/null | grep -q org.freedesktop.Notifications; then
+        notify-send -a meeting-start "$1" "${2:-}" 2>/dev/null || true
+    fi
+}
+
+log "=== meeting-stop ==="
+
+# Kill the watcher by pid file. NOT `pkill -f "meeting-audio watch"` — that also
+# matches any shell whose command line mentions the string, and it killed a live
+# session during testing on 2026-08-11.
+WATCHPID="${XDG_RUNTIME_DIR:-/tmp}/meeting-audio.watch.pid"
+if [ -f "$WATCHPID" ] && kill -0 "$(cat "$WATCHPID" 2>/dev/null)" 2>/dev/null; then
+    pid=$(cat "$WATCHPID")
+    kill "$pid" 2>/dev/null
+    for _ in 1 2 3 4 5; do kill -0 "$pid" 2>/dev/null || break; sleep 1; done
+    kill -0 "$pid" 2>/dev/null && kill -9 "$pid" 2>/dev/null
+    rm -f "$WATCHPID"
+    log "watcher: stopped (pid $pid)"
+else
+    rm -f "$WATCHPID"
+    log "watcher: was not running"
+fi
+
+if meeting-audio is-up; then
+    meeting-audio down && log "mix: torn down" || log "mix: teardown FAILED"
+else
+    log "mix: was not up"
+fi
+
+log "state: mix=$(meeting-audio is-up && echo UP || echo DOWN) loopbacks=$(pactl list short modules 2>/dev/null | grep -c module-loopback)"
+notify "Meeting audio stopped" "Mix torn down; Meetily left running"

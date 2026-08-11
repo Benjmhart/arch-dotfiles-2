@@ -32,6 +32,7 @@ set -euo pipefail
 
 SINK_NAME=meetingmix
 STATE="${XDG_RUNTIME_DIR:-/tmp}/meeting-audio.state"
+WATCHPID="${XDG_RUNTIME_DIR:-/tmp}/meeting-audio.watch.pid"
 
 die() { printf 'meeting-audio: %s\n' "$1" >&2; exit 1; }
 
@@ -121,6 +122,16 @@ cmd_watch() {
     local pattern="${1:-}" ids id
     [ -n "$pattern" ] || { list_candidates; die "a pattern is required (e.g. 'meetily')"; }
 
+    # Record the pid so meeting-stop can kill exactly this process. `pkill -f
+    # "meeting-audio watch"` is NOT a safe substitute: it also matches any shell
+    # whose command line merely mentions the string, which killed a live session
+    # during testing on 2026-08-11.
+    if [ -f "$WATCHPID" ] && kill -0 "$(cat "$WATCHPID")" 2>/dev/null; then
+        die "a watcher is already running (pid $(cat "$WATCHPID"))"
+    fi
+    printf '%s\n' "$$" > "$WATCHPID"
+    trap 'rm -f "$WATCHPID"' EXIT INT TERM
+
     printf "watching for capture streams matching '%s' (Ctrl-C to stop)\n" "$pattern"
     while :; do
         ids=$(matching_streams "$pattern" || true)
@@ -162,13 +173,14 @@ cmd_down() {
 }
 
 case "${1:-}" in
+    is-up)  [ -f "$STATE" ] ;;   # predicate for scripts: exit 0 if the mix is up
     up)     shift; cmd_up "$@" ;;
     attach) shift; cmd_attach "${1:-}" ;;
     watch)  shift; cmd_watch "${1:-}" ;;
     status) shift; cmd_status ;;
     down)   shift; cmd_down ;;
     *) cat >&2 <<EOF
-usage: meeting-audio {up|watch <pattern>|attach <pattern>|status|down}
+usage: meeting-audio {up|watch <pattern>|attach <pattern>|status|is-up|down}
 
   up               create the mix (system audio + mic); does not touch the default source
   watch <pattern>  poll and move the named client's capture stream as soon as it appears
