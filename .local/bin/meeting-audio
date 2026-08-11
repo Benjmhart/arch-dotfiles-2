@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+#
+# meeting-audio — give an ALSA-only capture client both halves of a call.
+#
+# WHY THIS EXISTS
+#   cpal, the Rust audio library behind Meetily's Tauri frontend (and other
+#   Tauri apps), has only an ALSA host on Linux. PipeWire's .monitor sources are
+#   invisible through the ALSA bridge — `arecord -L` lists no device whose name
+#   contains "monitor" — so Meetily's system-audio matcher
+#   (frontend/src-tauri/src/audio/devices/platform/linux.rs, which selects on
+#   name.contains("monitor")) can never match. Such a client can only open ALSA
+#   `default`, i.e. the microphone: it records your half of a call and silently
+#   misses the far end.
+#
+#   The workaround is to let the client open `default`, then move its stream.
+#   Verified on beast-arch 2026-08-11: a client moved with
+#   `pactl move-source-output` captured a 440 Hz test tone at -24.1 dBFS,
+#   identical to native `pw-record --target`, i.e. full-strength system audio.
+#
+# WHAT IT DELIBERATELY DOES NOT DO
+#   It never changes the global default source. That approach also works, but it
+#   makes the browser transmit the mix — including the far end — back into the
+#   call as your microphone, and it hijacks Handy's dictation input.
+#
+# CAVEAT
+#   Everything playing to the captured sink is recorded, not just the call.
+#
+set -euo pipefail
+
+SINK_NAME=meetingmix
+STATE="${XDG_RUNTIME_DIR:-/tmp}/meeting-audio.state"
+
+die() { printf 'meeting-audio: %s\n' "$1" >&2; exit 1; }
+
+cmd_up() {
+    [ -f "$STATE" ] && die "already up (state: $STATE) — run 'meeting-audio down' first"
+    command -v pactl >/dev/null || die "pactl not found"
+
+    local sink mic
+    sink="${MEETING_SINK:-$(pactl get-default-sink)}"
+    mic="${MEETING_MIC:-$(pactl get-default-source)}"
+
+    case "$mic" in
+        "$SINK_NAME".monitor) die "default source is already $SINK_NAME.monitor — stale state?" ;;
+    esac
+    pactl list short sinks | grep -q "	${sink}	" || die "sink not found: $sink"
+
+    local null l_sys l_mic
+    null=$(pactl load-module module-null-sink \
+        sink_name="$SINK_NAME" \
+        sink_properties=device.description="Meeting mix")
+    l_sys=$(pactl load-module module-loopback \
+        source="${sink}.monitor" sink="$SINK_NAME" latency_msec=50)
+    l_mic=$(pactl load-module module-loopback \
+        source="$mic" sink="$SINK_NAME" latency_msec=50)
+
+    printf '%s\n%s\n%s\n' "$null" "$l_sys" "$l_mic" > "$STATE"
+    printf 'up: system=%s\n    mic=%s\n    capture source=%s.monitor\n' \
+        "${sink}.monitor" "$mic" "$SINK_NAME"
+    printf 'Now start the recorder, then: meeting-audio attach [pattern]\n'
+}
+
+# Move capture streams onto the mix. Our own loopbacks are excluded by module id.
+cmd_attach() {
+    [ -f "$STATE" ] || die "not up — run 'meeting-audio up' first"
+    local pattern="${1:-}" mods ids moved=0
+    mods=$(paste -sd, "$STATE")
+
+    ids=$(pactl -f json list source-outputs | jq -r --arg mods "$mods" --arg pat "$pattern" '
+        ($mods | split(",") | map(tonumber)) as $ours
+        | .[]
+        | select((.owner_module // -1 | tonumber) as $m | ($ours | index($m)) | not)
+        | select($pat == "" or
+                 ((.properties["application.name"] // "") + " " +
+                  (.properties["application.process.binary"] // "")
+                  | ascii_downcase | contains($pat | ascii_downcase)))
+        | .index')
+
+    [ -n "$ids" ] || die "no matching capture stream (is the recorder running?)"
+
+    local id
+    for id in $ids; do
+        pactl move-source-output "$id" "${SINK_NAME}.monitor"
+        printf 'moved capture stream #%s -> %s.monitor\n' "$id" "$SINK_NAME"
+        moved=$((moved + 1))
+    done
+    printf 'attached %d stream(s); global default source untouched (%s)\n' \
+        "$moved" "$(pactl get-default-source)"
+}
+
+cmd_status() {
+    if [ -f "$STATE" ]; then
+        printf 'state: UP (modules %s)\n' "$(paste -sd' ' "$STATE")"
+    else
+        printf 'state: down\n'
+    fi
+    printf 'default sink   : %s\n' "$(pactl get-default-sink)"
+    printf 'default source : %s\n' "$(pactl get-default-source)"
+    printf '\ncapture streams:\n'
+    pactl -f json list source-outputs | jq -r '
+        .[] | "  #\(.index)  source=\(.source)  \(.properties["application.name"] // "?")"'
+}
+
+cmd_down() {
+    [ -f "$STATE" ] || die "not up"
+    local m
+    # unload in reverse order: loopbacks before the sink they feed
+    while read -r m; do [ -n "$m" ] && printf '%s\n' "$m"; done < "$STATE" \
+        | tac | while read -r m; do pactl unload-module "$m" 2>/dev/null || true; done
+    rm -f "$STATE"
+    printf 'down; default source = %s\n' "$(pactl get-default-source)"
+    pactl list short sinks | grep -q "$SINK_NAME" \
+        && printf 'WARNING: %s sink still present\n' "$SINK_NAME" || true
+}
+
+case "${1:-}" in
+    up)     shift; cmd_up "$@" ;;
+    attach) shift; cmd_attach "${1:-}" ;;
+    status) shift; cmd_status ;;
+    down)   shift; cmd_down ;;
+    *) cat >&2 <<EOF
+usage: meeting-audio {up|attach [pattern]|status|down}
+
+  up      create the mix (system audio + mic) without touching the default source
+  attach  move a running recorder's capture stream onto the mix
+  status  show state, routing, and every live capture stream
+  down    tear the mix down
+
+env: MEETING_SINK (default: current default sink), MEETING_MIC (default: current default source)
+EOF
+        exit 2 ;;
+esac
