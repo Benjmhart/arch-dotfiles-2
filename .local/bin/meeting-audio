@@ -8,9 +8,9 @@
 #   invisible through the ALSA bridge — `arecord -L` lists no device whose name
 #   contains "monitor" — so Meetily's system-audio matcher
 #   (frontend/src-tauri/src/audio/devices/platform/linux.rs, which selects on
-#   name.contains("monitor")) can never match. Such a client can only open ALSA
-#   `default`, i.e. the microphone: it records your half of a call and silently
-#   misses the far end.
+#   name.contains("monitor")) can never match. Meetily then logs
+#   "Mic: None, System: None" and records ALSA `default`: the microphone alone.
+#   Your voice is transcribed, the far end is silently missing.
 #
 #   The workaround is to let the client open `default`, then move its stream.
 #   Verified on beast-arch 2026-08-11: a client moved with
@@ -18,9 +18,12 @@
 #   identical to native `pw-record --target`, i.e. full-strength system audio.
 #
 # WHAT IT DELIBERATELY DOES NOT DO
-#   It never changes the global default source. That approach also works, but it
-#   makes the browser transmit the mix — including the far end — back into the
-#   call as your microphone, and it hijacks Handy's dictation input.
+#   1. It never changes the global default source. That also works, but it makes
+#      the browser transmit the mix — far end included — back into the call as
+#      your microphone, and it hijacks Handy's dictation input.
+#   2. It never moves a capture stream you did not name. On a Zoom or Meet call,
+#      the conferencing app has its own microphone stream; moving THAT onto the
+#      mix would feed the far end back to itself. Hence the mandatory pattern.
 #
 # CAVEAT
 #   Everything playing to the captured sink is recorded, not just the call.
@@ -32,9 +35,43 @@ STATE="${XDG_RUNTIME_DIR:-/tmp}/meeting-audio.state"
 
 die() { printf 'meeting-audio: %s\n' "$1" >&2; exit 1; }
 
+require_up() { [ -f "$STATE" ] || die "not up — run 'meeting-audio up' first"; }
+
+# Index of the mix's monitor source. `.source` in pactl's JSON is a numeric
+# index, not a name, so comparisons must be numeric or nothing ever matches.
+mix_source_index() {
+    pactl list short sources | awk -v n="$SINK_NAME.monitor" '$2 == n { print $1; exit }'
+}
+
+# Print the indexes of capture streams matching $1, excluding our own loopbacks
+# and anything already sitting on the mix.
+matching_streams() {
+    local pattern="$1" mods mix
+    mods=$(paste -sd, "$STATE")
+    mix=$(mix_source_index)
+    pactl -f json list source-outputs | jq -r \
+        --arg mods "$mods" --arg pat "$pattern" --argjson mix "${mix:--1}" '
+        ($mods | split(",") | map(tonumber)) as $ours
+        | .[]
+        | select((.owner_module // -1 | tonumber) as $m | ($ours | index($m)) | not)
+        | select((.source | tonumber) != $mix)
+        | select(((.properties["application.name"] // "") + " " +
+                  (.properties["application.process.binary"] // "") + " " +
+                  (.properties["media.name"] // ""))
+                 | ascii_downcase | contains($pat | ascii_downcase))
+        | .index'
+}
+
+list_candidates() {
+    printf 'live capture streams:\n' >&2
+    pactl -f json list source-outputs | jq -r '
+        .[] | "  #\(.index)  source=\(.source)  app=\(.properties["application.name"] // "?")"' >&2
+}
+
 cmd_up() {
     [ -f "$STATE" ] && die "already up (state: $STATE) — run 'meeting-audio down' first"
     command -v pactl >/dev/null || die "pactl not found"
+    command -v jq >/dev/null || die "jq not found"
 
     local sink mic
     sink="${MEETING_SINK:-$(pactl get-default-sink)}"
@@ -57,28 +94,17 @@ cmd_up() {
     printf '%s\n%s\n%s\n' "$null" "$l_sys" "$l_mic" > "$STATE"
     printf 'up: system=%s\n    mic=%s\n    capture source=%s.monitor\n' \
         "${sink}.monitor" "$mic" "$SINK_NAME"
-    printf 'Now start the recorder, then: meeting-audio attach [pattern]\n'
+    printf "next: 'meeting-audio watch <pattern>' in another terminal, then start recording\n"
 }
 
-# Move capture streams onto the mix. Our own loopbacks are excluded by module id.
 cmd_attach() {
-    [ -f "$STATE" ] || die "not up — run 'meeting-audio up' first"
-    local pattern="${1:-}" mods ids moved=0
-    mods=$(paste -sd, "$STATE")
+    require_up
+    local pattern="${1:-}" ids moved=0 id
+    [ -n "$pattern" ] || { list_candidates; die "a pattern is required (e.g. 'meetily') — refusing to move streams you did not name"; }
 
-    ids=$(pactl -f json list source-outputs | jq -r --arg mods "$mods" --arg pat "$pattern" '
-        ($mods | split(",") | map(tonumber)) as $ours
-        | .[]
-        | select((.owner_module // -1 | tonumber) as $m | ($ours | index($m)) | not)
-        | select($pat == "" or
-                 ((.properties["application.name"] // "") + " " +
-                  (.properties["application.process.binary"] // "")
-                  | ascii_downcase | contains($pat | ascii_downcase)))
-        | .index')
+    ids=$(matching_streams "$pattern")
+    [ -n "$ids" ] || { list_candidates; die "no capture stream matching '$pattern' (is it recording yet?)"; }
 
-    [ -n "$ids" ] || die "no matching capture stream (is the recorder running?)"
-
-    local id
     for id in $ids; do
         pactl move-source-output "$id" "${SINK_NAME}.monitor"
         printf 'moved capture stream #%s -> %s.monitor\n' "$id" "$SINK_NAME"
@@ -86,6 +112,25 @@ cmd_attach() {
     done
     printf 'attached %d stream(s); global default source untouched (%s)\n' \
         "$moved" "$(pactl get-default-source)"
+}
+
+# Poll for the named client's capture stream and move it as soon as it appears.
+# Removes the timing footgun: the stream only exists once recording starts.
+cmd_watch() {
+    require_up
+    local pattern="${1:-}" ids id
+    [ -n "$pattern" ] || { list_candidates; die "a pattern is required (e.g. 'meetily')"; }
+
+    printf "watching for capture streams matching '%s' (Ctrl-C to stop)\n" "$pattern"
+    while :; do
+        ids=$(matching_streams "$pattern" || true)
+        for id in $ids; do
+            if pactl move-source-output "$id" "${SINK_NAME}.monitor" 2>/dev/null; then
+                printf '[%s] moved #%s -> %s.monitor\n' "$(date +%H:%M:%S)" "$id" "$SINK_NAME"
+            fi
+        done
+        sleep 2
+    done
 }
 
 cmd_status() {
@@ -97,34 +142,43 @@ cmd_status() {
     printf 'default sink   : %s\n' "$(pactl get-default-sink)"
     printf 'default source : %s\n' "$(pactl get-default-source)"
     printf '\ncapture streams:\n'
-    pactl -f json list source-outputs | jq -r '
-        .[] | "  #\(.index)  source=\(.source)  \(.properties["application.name"] // "?")"'
+    pactl -f json list source-outputs | jq -r \
+        --argjson mix "$(mix_source_index || echo -1)" '
+        .[] | "  #\(.index)  source=\(.source)  \(.properties["application.name"] // "?")" +
+              (if (.source | tonumber) == $mix then "   <-- on the mix" else "" end)'
 }
 
 cmd_down() {
-    [ -f "$STATE" ] || die "not up"
+    require_up
     local m
-    # unload in reverse order: loopbacks before the sink they feed
-    while read -r m; do [ -n "$m" ] && printf '%s\n' "$m"; done < "$STATE" \
-        | tac | while read -r m; do pactl unload-module "$m" 2>/dev/null || true; done
+    tac "$STATE" | while read -r m; do
+        [ -n "$m" ] && pactl unload-module "$m" 2>/dev/null || true
+    done
     rm -f "$STATE"
     printf 'down; default source = %s\n' "$(pactl get-default-source)"
-    pactl list short sinks | grep -q "$SINK_NAME" \
-        && printf 'WARNING: %s sink still present\n' "$SINK_NAME" || true
+    if pactl list short sinks | grep -q "$SINK_NAME"; then
+        printf 'WARNING: %s sink still present\n' "$SINK_NAME"
+    fi
 }
 
 case "${1:-}" in
     up)     shift; cmd_up "$@" ;;
     attach) shift; cmd_attach "${1:-}" ;;
+    watch)  shift; cmd_watch "${1:-}" ;;
     status) shift; cmd_status ;;
     down)   shift; cmd_down ;;
     *) cat >&2 <<EOF
-usage: meeting-audio {up|attach [pattern]|status|down}
+usage: meeting-audio {up|watch <pattern>|attach <pattern>|status|down}
 
-  up      create the mix (system audio + mic) without touching the default source
-  attach  move a running recorder's capture stream onto the mix
-  status  show state, routing, and every live capture stream
-  down    tear the mix down
+  up               create the mix (system audio + mic); does not touch the default source
+  watch <pattern>  poll and move the named client's capture stream as soon as it appears
+  attach <pattern> one-shot version of watch, for a client already recording
+  status           show state, routing, and every live capture stream
+  down             tear the mix down
+
+The pattern is mandatory and matched against application.name, process.binary and
+media.name. It exists so that a conferencing app's OWN microphone stream is never
+moved onto the mix — that would send the far end back into the call.
 
 env: MEETING_SINK (default: current default sink), MEETING_MIC (default: current default source)
 EOF
