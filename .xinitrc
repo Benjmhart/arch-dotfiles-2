@@ -36,7 +36,13 @@ fi
 # machine without the wallpapers repo cloned comes up with no wallpaper at all.
 # The old feh line is dropped rather than repointed; nitrogen is the setter and
 # task 14's double.sh must run BEFORE it, which it does above.
-nitrogen --set-scaled --random ~/projects/wallpapers
+#
+# zoom-fill, NOT scaled. In nitrogen "scaled" means stretch-to-fit IGNORING the
+# aspect ratio -- on this box HDMI-A-1 is rotated to 1080x1920, so a landscape
+# image was being squeezed into a portrait head and looked wrong. zoom-fill
+# preserves the aspect ratio and crops the overflow instead. Changed 2026-08-15
+# after Ben reported the desktop looking pixelated; beast-arch task 35.
+nitrogen --set-zoom-fill --random ~/projects/wallpapers
 
 # Japanese input (fcitx5 + mozc). Guarded like the monitor block above: this
 # file travels in the dotfiles repo, and on a machine without fcitx5 the env
