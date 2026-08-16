@@ -1,0 +1,17 @@
+# beast-arch task 17 -- added 2026-08-15.
+#
+# prepend_keymap, NOT keymap. A bare `keymap = [...]` REPLACES yazi's entire
+# default binding set; prepend_ merges these in front of the defaults and
+# leaves everything else alone. Section is [mgr] -- it was [manager] in older
+# yazi, and the old name parses as an unknown table rather than erroring.
+#
+# Why this exists: yazi's `d` TRASHES to ~/.local/share/Trash, which is on the
+# same filesystem as $HOME, so it frees no space and the trash grew to 18 GB
+# unnoticed. `D` is permanent delete. These give a quick way to look at the
+# trash, since yazi has no trash browser of its own.
+
+[mgr]
+prepend_keymap = [
+  { on = [ "g", "t" ], run = "cd ~/.local/share/Trash/files", desc = "Go to the trash" },
+  { on = [ "g", "d" ], run = "cd ~/Downloads",                desc = "Go to Downloads" },
+]
