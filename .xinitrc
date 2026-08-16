@@ -31,9 +31,12 @@ if [ "$(cat /etc/hostname 2>/dev/null)" = "beast-arch" ] && [ -r "$HOME/.screenl
   sh "$HOME/.screenlayout/double.sh"
 fi
 
-# Set background image with feh
-# feh --bg-scale ~/dotfiles/bg/valley.jpg &
-nitrogen --set-scaled --random ~/dotfiles/bg
+# Set the background. Wallpapers moved out of the dotfiles into their own repo
+# on 2026-08-15 (beast-arch task 35) -- this path is the live reference, and a
+# machine without the wallpapers repo cloned comes up with no wallpaper at all.
+# The old feh line is dropped rather than repointed; nitrogen is the setter and
+# task 14's double.sh must run BEFORE it, which it does above.
+nitrogen --set-scaled --random ~/projects/wallpapers
 
 # Japanese input (fcitx5 + mozc). Guarded like the monitor block above: this
 # file travels in the dotfiles repo, and on a machine without fcitx5 the env
