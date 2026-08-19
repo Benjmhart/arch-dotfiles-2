@@ -120,8 +120,13 @@ def main():
 
     start = window_start(args)
     boots = json.loads(run(["journalctl", "--list-boots", "-o", "json"]) or "[]")
+    # Always keep the running boot (index 0). Immediately after --restart its
+    # last_entry can still predate the new window start by a few seconds, and
+    # filtering it out made the tool report "no boots in window" and exit 2 on
+    # the one path where that is guaranteed to be wrong. Seen 2026-08-19.
     boots = [b for b in boots
-             if datetime.fromtimestamp(b["last_entry"] / 1e6) >= start]
+             if b["index"] == 0
+             or datetime.fromtimestamp(b["last_entry"] / 1e6) >= start]
     if not boots:
         print("no boots in window", file=sys.stderr)
         return 2
