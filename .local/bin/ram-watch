@@ -35,6 +35,7 @@ CAVEAT THAT DOES NOT GO AWAY
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timedelta
@@ -55,6 +56,40 @@ FAULT_PATTERNS = [
 
 def run(cmd):
     return subprocess.run(cmd, capture_output=True, text=True).stdout
+
+
+TS_RE = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})")
+
+
+def last_entry_by_time(boot_idx):
+    """Chronologically last journal line of a boot, and its timestamp.
+
+    NOT the textually last line. journalctl merges several journal files and
+    its default output order interleaves them rather than sorting strictly by
+    time, so the final line printed can predate other entries by minutes.
+
+    This bit hard on 2026-08-15: the textually last line was 16:19:25
+    (pipewire), the real last entry was 16:22:11, and the boot ended 16:22:19.
+    Reading the void off the printed line gave 2m54s instead of ~8s -- and void
+    size is the discriminator this whole task compares events on. Two earlier
+    figures (8 minutes for 2026-08-11, 25s for 2026-08-12) came from the same
+    unsorted method and must be re-derived.
+
+    Continuation lines of multi-line messages carry no timestamp; they are
+    skipped rather than parsed, which is why the regex is anchored.
+    """
+    best_ts, best_line, stop_ts = None, "", None
+    for line in run(["journalctl", "-b", str(boot_idx),
+                     "--no-pager", "-o", "short-iso"]).splitlines():
+        m = TS_RE.match(line)
+        if not m:
+            continue
+        ts = datetime.strptime(m.group(1), "%Y-%m-%dT%H:%M:%S")
+        if best_ts is None or ts > best_ts:
+            best_ts, best_line = ts, line
+        if "Journal stopped" in line and (stop_ts is None or ts > stop_ts):
+            stop_ts = ts
+    return best_ts, best_line, stop_ts
 
 
 def window_start(args):
@@ -105,16 +140,29 @@ def main():
     for b in boots:
         idx = b["index"]
         ended = datetime.fromtimestamp(b["last_entry"] / 1e6)
-        log = run(["journalctl", "-b", str(idx), "--no-pager", "-o", "short"])
-        last = log.strip().rsplit("\n", 1)[-1] if log.strip() else ""
+        last_ts, last, stop_ts = last_entry_by_time(idx)
+        # void: how long the machine ran past its final journal write. On a
+        # clean shutdown this is ~0; on a freeze it is the size of the hole.
+        void = (ended - last_ts) if last_ts else None
 
+        # Clean iff journald logged "Journal stopped" AT the end of the boot.
+        #
+        # Two traps, both hit for real on this box:
+        #  1. Testing only the LAST line fails on a tie -- boots -5 and -4 both
+        #     shut down cleanly with "Journal stopped" at the same second as
+        #     another line, which sorted after it. That misread two clean
+        #     reboots as lock-ups.
+        #  2. Testing whether the boot CONTAINS the string fails the other way:
+        #     a mid-boot journald restart logs it too. Boot -2 has one at
+        #     2026-08-11 15:02 and then ran on until it froze the next day.
+        # So: compare the last "Journal stopped" against the boot's end.
         if idx == 0:
             state = "running"
-        elif "Journal stopped" in last:
+        elif stop_ts is not None and abs((ended - stop_ts).total_seconds()) <= 5:
             state = "clean"
         else:
             state = "UNCLEAN"
-            unclean.append((idx, ended, last[:70]))
+            unclean.append((idx, ended, last[:70], last_ts, void))
 
         klog = run(["journalctl", "-k", "-b", str(idx), "--no-pager"])
         hits = [f"{name}={klog.count(pat)}"
@@ -125,9 +173,15 @@ def main():
               f"{', '.join(hits) if hits else '-'}")
 
     print()
-    for idx, ended, last in unclean:
+    for idx, ended, last, last_ts, void in unclean:
         print(f"UNCLEAN boot {idx} ended {ended:%Y-%m-%d %H:%M:%S}")
-        print(f"  last journal line: {last}")
+        if last_ts:
+            secs = void.total_seconds()
+            print(f"  last journal entry: {last_ts:%Y-%m-%d %H:%M:%S}  "
+                  f"(chronological, not textual)")
+            print(f"  void              : {secs:.0f}s"
+                  f"{'  <-- large; the log stops well before the machine did' if secs > 120 else ''}")
+        print(f"  last line         : {last}")
 
     print()
     if unclean or fault_total:
