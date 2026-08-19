@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""
+mem-sample — record memory pressure over time on beast-arch.
+
+WHY THIS EXISTS
+  beast-arch task 51. The box has livelocked three times (2026-08-11, 08-12,
+  08-15) and every post-mortem started blind: nothing on this machine records
+  RSS over time, so "was it memory?" could only be answered for 08-12, where
+  the kernel happened to log an OOM dump before dying. On 08-11 and 08-15 the
+  journal simply stops and there is nothing to read.
+
+  This writes a small fixed-width sample every 30s so the next event has a
+  before-picture instead of a void.
+
+WHY IT fsync()s EVERY LINE
+  This is task 1's lesson applied. journald's 5-minute default flush meant the
+  2026-08-11 lock-up took the last minutes of kernel log with it, which is why
+  /etc/systemd/journald.conf.d/sync.conf now sets SyncIntervalSec=10s. A
+  sampler whose whole job is to survive a freeze must not sit in the page
+  cache. Each sample is flushed and fsync'd; the cost is one small write per
+  30s, which is nothing next to losing the window again.
+
+WHY NOT /tmp
+  /tmp is tmpfs on this box — RAM (task 54). A memory-pressure log that lives
+  in memory disappears exactly when memory is the problem, and counts against
+  the thing being measured. Samples go to ~/.local/state/mem-sample/.
+
+CAVEAT
+  This is an INSTRUMENT, not a guard. It records; it does not act. It cannot
+  prevent a livelock and it will itself be starved during one — the last line
+  before a gap is the evidence, not a complete trace. A userspace OOM guard
+  (earlyoom/nohang, task 51 item 1) is the thing that acts, and is still not
+  installed.
+
+  It also cannot protect itself: lowering its own OOM score needs
+  CAP_SYS_RESOURCE, which a user unit does not have.
+
+USAGE
+  mem-sample              write one sample
+  mem-sample --report     summarise today, worst-first
+  mem-sample --prune N    delete logs older than N days (default 14)
+"""
+import argparse
+import os
+import sys
+import time
+from datetime import datetime, timedelta
+from pathlib import Path
+
+STATE = Path.home() / ".local/state/mem-sample"
+TOP_N = 5
+
+
+def meminfo():
+    d = {}
+    with open("/proc/meminfo") as fh:
+        for line in fh:
+            k, _, v = line.partition(":")
+            d[k] = int(v.split()[0])  # kB
+    return d
+
+
+def top_rss(n):
+    procs = []
+    for p in Path("/proc").iterdir():
+        if not p.name.isdigit():
+            continue
+        try:
+            rss = int((p / "statm").read_text().split()[1]) * (os.sysconf("SC_PAGE_SIZE") // 1024)
+            if rss < 51200:  # ignore anything under 50 MiB; the noise floor is ~70 processes
+                continue
+            comm = (p / "comm").read_text().strip()
+            procs.append((rss, comm))
+        except (OSError, ValueError, IndexError):
+            continue  # process exited mid-read; expected, not an error
+    procs.sort(reverse=True)
+    return procs[:n]
+
+
+def sample():
+    m = meminfo()
+    used = m["MemTotal"] - m["MemAvailable"]
+    swap_used = m["SwapTotal"] - m["SwapFree"]
+    fields = [
+        datetime.now().isoformat(timespec="seconds"),
+        f"used={used // 1024}M",
+        f"avail={m['MemAvailable'] // 1024}M",
+        f"swap={swap_used // 1024}M",
+        f"shmem={m['Shmem'] // 1024}M",          # tmpfs incl. /tmp and /dev/shm — task 54
+        f"dirty={m['Dirty'] // 1024}M",
+    ]
+    fields += [f"{c}:{r // 1024}M" for r, c in top_rss(TOP_N)]
+    line = " ".join(fields) + "\n"
+
+    STATE.mkdir(parents=True, exist_ok=True)
+    path = STATE / f"{datetime.now():%Y-%m-%d}.log"
+    with open(path, "a") as fh:
+        fh.write(line)
+        fh.flush()
+        os.fsync(fh.fileno())   # see WHY IT fsync()s EVERY LINE
+    return line
+
+
+def report():
+    path = STATE / f"{datetime.now():%Y-%m-%d}.log"
+    if not path.exists():
+        print(f"no samples yet for today ({path})")
+        return 1
+    lines = path.read_text().splitlines()
+    print(f"{len(lines)} samples in {path}")
+
+    def used_of(l):
+        for f in l.split():
+            if f.startswith("used="):
+                return int(f[5:-1])
+        return -1
+
+    worst = max(lines, key=used_of)
+    print(f"\npeak used:  {worst}")
+    print(f"latest:     {lines[-1]}")
+
+    # a gap much larger than the timer interval is the signature worth seeing
+    print("\ngaps > 3 min (a freeze looks like this):")
+    found = False
+    prev = None
+    for l in lines:
+        try:
+            t = datetime.fromisoformat(l.split()[0])
+        except (ValueError, IndexError):
+            continue
+        if prev and (t - prev) > timedelta(minutes=3):
+            print(f"  {prev.time()} -> {t.time()}  ({t - prev})")
+            found = True
+        prev = t
+    if not found:
+        print("  none")
+    return 0
+
+
+def prune(days):
+    cutoff = time.time() - days * 86400
+    n = 0
+    for f in STATE.glob("*.log"):
+        if f.stat().st_mtime < cutoff:
+            f.unlink()
+            n += 1
+    print(f"pruned {n} log(s) older than {days}d")
+    return 0
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--report", action="store_true")
+    ap.add_argument("--prune", type=int, nargs="?", const=14, metavar="DAYS")
+    a = ap.parse_args()
+    if a.report:
+        sys.exit(report())
+    if a.prune is not None:
+        sys.exit(prune(a.prune))
+    sys.stdout.write(sample())

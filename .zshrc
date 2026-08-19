@@ -264,3 +264,15 @@ nvm use v24
 export LUA_PATH='~/.config/nvim/lua'
 
 eval "$(mise activate zsh)"
+
+# --- beast-arch task 51: bound the nix evaluator -----------------------------
+# 2026-08-12 a `nix build` evaluator reached 11.6 GiB anon-rss on a 31 GiB box,
+# OOM-killed once, then livelocked the machine for ~16 min until a power cycle.
+# The evaluator uses the Boehm GC, which honours GC_MAXIMUM_HEAP_SIZE: past the
+# cap nix exits with a clean `error: out of memory` instead of eating the box.
+#
+# A wrapper, not a bare export, because GC_MAXIMUM_HEAP_SIZE applies to EVERY
+# Boehm-GC program on the system and this reasoning is only about nix.
+# Override per-invocation with NIX_EVAL_HEAP_MAX=12G nix ...
+nix() { GC_MAXIMUM_HEAP_SIZE="${NIX_EVAL_HEAP_MAX:-8G}" command nix "$@"; }
+# -----------------------------------------------------------------------------

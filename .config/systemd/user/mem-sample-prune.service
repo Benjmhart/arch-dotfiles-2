@@ -1,0 +1,6 @@
+[Unit]
+Description=Prune mem-sample logs older than 14 days (beast-arch task 51)
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/mem-sample --prune 14

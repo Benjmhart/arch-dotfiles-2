@@ -1,0 +1,10 @@
+[Unit]
+Description=Sample memory pressure (beast-arch task 51)
+Documentation=https://github.com/Benjmhart/station-maintenance machines/beast-arch/tasks/51-memory-headroom-oom.md
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/mem-sample
+# Keep the instrument cheap; it runs every 30s and must not become a cost of its own.
+Nice=10
+IOSchedulingClass=idle

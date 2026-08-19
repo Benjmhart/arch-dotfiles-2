@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily prune of mem-sample logs (beast-arch task 51)
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+Unit=mem-sample-prune.service
+
+[Install]
+WantedBy=timers.target
