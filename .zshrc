@@ -276,3 +276,13 @@ eval "$(mise activate zsh)"
 # Override per-invocation with NIX_EVAL_HEAP_MAX=12G nix ...
 nix() { GC_MAXIMUM_HEAP_SIZE="${NIX_EVAL_HEAP_MAX:-8G}" command nix "$@"; }
 # -----------------------------------------------------------------------------
+
+# >>> omp (oh-my-pi) >>>
+# The DeepSeek key lives in ~/.zsh_secrets, which is UNTRACKED and 0600.
+# It was in this file until 2026-08-20, when GitHub push protection blocked
+# the commit that carried it -- correctly. Keep secrets out of tracked files.
+[ -r "$HOME/.zsh_secrets" ] && source "$HOME/.zsh_secrets"
+export PI_SMOL_MODEL="deepseek-v4-flash"
+export PI_SLOW_MODEL="deepseek-v4-pro"
+export PI_PLAN_MODEL="deepseek-v4-pro"
+# <<< omp (oh-my-pi) <<<
