@@ -105,4 +105,13 @@ setxkbmap -option caps:escape
 
 xmodmap ~/.Xmodmap
 
+# SSH_ASKPASS (2026-08-22): exported here as well as in .zshrc so that programs
+# xmonad starts directly -- Emacs/Forge, Vivaldi, anything not descended from a
+# shell -- inherit it. .zshrc only reaches processes that came from a shell, and
+# a GUI app asking for an ssh passphrase is exactly the case that has no terminal.
+# See the longer note in .zshrc for why SSH_ASKPASS_REQUIRE is left unset.
+# Guarded by path: x11-ssh-askpass is not installed on every machine this file
+# travels to, and a dangling SSH_ASKPASS is worse than none.
+[ -x /usr/lib/ssh/ssh-askpass ] && export SSH_ASKPASS=/usr/lib/ssh/ssh-askpass
+
 exec xmonad

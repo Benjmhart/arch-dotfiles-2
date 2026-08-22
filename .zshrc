@@ -52,15 +52,36 @@ export XDG_CACHE_HOME=$HOME/.cache
 
 # Point every shell at the one systemd-managed ssh-agent
 # (`systemctl --user enable --now ssh-agent.socket`, enabled 2026-08-02).
-# Combined with `AddKeysToAgent 8h` in ~/.ssh/config this means the key
-# passphrase is typed once per working day instead of once per push, and every
-# terminal shares the same unlocked agent.
+# Combined with `AddKeysToAgent 2m` in ~/.ssh/config (was 8h until 2026-08-05,
+# narrowed on purpose) the key is unlocked for roughly the operation that needed
+# it, so expect to be prompted on most pushes -- that is the intent, not a fault.
+# Every terminal still shares the one agent; it just rarely holds a key for long.
 #
 # Guarded, so an agent inherited from elsewhere still wins -- notably a
 # forwarded agent over `ssh -A`, which must not be shadowed by the local one.
 if [[ -z ${SSH_AUTH_SOCK:-} && -S ${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket ]]; then
   export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:-/run/user/$UID}/ssh-agent.socket"
 fi
+
+# SSH_ASKPASS (2026-08-22): give ssh somewhere to ask for the passphrase when
+# there is no terminal to ask on -- agent/tool sessions, and anything started by
+# xmonad rather than by a shell.
+#
+# SSH_ASKPASS_REQUIRE is deliberately NOT set. Left unset, ssh falls back to the
+# askpass helper only when it has no controlling terminal, so an interactive push
+# from a terminal still prompts in that terminal exactly as it does today. Setting
+# it to `force` would route EVERY prompt through the GUI dialog, terminal ones
+# included. Set it only if you decide you want that.
+#
+# This does NOT widen the unlock window. `AddKeysToAgent 2m` in ~/.ssh/config
+# still governs how long the key stays loaded; this changes only WHERE the
+# passphrase can be typed, not how long it survives being typed.
+#
+# Guarded by path, like the blocks in .xinitrc -- .zshrc travels in the dotfiles
+# repo and x11-ssh-askpass is not installed on every machine. An SSH_ASKPASS
+# pointing at a missing binary is worse than an unset one: ssh execs it, the exec
+# fails, and you get "no askpass program specified" instead of a prompt.
+[ -x /usr/lib/ssh/ssh-askpass ] && export SSH_ASKPASS=/usr/lib/ssh/ssh-askpass
 
 export EDITOR=/bin/nvim
 # Removed 2026-08-04 (beast-arch task 32): `export BROWSER=/usr/bin/vivaldi-stable`.
