@@ -6,11 +6,19 @@
 	pager = less
 [pull]
 	rebase = false
-[credential "https://github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
-[credential "https://gist.github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+# The per-host [credential "https://github.com"] and .../gist.github.com blocks were removed
+# 2026-08-22. Each did `helper =` (reset the chain) then `!gh auth git-credential`, which
+# overrode the global helper below and sent every GitHub HTTPS operation to the gh CLI's
+# token -- a classic PAT carrying blanket `repo` scope across all 102 repos, secrets
+# included. GitHub now falls through to the global libsecret helper, so a scoped
+# fine-grained PAT in the login keyring is what authenticates pushes.
+#
+# Deliberately NOT left as a fallback chain. Keeping gh as a second helper would mean an
+# absent or expired PAT silently succeeds using the blanket-scope token instead: fail-open,
+# when the whole point of a scoped token is to fail closed. A push that stops working is
+# the correct symptom of an expired token.
+#
+# `gh` itself is unaffected -- it authenticates from ~/.configure/gh/hosts.yml, not from
+# git's credential helper. Beware: `gh auth setup-git` rewrites these blocks back.
 [credential]
 	helper = /usr/lib/git-core/git-credential-libsecret
