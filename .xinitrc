@@ -7,6 +7,25 @@
 # find ./vimwiki | entr -adn vimwikisync &
 
 
+# Push DISPLAY/XAUTHORITY into the systemd user manager and the D-Bus activation
+# environment (2026-08-22).
+#
+# Neither is inherited here. A display manager would import them at login; startx
+# does not, so `systemctl --user show-environment` came up with no DISPLAY at all
+# while every shell had DISPLAY=:0. Anything D-Bus-activated therefore started
+# blind to X.
+#
+# The symptom this fixes: gnome-keyring could not unlock the login keyring because
+# gcr-prompter is D-Bus-activated and died instantly with "cannot open display".
+# The daemon then refused to export /org/freedesktop/secrets/collection/login, and
+# secret-tool reported "Object does not exist at path ..." -- which reads like a
+# missing keyring and is really a prompt that could never be drawn.
+#
+# MUST run before anything that talks to the secret service. --systemd updates the
+# systemd user environment as well as the D-Bus one; both are needed, because the
+# prompter is activated by dbus but launched as a systemd user unit.
+dbus-update-activation-environment --systemd DISPLAY XAUTHORITY
+
 xsetroot -solid midnightblue
 
 
