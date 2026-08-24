@@ -87,7 +87,21 @@ picom &
 flameshot &
 cbatticon &
 udiskie & 
-clipmenud &
+# clipmenu records EVERY clipboard selection, and KeePassXC copies passwords to
+# the clipboard -- so without this the vault's contents accumulate in clipmenu's
+# cache for the whole session, retrievable with one Super+B.
+#
+# Storage is $XDG_RUNTIME_DIR (/run/user/1000, tmpfs, mode 0700, gone at logout),
+# not disk, and the cap is 1000 clips. That bounds the exposure; it does not make
+# it acceptable. CM_IGNORE_WINDOW is clipmenud's own mechanism for exactly this
+# and it is UNSET by default. It needs xdotool, which clipmenu depends on.
+#
+# The regex is deliberately loose: KeePassXC's title varies with database and
+# lock state ("Passwords.kdbx [Locked] - KeePassXC" and so on). It was NOT
+# verified against a live window -- KeePassXC was not running when this was
+# written -- so if you want certainty, run `xdotool getactivewindow getwindowname`
+# with the vault focused and check it matches.
+CM_IGNORE_WINDOW='[Kk]ee[Pp]ass' clipmenud &
 volumeicon &
 
 # Handy (dictation, mod4+s) and Meetily (meeting transcription). Added 2026-08-11.
