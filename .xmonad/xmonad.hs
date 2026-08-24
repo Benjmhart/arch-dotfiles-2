@@ -69,7 +69,16 @@ modKKeypass = ((winSuperMask .|. shiftMask, xK_k), spawn "keepassxc")
 -- (pavucontrol was the stopgap, and was never actually installed on this box.)
 modKVolume = ((winSuperMask, xK_v), spawn  "alacritty --command pacmixer")
 modKWally = ((winSuperMask .|. shiftMask, xK_w), spawn  "wally")
-modKEmoji = ((winSuperMask .|. shiftMask, xK_m), spawn "bemoji")
+-- Super+M, not Super+Shift+M (2026-08-24, Ben's request -- it is reached one-handed).
+-- KNOWN COST: mod-m is a stock XMonad binding, `windows W.focusMaster`, and
+-- additionalKeys OVERRIDES rather than conflicts, so this takes it silently. If you
+-- ever want focus-master back, mod-<Return> already swaps master and focused, and
+-- mod-j/mod-k walk the stack.
+--
+-- bemoji downloads the Unicode emoji list to ~/.local/share/bemoji on FIRST run
+-- only, so the very first press pauses and an offline first press fails. It picks
+-- dmenu (first installed in its picker order) and xclip for the paste.
+modKEmoji = ((winSuperMask, xK_m), spawn "bemoji")
 
 -- textEmail = toTextKey xK_e "Benjmhart@gmail.com"
 -- textName = toTextKey xK_n "Ben Hart"
