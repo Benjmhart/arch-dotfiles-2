@@ -1,0 +1,19 @@
+# NOTE: this lives under ~/.configure, not ~/.config -- .zshrc line 50 sets
+# XDG_CONFIG_HOME=$HOME/.configure. .xinitrc does NOT source .zshrc, so the
+# fcitx5 it launches is given XDG_CONFIG_HOME explicitly; without that, fcitx5
+# reads ~/.config/fcitx5, finds nothing, and silently falls back to stock
+# defaults (mozc absent from the group, Ctrl+space trigger, typing stays romaji).
+
+[Hotkey/TriggerKeys]
+# Alt+` -- chosen by testing each candidate against a live fcitx5 and reading
+# back the active input method over D-Bus. On this setup modifier+LETTER
+# triggers silently never match (Alt+j, Alt+i and Super+i were all verified
+# dead); modifier+punctuation matches fine. Super+<key> is doubly unusable:
+# Super is the xmonad mod key, so xmonad grabs those combos at the X server.
+# Alt+` also stays clear of LazyVim, which binds Alt+j / Alt+k to move lines.
+0=Alt+grave
+# fcitx5's documented default, verified working here; kept as a fallback.
+1=Control+space
+
+[Hotkey]
+EnumerateWithTriggerKeys=True
