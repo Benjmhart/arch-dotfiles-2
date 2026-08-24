@@ -1,0 +1,25 @@
+#!/bin/sh
+# Wrapper: clipmenud that ALWAYS has CM_IGNORE_WINDOW set.
+#
+# WHY THIS EXISTS RATHER THAN JUST THE .xinitrc LINE (2026-08-24). The variable
+# was set in .xinitrc, and .xinitrc runs only at LOGIN. Anyone -- a person
+# debugging, or an agent -- who starts `clipmenud` by hand gets the real binary
+# with NO ignore rule, and it silently records everything KeePassXC copies. That
+# is not a hypothetical: it is the most likely explanation for passwords turning
+# up in the cache on 2026-08-24 while the .xinitrc line was already in place.
+#
+# ~/.local/bin precedes /usr/bin on PATH, so this shadows the packaged script for
+# every interactive start. Verified working: with KeePassXC focused, Ctrl+C is
+# not recorded; with it unfocused, ordinary copies are.
+#
+# The regex matches KeePassXC's real title, read off a live window on 2026-08-24:
+#   "Passwords.kdbx [Locked] - KeePassXC"
+#
+# LIMITS, so this is not mistaken for more than it is. clipmenud checks the
+# ACTIVE WINDOW when clipnotify fires, not the selection's owner -- so a global
+# shortcut, a tray-menu copy, or focus moving between the copy and the
+# notification can still slip past. It does not protect secrets copied from
+# anywhere else at all: a browser password manager, a terminal, a file.
+[ -n "$CM_IGNORE_WINDOW" ] || CM_IGNORE_WINDOW='[Kk]ee[Pp]ass'
+export CM_IGNORE_WINDOW
+exec /usr/bin/clipmenud "$@"
