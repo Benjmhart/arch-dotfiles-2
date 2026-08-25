@@ -86,7 +86,14 @@ modKEmoji = ((winSuperMask, xK_m), spawn "bemoji")
 -- toTextKey :: MonadIO m => Word64 -> String -> ((KeyMask, KeySym), m ())
 -- toTextKey k t = ((winSuperMask .|. altMask .|. controlMask, k), spawn ("sleep 2 && xdotool type " <> t))
 
-modKClipboard = ((winSuperMask, xK_b), spawn "clipmenu")
+-- beast-arch, 2026-08-25: moved off mod-b (Super+B) to Alt+B. The Moonlander
+-- emits Super when the spacebar is HELD, so Super+B fired whenever the nvim
+-- leader (spacebar) was held over b. NOTE: `altMask` defined at the top of this
+-- file is mod3Mask, which is ISO_Level5_Shift on this machine, NOT Alt --
+-- verified with `xmodmap -pm`. Alt is mod1Mask. Do not "tidy" this to altMask.
+-- Known trade-off: xmonad grabs this globally, so Alt+B no longer reaches
+-- readline (it was backward-word in zsh).
+modKClipboard = ((mod1Mask, xK_b), spawn "clipmenu")
 
 -- beast-arch task 34. mod-a toggles the default audio sink between the
 -- motherboard analog jack and the RX 580's HDMI audio, and drags already-playing
