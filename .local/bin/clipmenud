@@ -1,25 +1,37 @@
 #!/bin/sh
-# Wrapper: clipmenud that ALWAYS has CM_IGNORE_WINDOW set.
+# Wrapper: clipmenud with the settings that actually keep the vault out of it.
 #
-# WHY THIS EXISTS RATHER THAN JUST THE .xinitrc LINE (2026-08-24). The variable
-# was set in .xinitrc, and .xinitrc runs only at LOGIN. Anyone -- a person
-# debugging, or an agent -- who starts `clipmenud` by hand gets the real binary
-# with NO ignore rule, and it silently records everything KeePassXC copies. That
-# is not a hypothetical: it is the most likely explanation for passwords turning
-# up in the cache on 2026-08-24 while the .xinitrc line was already in place.
+# ---------------------------------------------------------------- CM_SELECTIONS
+# THIS is the line that closes the hole. Demonstrated 2026-08-25:
 #
-# ~/.local/bin precedes /usr/bin on PATH, so this shadows the packaged script for
-# every interactive start. Verified working: with KeePassXC focused, Ctrl+C is
-# not recorded; with it unfocused, ordinary copies are.
+#   1. focus a window titled "...KeePassXC", copy a secret  -> correctly BLOCKED
+#   2. move focus away; the secret is STILL on the clipboard
+#   3. highlight anything at all, anywhere               -> the secret is RECORDED
 #
-# The regex matches KeePassXC's real title, read off a live window on 2026-08-24:
+# clipmenud checks the active window ONCE PER EVENT, then reads the CURRENT
+# CONTENTS of every selection it watches. The ignore rule therefore protects the
+# moment of the copy and nothing afterwards: for as long as the password remains
+# on the clipboard -- KeePassXC's default is 10 seconds, and longer if that
+# timeout is off -- the very next selection event of any kind sweeps it up.
+#
+# That is why CM_IGNORE_WINDOW alone was not enough, twice.
+#
+# Watching PRIMARY only makes the leak structurally impossible rather than
+# unlikely: KeePassXC copies to CLIPBOARD, and CLIPBOARD is no longer read at all.
+#
+# THE COST, stated plainly: Ctrl+C history is gone. clipmenu now only remembers
+# highlighted text -- which is herdr's clip-on-highlight, the use case Ben named.
+# To trade that back for the leak, set CM_SELECTIONS="clipboard primary".
+[ -n "$CM_SELECTIONS" ]    || CM_SELECTIONS='primary'
+
+# Defence in depth, not the main defence. It still blocks the copy event itself,
+# which keeps the secret out even of the PRIMARY path if it is ever highlighted
+# inside the vault window. Title read off a live window 2026-08-24:
 #   "Passwords.kdbx [Locked] - KeePassXC"
-#
-# LIMITS, so this is not mistaken for more than it is. clipmenud checks the
-# ACTIVE WINDOW when clipnotify fires, not the selection's owner -- so a global
-# shortcut, a tray-menu copy, or focus moving between the copy and the
-# notification can still slip past. It does not protect secrets copied from
-# anywhere else at all: a browser password manager, a terminal, a file.
 [ -n "$CM_IGNORE_WINDOW" ] || CM_IGNORE_WINDOW='[Kk]ee[Pp]ass'
-export CM_IGNORE_WINDOW
+
+# WHY A WRAPPER AND NOT JUST .xinitrc: .xinitrc runs at LOGIN only, so anyone
+# starting clipmenud by hand mid-session got the packaged script with no settings
+# at all. ~/.local/bin precedes /usr/bin, so this catches every start.
+export CM_SELECTIONS CM_IGNORE_WINDOW
 exec /usr/bin/clipmenud "$@"

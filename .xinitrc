@@ -101,7 +101,22 @@ udiskie &
 # verified against a live window -- KeePassXC was not running when this was
 # written -- so if you want certainty, run `xdotool getactivewindow getwindowname`
 # with the vault focused and check it matches.
-CM_IGNORE_WINDOW='[Kk]ee[Pp]ass' clipmenud &
+# CM_SELECTIONS=primary is the line that actually keeps the vault out of
+# clipmenu. CM_IGNORE_WINDOW alone was not enough, and it took two rounds to see
+# why: clipmenud checks the active window ONCE PER EVENT and then reads the
+# CURRENT CONTENTS of every selection it watches. So the ignore rule protects the
+# instant of the copy and nothing after it -- while the password is still on the
+# clipboard (KeePassXC clears after 10s by default), the next selection event of
+# any kind sweeps it up. Demonstrated 2026-08-25: copy blocked, then one
+# highlight anywhere and the secret was in the cache.
+#
+# Watching PRIMARY only makes that structurally impossible: KeePassXC copies to
+# CLIPBOARD, which is no longer read. COST: no Ctrl+C history, only highlighted
+# text. Set CM_SELECTIONS="clipboard primary" to trade that back for the leak.
+#
+# Set here as well as in ~/.local/bin/clipmenud because startx does not source
+# .zshrc, so PATH here may not reach the wrapper.
+CM_SELECTIONS='primary' CM_IGNORE_WINDOW='[Kk]ee[Pp]ass' clipmenud &
 volumeicon &
 
 # Handy (dictation, mod4+s) and Meetily (meeting transcription). Added 2026-08-11.
