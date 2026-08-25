@@ -1,0 +1,47 @@
+#!/bin/sh
+# audio-toggle -- flip the default audio output between the motherboard analog
+# jack and the RX 580's HDMI audio, dragging every running stream across too.
+#
+# beast-arch task 34. Bound to a key in ~/.xmonad/xmonad.hs.
+#
+# Two things this script exists to get right, both of them recorded traps:
+#
+#   * Sinks are resolved BY NAME. `wpctl`/`pactl` numeric ids are not stable
+#     across reboots, so anything bound to a key must never hold onto one.
+#   * Changing the default sink does NOT move streams that are already playing.
+#     PipeWire only routes NEW streams to the new default, so a toggle that
+#     stops at set-default appears to do nothing while music keeps coming out
+#     of the old device. The move-sink-input loop is the half that makes it
+#     behave the way a user expects.
+#
+# There is NO notification daemon on this box (verified 2026-08-25: notify-send
+# fails with "The name is not activatable"), so feedback is stdout only, and
+# when this runs from a keybinding nobody sees it. The audible change IS the
+# feedback.
+
+set -eu
+
+ANALOG=alsa_output.pci-0000_00_1f.3.analog-stereo
+HDMI=alsa_output.pci-0000_01_00.1.hdmi-stereo-extra2
+
+have() { pactl list short sinks | cut -f2 | grep -qx "$1"; }
+
+for s in "$ANALOG" "$HDMI"; do
+	have "$s" || { echo "audio-toggle: sink not present: $s" >&2; exit 1; }
+done
+
+current=$(pactl get-default-sink)
+case "$current" in
+	"$HDMI") target=$ANALOG; label="analog (motherboard jack)" ;;
+	*)       target=$HDMI;   label="HDMI (ellesmere / monitor)" ;;
+esac
+
+pactl set-default-sink "$target"
+
+# Existing streams stay where they are unless moved explicitly.
+pactl list short sink-inputs | cut -f1 | while read -r id; do
+	[ -n "$id" ] || continue
+	pactl move-sink-input "$id" "$target" || true
+done
+
+echo "audio-toggle: -> $label"

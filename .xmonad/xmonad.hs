@@ -87,6 +87,14 @@ modKEmoji = ((winSuperMask, xK_m), spawn "bemoji")
 -- toTextKey k t = ((winSuperMask .|. altMask .|. controlMask, k), spawn ("sleep 2 && xdotool type " <> t))
 
 modKClipboard = ((winSuperMask, xK_b), spawn "clipmenu")
+
+-- beast-arch task 34. mod-a toggles the default audio sink between the
+-- motherboard analog jack and the RX 580's HDMI audio, and drags already-playing
+-- streams across with it -- setting the default alone moves NEW streams only.
+-- mod-a is not a stock XMonad binding, so this takes nothing silently the way
+-- mod-m did above. audio-toggle lives in ~/.local/bin, which IS on xmonad's
+-- inherited PATH (checked in /proc/<xmonad>/environ, not assumed).
+modKAudioToggle = ((winSuperMask, xK_a), spawn "audio-toggle")
 -- alt is mod1Mask
 modKScreenmap = [((mod4Mask .|. mod1Mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
   | (key, sc) <- zip [xK_w, xK_e, xK_r] [1, 0, 2]
@@ -97,6 +105,7 @@ myKeys
     , modKEmoji
     , modKVolume
     , modKClipboard
+    , modKAudioToggle
     -- , textEmail
     -- , textName
     ]
