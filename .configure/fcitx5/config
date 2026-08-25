@@ -5,13 +5,24 @@
 # defaults (mozc absent from the group, Ctrl+space trigger, typing stays romaji).
 
 [Hotkey/TriggerKeys]
-# Alt+` -- chosen by testing each candidate against a live fcitx5 and reading
-# back the active input method over D-Bus. On this setup modifier+LETTER
-# triggers silently never match (Alt+j, Alt+i and Super+i were all verified
-# dead); modifier+punctuation matches fine. Super+<key> is doubly unusable:
-# Super is the xmonad mod key, so xmonad grabs those combos at the X server.
-# Alt+` also stays clear of LazyVim, which binds Alt+j / Alt+k to move lines.
-0=Alt+grave
+# Super+` -- Ben's request, 2026-08-25. Verified by synthesising the keypress
+# with xdotool and reading CurrentInputMethod back over D-Bus, after proving
+# the same harness flipped the old Alt+` binding (a negative result from an
+# untested harness proves nothing).
+#
+# CORRECTION, and it matters because it blocked this for two weeks: the note
+# here used to say "Super+<key> is doubly unusable: Super is the xmonad mod
+# key, so xmonad grabs those combos at the X server." That is WRONG as a
+# general claim. XMonad grabs only the combos actually present in its keymap,
+# not the whole Super space, and there is no xK_grave binding anywhere in
+# ~/.xmonad/xmonad.hs -- so Super+` was never taken. The real finding, which
+# still holds, is the other half: modifier+LETTER triggers silently never
+# match here (Alt+j, Alt+i, Super+i all verified dead); modifier+punctuation
+# matches fine. "Super+i is dead" got generalised into "Super is dead", and
+# the wrong half of the lesson stuck.
+#
+# Before adding any Super binding to xmonad.hs, check it is not this one.
+0=Super+grave
 # fcitx5's documented default, verified working here; kept as a fallback.
 1=Control+space
 
