@@ -1,0 +1,13 @@
+{
+  "defaultModel": "deepseek-v4-pro",
+  "defaultProvider": "deepseek",
+  "lastChangelogVersion": "0.84.3",
+  "packages": [
+    "npm:@ollama/pi-web-search",
+    "../../projects/auto-business/pi-bmad"
+  ],
+  "theme": "high-contrast",
+  "extensions": [
+    "extensions/modal-editor.ts"
+  ]
+}

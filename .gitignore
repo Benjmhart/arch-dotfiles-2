@@ -28,3 +28,29 @@
 #   .claude/plugins/ -- 691 files, already reproducible from the
 #     extraKnownMarketplaces/enabledPlugins keys in settings.json.
 #   .claude/settings.json.bak-* -- local backups, not configuration.
+
+# pi agent (beast-arch task 39). DENY BY DEFAULT -- this directory holds a live
+# credential.
+#
+# .pi/agent/auth.json is a plaintext anthropic + deepseek API key pair at 0600.
+# pi-set-key writes it because gnome-keyring is unusable on this box (no display
+# manager ever unlocks it). GitHub push protection already blocked a DeepSeek key
+# once, on 2026-08-20 -- see the .zsh_secrets note in .dot/info/exclude.
+# auth.json.bak-* holds an older key and is just as dangerous.
+#
+# Also excluded as not-configuration: sessions/ is 27 MB of verbatim transcripts,
+# bin/ is a 3.9 MB vendored fd binary, backups/ is patch spool, *.bak-* are
+# timestamped copies, and trust.json is per-directory state that churns.
+#
+# Same shape as the .claude/ block above: exclude everything, then re-admit named
+# entries. Do NOT collapse this to a bare `.pi/` -- git cannot re-include a file
+# whose parent directory is excluded, and the allowlist below would silently stop
+# working.
+.pi/agent/*
+!.pi/agent/settings.json
+!.pi/agent/models.json
+!.pi/agent/models-store.json
+!.pi/agent/keybindings.json
+!.pi/agent/themes/
+!.pi/agent/agents/
+!.pi/agent/extensions/
