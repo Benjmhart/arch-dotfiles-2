@@ -13,6 +13,21 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
          -- Locks prints CAPS / NUM / SCROLL only while that lock is ON, and nothing
          -- otherwise, so the bar stays quiet until it has something to say.
          , Run Locks
+         -- Battery, 2026-08-28 (carbon task 3). A Com script rather than xmobar's
+         -- own BatteryP plugin, for one reason: this config is shared by every
+         -- machine and beast-arch has no battery. xmobar's config is data with no
+         -- conditionals in it, so there is nowhere HERE to write "laptop only",
+         -- and BatteryP on a batteryless box prints its own error text into the
+         -- bar. ~/bin/battery-xmobar prints NOTHING when it finds no battery, so
+         -- the %battery% slot collapses and beast-arch's bar is unchanged.
+         --
+         -- Absolute path on purpose: xmobar is started by xmonad, which is started
+         -- by .xinitrc, which never sources .zshrc -- ~/bin is not reliably on PATH
+         -- at that point, and a Com whose command is not found fails silently.
+         --
+         -- 100 = 10 seconds. Battery state does not move faster than that, and the
+         -- script reads three files under /sys per tick.
+         , Run Com "/home/ben/bin/battery-xmobar" [] "battery" 100
          , Run StdinReader
          ]
        , sepChar = "%"
@@ -28,7 +43,20 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- left one. Anything tuned by pixel offset here is tuned for the wide bar
        -- and is tighter on the narrow one; `shorten 50` on ppTitle is the most
        -- likely thing to look cramped on the vertical monitor.
-       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#ee9a00>%date%</fc>"
+       -- %battery% is in the CENTRE section, with %locks%, and that is not a style
+       -- choice. It was in the right section next to the clock for one revision and
+       -- the tray ate it: stalonetray is a dock at x 1660-1788 drawn ON TOP of the
+       -- bar (window_layer top), the right section is right-aligned and grows
+       -- leftwards from 1920, and "BAT 98%" landed straight underneath the icons.
+       -- All that showed on screen was the trailing "%". Exactly the collision the
+       -- note above warns about, walked into from the other direction.
+       --
+       -- The centre is empty and fixed, which is why %locks% is here too.
+       -- %battery% carries its own <fc> markup, including the white-on-red block
+       -- below 20%, so it is deliberately NOT wrapped in a colour here. On a
+       -- machine with no battery it expands to nothing and the centre section is
+       -- what it always was, one leading space aside.
+       , template = "%StdinReader% }%battery% <fc=#ff5555>%locks%</fc>{ <fc=#ee9a00>%date%</fc>"
        }
        -- wishlist
        -- 1) clickable workspaces

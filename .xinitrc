@@ -111,7 +111,17 @@ flameshot &
 # AdwaitaLegacy ships real 16x16 PNG battery icons, which are pixbufs and are not
 # recoloured. It is not an optional install: adwaita-icon-theme depends on it and
 # gtk3 depends on that, so it is present anywhere this file runs.
-XDG_CONFIG_HOME="$HOME/.configure/cbatticon-gtk" cbatticon -i standard &
+#
+# GUARDED ON THE BATTERY ITSELF, not on the hostname (2026-08-28). beast-arch has
+# no battery and cbatticon there just sat in the tray reporting one missing. The
+# guard asks the question that actually matters -- "is there a battery?" -- rather
+# than "is this machine called carbon?", so it stays right if another laptop ever
+# joins. `grep -s` swallows the error when the glob matches nothing, which is the
+# batteryless case. ~/bin/battery-xmobar guards itself the same way for the same
+# reason; the two are meant to agree.
+if grep -qs Battery /sys/class/power_supply/*/type; then
+  XDG_CONFIG_HOME="$HOME/.configure/cbatticon-gtk" cbatticon -i standard &
+fi
 udiskie & 
 # clipmenu records EVERY clipboard selection, and KeePassXC copies passwords to
 # the clipboard -- so without this the vault's contents accumulate in clipmenu's
