@@ -85,7 +85,33 @@ fi
 nm-applet --sm-disable &
 picom &
 flameshot &
-cbatticon &
+# Battery indicator in the tray. XDG_CONFIG_HOME is pointed at a one-file config
+# dir for this process ONLY -- the same inline trick the fcitx5 block above uses --
+# so that cbatticon gets gtk-icon-theme-name=AdwaitaLegacy and no other GTK app's
+# icons change.
+#
+# WHY (carbon, 2026-08-28). cbatticon has been running here since the machine was
+# set up and its icon was invisible the whole time: Adwaita's battery icons are
+# symbolic SVGs, GTK paints a symbolic icon's body in the theme foreground colour,
+# in a tray icon that comes out black, and .stalonetrayrc sets background
+# "#000000". All that ever showed was the 3-pixel green charge bar from the icon's
+# .success path -- which reads as a rendering speck, not as a battery. Found by
+# screenshotting the tray and cropping the icon; `pgrep cbatticon` said it was
+# running all along, which is exactly the "the command works / the feature works"
+# gap this setup keeps hitting.
+#
+# What did NOT fix it, so nobody re-walks it: `-i standard` alone (GTK still
+# resolved a symbolic SVG), GTK_THEME=Adwaita:dark, a screen-wide GtkCssProvider
+# setting `color`, and recoloured icon overrides in ~/.local/share/icons/Adwaita
+# (gtk_icon_theme_lookup found them; the status-icon render path ignored them).
+# A plain GtkStatusIcon fed the same icon NAME was invisible too, and the same
+# icon fed as a FILE rendered perfectly -- that is what pinned it on symbolic
+# recolouring rather than on cbatticon.
+#
+# AdwaitaLegacy ships real 16x16 PNG battery icons, which are pixbufs and are not
+# recoloured. It is not an optional install: adwaita-icon-theme depends on it and
+# gtk3 depends on that, so it is present anywhere this file runs.
+XDG_CONFIG_HOME="$HOME/.configure/cbatticon-gtk" cbatticon -i standard &
 udiskie & 
 # clipmenu records EVERY clipboard selection, and KeePassXC copies passwords to
 # the clipboard -- so without this the vault's contents accumulate in clipmenu's
