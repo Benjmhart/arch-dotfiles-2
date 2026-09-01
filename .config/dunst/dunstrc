@@ -1,0 +1,102 @@
+# dunst -- beast-arch notification daemon
+#
+# Written 2026-09-01 for station-maintenance task 57.
+#
+# WHY THIS FILE IS IN ~/.config AND NOT ~/.configure:
+# XDG_CONFIG_HOME is $HOME/.configure on this box, but it is exported ONLY from
+# ~/.zshrc, and nothing that can start dunst ever sources ~/.zshrc:
+#   - .xinitrc does not source it (it says so explicitly, and sets XDG_CONFIG_HOME
+#     for the fcitx5 invocation alone, deliberately, to avoid repointing every
+#     other app it launches)
+#   - the systemd user manager's environment has no XDG_CONFIG_HOME
+#     (`systemctl --user show-environment` shows only PATH, DBUS_..., DISPLAY)
+#   - D-Bus activation via org.knopwob.dunst.service inherits that same environment
+# So dunst falls back to ~/.config/dunst/dunstrc. This is the same split already
+# recorded in NOTES.md, where the systemd user manager reads .config while
+# fontconfig reads .configure -- and the inverse of the fontconfig bug, where a
+# correctly-tracked dotfile has never once taken effect.
+#
+# VERIFY, do not assume: after any change, confirm which file dunst actually
+# loaded rather than trusting this comment.
+
+[global]
+    monitor = 0
+    follow = mouse
+    width = (250, 500)
+    height = (0, 300)
+    origin = top-right
+    offset = (12, 12)
+    scale = 0
+    notification_limit = 8
+
+    progress_bar = true
+    indicate_hidden = yes
+    transparency = 5
+    separator_height = 2
+    padding = 10
+    horizontal_padding = 12
+    frame_width = 2
+    gap_size = 4
+    separator_color = frame
+    idle_threshold = 120
+
+    font = Monospace 10
+    line_height = 0
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    show_age_threshold = 60
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+
+    enable_recursive_icon_lookup = true
+    icon_position = left
+    min_icon_size = 24
+    max_icon_size = 48
+
+    sticky_history = yes
+    history_length = 40
+
+    # There is no notification-triggered action tooling on this box yet; keep the
+    # defaults rather than wiring dmenu/xdg-open into a path nothing calls.
+    dmenu = /usr/bin/dmenu -p dunst:
+    browser = /usr/bin/xdg-open
+
+    title = Dunst
+    class = Dunst
+    corner_radius = 4
+    force_xwayland = false
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+# picom on this box has `shadow = false` globally (archived task 15, set to fix
+# Zoom's grey overlay), so the usual notification shadow-misdraw problem does not
+# apply and no picom exclusion rule is needed here.
+
+[urgency_low]
+    background = "#282a36"
+    foreground = "#6272a4"
+    frame_color = "#44475a"
+    timeout = 6
+
+[urgency_normal]
+    background = "#282a36"
+    foreground = "#f8f8f2"
+    frame_color = "#bd93f9"
+    timeout = 12
+
+# CRITICAL IS STICKY ON PURPOSE. timeout = 0 means it stays until dismissed.
+# The BMAD job queue (task 58) raises a critical notification when a job blocks
+# waiting on a human decision. That notification is the ONLY thing standing between
+# a blocked job and a project silently dropping out of the round-robin for hours --
+# so it must not expire while nobody is at the desk.
+[urgency_critical]
+    background = "#282a36"
+    foreground = "#f8f8f2"
+    frame_color = "#ff5555"
+    timeout = 0

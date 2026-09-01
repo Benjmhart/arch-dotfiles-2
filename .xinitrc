@@ -87,6 +87,18 @@ picom &
 flameshot &
 cbatticon &
 udiskie & 
+# dunst -- the notification daemon. Added 2026-09-01, station-maintenance task 57.
+#
+# Until now this box had NO daemon implementing org.freedesktop.Notifications, so
+# every notify-send call failed with "The name is not activatable" -- silently, from
+# a keybinding, where nobody sees it. Task 34 hit this and deferred it; task 58's job
+# queue needs it to report a job blocked on a human decision.
+#
+# Path-guarded because .xinitrc is tracked in the dotfiles and travels to carbon.
+# Its config is ~/.config/dunst/dunstrc, NOT ~/.configure -- see the header of that
+# file for why. dunst is also D-Bus activatable (org.knopwob.dunst.service), so this
+# line is belt-and-braces: it makes startup deterministic rather than first-call lazy.
+[ -x /usr/bin/dunst ] && /usr/bin/dunst &
 # clipmenu records EVERY clipboard selection, and KeePassXC copies passwords to
 # the clipboard -- so without this the vault's contents accumulate in clipmenu's
 # cache for the whole session, retrievable with one Super+B.
