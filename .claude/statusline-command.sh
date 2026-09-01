@@ -17,10 +17,82 @@ failing statusline command as an empty line and says nothing.
 
 Shows, left to right: vim mode, model, context remaining, reasoning effort,
 subscription limits. Working directory and git branch were dropped 2026-08-05.
+
+DOUBLE DUTY, added 2026-09-01 for station-maintenance task 58 (BMAD job queue):
+this script is also the machine's ONLY quota sensor. The `rate_limits` object below
+is pushed here by Claude Code on every render and is written to disk NOWHERE ELSE --
+there is no `claude usage` subcommand, stats-cache.json went stale 2026-08-10, and no
+ccusage-style tool is installed. So each render appends one line to
+~/.local/state/bmad-queue/quota.jsonl, which is what the job queue's pacing logic reads.
+
+The sensor is deliberately subordinate to the status line: the line is written to
+stdout FIRST, and every byte of sensor I/O is wrapped in a bare except. A broken
+sensor must never cost a blank status bar -- Claude Code renders a failing statusline
+command as an empty line and says nothing, so the failure would be silent and daily.
 """
 
 import json
+import os
 import sys
+import time
+
+# Sensor state. Not in the repo: this is a machine-local ledger, not configuration.
+STATE_DIR = os.path.expanduser("~/.local/state/bmad-queue")
+QUOTA_LOG = os.path.join(STATE_DIR, "quota.jsonl")
+# One-shot raw capture, so the full payload schema can be read once and then reasoned
+# about offline. Written only if absent; delete the file to re-capture.
+RAW_DUMP = os.path.join(STATE_DIR, "statusline-payload-sample.json")
+# quota.jsonl is append-only and unrotated. At ~120 bytes a render this would grow
+# without bound, so stop appending past a ceiling rather than silently eating the disk.
+MAX_LOG_BYTES = 32 * 1024 * 1024
+
+
+def record(raw, d):
+    """Append one quota observation. Never raises -- see module docstring."""
+    try:
+        os.makedirs(STATE_DIR, exist_ok=True)
+
+        # One-shot schema capture. The question this answers: does `rate_limits`
+        # carry a reset timestamp? If it does, the queue needs no window inference.
+        if not os.path.exists(RAW_DUMP):
+            try:
+                with open(RAW_DUMP, "x") as fh:
+                    fh.write(raw)
+            except FileExistsError:
+                pass  # raced with another session; harmless
+
+        limits = d.get("rate_limits") or {}
+        five = (limits.get("five_hour") or {}).get("used_percentage")
+        seven = (limits.get("seven_day") or {}).get("used_percentage")
+        # Nothing to record until the session has seen an API response. Writing a
+        # null-null row would pollute the ledger with rows the pacing logic must
+        # then learn to skip.
+        if five is None and seven is None:
+            return
+
+        try:
+            if os.path.getsize(QUOTA_LOG) > MAX_LOG_BYTES:
+                return
+        except OSError:
+            pass  # absent yet, or unstattable; either way, try the append
+
+        row = {
+            "ts": time.time(),
+            "five_hour_pct": five,
+            "seven_day_pct": seven,
+            "model": (d.get("model") or {}).get("id")
+            or (d.get("model") or {}).get("display_name"),
+            "session_id": d.get("session_id"),
+            # Carried verbatim so the pacing logic can use a real reset boundary if
+            # one is present, instead of inferring the window from a drop in used%.
+            "rate_limits": limits,
+        }
+        # O_APPEND + a single write() keeps concurrent sessions from interleaving.
+        # There are routinely ~10 live sessions on this box, all rendering.
+        with open(QUOTA_LOG, "a") as fh:
+            fh.write(json.dumps(row, separators=(",", ":")) + "\n")
+    except Exception:
+        return
 
 # --- ANSI ------------------------------------------------------------------
 DIM = "\033[2m"
@@ -46,9 +118,13 @@ VIM_COLOURS = {
 
 
 def main():
+    # Read as text, not json.load(stdin): the raw string is needed for the one-shot
+    # schema capture in record(), and re-serialising a parsed dict would lose any
+    # field this script does not model.
     try:
-        d = json.load(sys.stdin)
-    except (json.JSONDecodeError, ValueError):
+        raw = sys.stdin.read()
+        d = json.loads(raw)
+    except (json.JSONDecodeError, ValueError, OSError):
         return
 
     parts = []
@@ -101,6 +177,14 @@ def main():
         parts.append(f"{colour}{' '.join(bits)}{RESET}")
 
     sys.stdout.write(SEP.join(parts))
+    # Flush before the sensor runs: the status line is the job, the ledger is the
+    # side effect, and the side effect must not be able to swallow the job.
+    try:
+        sys.stdout.flush()
+    except Exception:
+        pass
+
+    record(raw, d)
 
 
 if __name__ == "__main__":
