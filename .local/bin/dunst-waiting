@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#
+# dunst-waiting — xmobar field: what dunst is currently holding back.
+#
+# Added 2026-09-02 for beast-arch task 58. The BMAD job queue raises a
+# notification whenever a job blocks on a human decision, at an arbitrary time
+# — including in the middle of a screenshare. The fix is to pause dunst during
+# meetings (see the pause ladder in ~/.config/dunst/dunstrc), and that is only
+# SAFE because this field keeps showing that something is pending.
+#
+# Pausing WITHOUT this field would recreate exactly the failure task 57 was
+# built to prevent: a blocked job dropping silently out of the round-robin for
+# hours. The two changes are a pair. Do not remove one without the other.
+#
+# Prints nothing when it has nothing to say, matching Locks' behaviour in
+# ~/.xmobarrc — the bar stays quiet until there is something to report.
+#
+# Deliberately does NOT start dunst. dunstctl talks over D-Bus and dunst ships
+# a D-Bus activation file (task 57), so an unguarded call from the bar would
+# spawn the daemon on every poll if it were ever not running.
+#
+# Invoked from ~/.xmobarrc by ABSOLUTE path: xmobar is spawned by xmonad from
+# .xinitrc, which does not source .zshrc, so ~/.local/bin is not reliably on
+# PATH there (.xinitrc says so itself, line 130).
+
+set -uo pipefail
+
+pgrep -x dunst >/dev/null 2>&1 || exit 0
+
+level=$(dunstctl get-pause-level 2>/dev/null) || exit 0
+waiting=$(dunstctl count waiting 2>/dev/null) || exit 0
+
+# Both must be numeric. A dunstctl that returns an error string, or a future
+# version that changes its output, must render as an empty field rather than
+# spraying text across the bar.
+case "$level"   in ''|*[!0-9]*) exit 0 ;;    esac
+case "$waiting" in ''|*[!0-9]*) waiting=0 ;; esac
+
+if [ "$level" -gt 0 ]; then
+    # PAUSED is shown even at zero held, because the failure mode this guards
+    # is forgetting to unpause after a meeting.
+    if [ "$waiting" -gt 0 ]; then
+        printf 'PAUSED %s held' "$waiting"
+    else
+        printf 'PAUSED'
+    fi
+elif [ "$waiting" -gt 0 ]; then
+    printf '%s waiting' "$waiting"
+fi

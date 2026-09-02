@@ -100,3 +100,39 @@
     foreground = "#f8f8f2"
     frame_color = "#ff5555"
     timeout = 0
+
+# ── Pause ladder ────────────────────────────────────────────────────────────
+# Added 2026-09-02, beast-arch task 58.
+#
+# dunst 1.13.2 has GRADED pause levels, not a boolean. `dunstctl set-pause-level
+# N` holds back every notification whose `override_pause_level` is not greater
+# than N. Level 0 means "not paused" and draws everything; 100 is maximally
+# paused. Verified against dunst.5 and dunstctl.1 rather than assumed.
+#
+# Held notifications are KEPT, not dropped — dunstctl(1): "notifications will be
+# kept but not shown until it is unpaused" — and stay countable via
+# `dunstctl count waiting`. That is what makes suppression safe here.
+#
+# The ladder this box uses:
+#     0   normal — everything draws
+#    50   meeting / screenshare — unattended machine chatter is held; anything
+#         deliberately given override_pause_level = 60 still draws
+#   100   everything held
+#
+# ★ The suppression is only safe because the xmobar field driven by
+#   ~/.local/bin/dunst-waiting keeps showing that something is pending. Without
+#   it, pausing recreates the exact failure task 57 was built to prevent — a
+#   blocked job dropping silently out of the round-robin. The two are a pair. ★
+
+# Task 58's job queue runs unattended on a 15-minute timer and therefore fires
+# at arbitrary moments, including mid-screenshare. Level 20 puts it below the
+# meeting threshold, so it is the first thing suppressed and the last thing
+# that should ever interrupt a call.
+#
+# ⚠️ The notification BODY must stay generic ("1 job needs a decision"). Held
+# notifications are displayed eventually — possibly while still sharing — so
+# project and story detail belongs in the herdr pane and result.json, never in
+# the popup. This is part of task 58's job contract.
+[bmad-queue]
+    appname = "bmad-queue"
+    override_pause_level = 20

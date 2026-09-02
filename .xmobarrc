@@ -14,6 +14,13 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
          -- otherwise, so the bar stays quiet until it has something to say.
          , Run Locks
          , Run StdinReader
+         -- What dunst is holding back, 2026-09-02 (task 58). Prints nothing
+         -- unless dunst is paused or has notifications queued, so it stays as
+         -- quiet as Locks does. ABSOLUTE path on purpose: xmobar is spawned by
+         -- xmonad from .xinitrc, which does not source .zshrc, so ~/.local/bin
+         -- is not reliably on PATH there (.xinitrc says so itself at line 130).
+         -- Polls every 5s; the script exits early unless dunst is running.
+         , Run Com "/home/ben/.local/bin/dunst-waiting" [] "dunstwait" 50
          ]
        , sepChar = "%"
        , alignSep = "}{"
@@ -28,7 +35,12 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- left one. Anything tuned by pixel offset here is tuned for the wide bar
        -- and is tighter on the narrow one; `shorten 50` on ppTitle is the most
        -- likely thing to look cramped on the vertical monitor.
-       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#ee9a00>%date%</fc>"
+       -- %dunstwait% joins %locks% in the CENTRE for the same reason: it is
+       -- normally empty, and must not shove the clock into stalonetray when it
+       -- is not. It reads "PAUSED", "PAUSED N held", or "N waiting". PAUSED
+       -- shows even at zero held, because the failure it guards against is
+       -- forgetting to unpause after a meeting.
+       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc> <fc=#bd93f9>%dunstwait%</fc>{ <fc=#ee9a00>%date%</fc>"
        }
        -- wishlist
        -- 1) clickable workspaces
