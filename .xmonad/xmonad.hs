@@ -102,6 +102,15 @@ modKClipboard = ((mod1Mask, xK_b), spawn "clipmenu")
 -- mod-m did above. audio-toggle lives in ~/.local/bin, which IS on xmonad's
 -- inherited PATH (checked in /proc/<xmonad>/environ, not assumed).
 modKAudioToggle = ((winSuperMask, xK_a), spawn "audio-toggle")
+-- Super+d = "do not disturb": hide/unhide desktop notifications, 2026-09-05.
+-- `quiet` lives in ~/.local/bin alongside audio-toggle, so the same PATH note
+-- above applies. Toggling OFF releases whatever was held; `quiet clear` in a
+-- terminal is the variant that discards without popping a stack of them.
+--
+-- xK_d chosen because it is free in BOTH myKeys and xmonad's defaults. Note the
+-- warning below about additionalKeys overriding silently: xK_n would have taken
+-- mod-n (refresh) without saying so.
+modKQuiet = ((winSuperMask, xK_d), spawn "quiet toggle")
 -- alt is mod1Mask
 modKScreenmap = [((mod4Mask .|. mod1Mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
   | (key, sc) <- zip [xK_w, xK_e, xK_r] [1, 0, 2]
@@ -113,6 +122,7 @@ myKeys
     , modKVolume
     , modKClipboard
     , modKAudioToggle
+    , modKQuiet
     -- , textEmail
     -- , textName
     ]

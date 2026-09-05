@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+#
+# quiet — hide and unhide desktop notifications.
+#
+# Added 2026-09-05, beast-arch task 57/58. The reason this exists: task 58's job
+# queue fires on a 15-minute timer, so it raises popups at arbitrary moments —
+# including in the middle of a meeting screenshare.
+#
+# Built on dunst's GRADED pause levels (1.13.2+), not on `set-paused true`:
+#   0   normal — everything draws
+#   50  quiet  — machine chatter held; override_pause_level = 60 still draws
+#   100 all    — everything held
+# The ladder is documented in ~/.config/dunst/dunstrc.
+#
+# ★ Nothing is lost while quiet. ★ dunstctl(1): "notifications will be kept but
+# not shown until it is unpaused". The count stays visible on xmobar via
+# ~/.local/bin/dunst-waiting, which is what makes hiding them safe at all.
+#
+#   quiet            same as `quiet status`
+#   quiet on         hide notifications (level 50)
+#   quiet off        show notifications again, RELEASING anything held
+#   quiet toggle     flip between on and off — this is what Super+d is bound to
+#   quiet clear      discard what is held WITHOUT popping it, then go back to
+#                    normal. Use after a long meeting when you do not want a
+#                    stack of popups. Nothing is destroyed: `dunstctl history`
+#                    still has them.
+#   quiet status     print the level and how many are held
+
+set -uo pipefail
+
+LEVEL_QUIET=50
+
+die() { printf 'quiet: %s\n' "$1" >&2; exit 1; }
+
+command -v dunstctl >/dev/null 2>&1 || die "dunstctl not found"
+pgrep -x dunst >/dev/null 2>&1 || die "dunst is not running"
+
+level()   { dunstctl get-pause-level 2>/dev/null || echo 0; }
+held()    { dunstctl count waiting   2>/dev/null || echo 0; }
+
+status() {
+    local l h
+    l=$(level); h=$(held)
+    if [ "$l" -gt 0 ]; then
+        printf 'quiet ON  (level %s) — %s held\n' "$l" "$h"
+    else
+        printf 'quiet off (level 0) — notifications showing\n'
+    fi
+}
+
+case "${1:-status}" in
+    on)
+        dunstctl set-pause-level "$LEVEL_QUIET"
+        status
+        ;;
+    off)
+        # Releases held notifications: they pop now. `quiet clear` is the
+        # variant that does not.
+        n=$(held)
+        dunstctl set-pause-level 0
+        [ "$n" -gt 0 ] && printf 'released %s held notification(s)\n' "$n"
+        status
+        ;;
+    clear)
+        n=$(held)
+        # close-all while STILL paused, so nothing is drawn on the way out.
+        # Order is load-bearing: unpausing first would pop them.
+        dunstctl close-all
+        dunstctl set-pause-level 0
+        [ "$n" -gt 0 ] && printf 'discarded %s held notification(s) (still in `dunstctl history`)\n' "$n"
+        status
+        ;;
+    toggle)
+        if [ "$(level)" -gt 0 ]; then exec "$0" off; else exec "$0" on; fi
+        ;;
+    status) status ;;
+    *) sed -n '/^#   quiet /,/^#   quiet status/p' "$0" | sed 's/^# \?//' >&2; exit 2 ;;
+esac
