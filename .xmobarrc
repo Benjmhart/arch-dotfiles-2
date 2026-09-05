@@ -20,7 +20,7 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
          -- xmonad from .xinitrc, which does not source .zshrc, so ~/.local/bin
          -- is not reliably on PATH there (.xinitrc says so itself at line 130).
          -- Polls every 5s; the script exits early unless dunst is running.
-         , Run Com "/home/ben/.local/bin/dunst-waiting" [] "dunstwait" 50
+         , Run Com "/home/ben/.local/bin/dunst-waiting" [] "dunstwait" 20
          ]
        , sepChar = "%"
        , alignSep = "}{"

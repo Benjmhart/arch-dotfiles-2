@@ -71,7 +71,27 @@ case "${1:-status}" in
         status
         ;;
     toggle)
-        if [ "$(level)" -gt 0 ]; then exec "$0" off; else exec "$0" on; fi
+        # Interactive path (Super+d). Unlike `on`/`off`, it announces what it
+        # did: while quiet, the xmobar field is the ONLY feedback, and reading
+        # it wrong is how this got misdiagnosed on 2026-09-05. The [quiet-feedback]
+        # rule in dunstrc gives appname "quiet" override_pause_level 99 so this
+        # draws even while everything else is held.
+        #
+        # Scripts must call `on`/`off` directly, NOT toggle -- they stay silent,
+        # which is what keeps the meeting hook from popping anything mid-share.
+        if [ "$(level)" -gt 0 ]; then
+            n=$(held)
+            "$0" off >/dev/null
+            if [ "$n" -gt 0 ]; then
+                notify-send -a quiet -u low -t 3000 "Notifications on" "released $n held"
+            else
+                notify-send -a quiet -u low -t 3000 "Notifications on"
+            fi
+        else
+            "$0" on >/dev/null
+            notify-send -a quiet -u low -t 3000 "Notifications hidden" "Super+d to show; nothing is lost"
+        fi
+        status
         ;;
     status) status ;;
     *) sed -n '/^#   quiet /,/^#   quiet status/p' "$0" | sed 's/^# \?//' >&2; exit 2 ;;

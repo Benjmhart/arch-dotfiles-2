@@ -136,3 +136,12 @@
 [bmad-queue]
     appname = "bmad-queue"
     override_pause_level = 20
+
+# `quiet` toggling itself must be visible EVEN WHILE QUIET, otherwise the only
+# feedback is an xmobar field you may not be looking at — which is exactly how
+# the toggle got misread on 2026-09-05. 99 draws at every level below 100.
+# Only `quiet toggle` (the Super+d path) sends these; `quiet on`/`off` called
+# from a script stay silent, so the meeting hook never pops anything.
+[quiet-feedback]
+    appname = "quiet"
+    override_pause_level = 99
