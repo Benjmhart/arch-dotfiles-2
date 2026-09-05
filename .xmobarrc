@@ -53,12 +53,19 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- the window below and span the full width). Tray geometry comes from
        -- `xdotool search --class stalonetray getwindowgeometry`.
        --
+       -- ★ A SPACE IS NOT A CHARACTER WIDTH HERE. ★ The font renders glyphs at
+       -- ~6.9px but spaces at ~4.0px, so scaling the padding by the character
+       -- width undershoots. Two attempts missed for exactly this reason before
+       -- it was measured bycomparing captures.
+       --
        -- Measured 2026-09-05 on the LEFT monitor:
-       --     stalonetray window                 ->  x1660-1788 (128x16 at 1660,1)
-       --     clock "Sat Sep  5  5:26"  110px    ->  x1809-1918, i.e. 6.9px/char
-       --     with 22 spaces, the field ran x1594-~1711 -- 56px UNDER the tray
-       -- 34 spaces shifts it a further ~82px left, putting the right edge near
-       -- x1630 and clearing the tray by ~30px.
+       --     stalonetray window        ->  x1660-1788 (128x16 at 1660,1)
+       --     clock, 110px / 16 chars   ->  x1809-1918, i.e. 6.9px per GLYPH
+       --     22 spaces -> text began x1594 ; 34 spaces -> x1546
+       --         => 48px for 12 spaces = 4.0px per SPACE
+       --     at 34 spaces the text ran x1546-~1663, still ~3px under the tray
+       -- 43 spaces shifts it a further ~36px left: right edge ~x1627, clearing
+       -- the tray by ~33px.
        --
        -- Because the section is right-aligned, longer text ("Off (3 held)")
        -- grows LEFTWARD, away from the tray, so the clearance holds for every
@@ -71,7 +78,7 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- On the 1080px vertical monitor the tray does not overlap at all, so the
        -- padding is merely cosmetic there -- but it does eat 154px of a narrower
        -- bar, which is the "tuned for the wide bar" caveat noted above.
-       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#bd93f9>%dunstwait%</fc>                                  <fc=#ee9a00>%date%</fc>"
+       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#bd93f9>%dunstwait%</fc>                                           <fc=#ee9a00>%date%</fc>"
        }
        -- wishlist
        -- 1) clickable workspaces
