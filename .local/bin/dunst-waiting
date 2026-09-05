@@ -12,8 +12,15 @@
 # built to prevent: a blocked job dropping silently out of the round-robin for
 # hours. The two changes are a pair. Do not remove one without the other.
 #
-# Prints nothing when it has nothing to say, matching Locks' behaviour in
-# ~/.xmobarrc — the bar stays quiet until there is something to report.
+# ★ NEVER prints an empty string. ★ 2026-09-05: xmobar's `Run Com` RETAINS the
+# previous value when the command outputs nothing, so the field stuck on "PAUSED"
+# after unpausing. Proved by logging the bar's own invocations: the running
+# xmobars were polling every 5s and computing level=0 waiting=0 correctly, and
+# the stale text stayed on screen anyway. (`xmobar -T` text mode DOES clear on
+# empty, so it does not reproduce this -- do not use it to test this behaviour.)
+#
+# The idle case therefore emits a marker rather than "". It doubles as proof the
+# field is alive: a bare marker means notifications are ON.
 #
 # Deliberately does NOT start dunst. dunstctl talks over D-Bus and dunst ships
 # a D-Bus activation file (task 57), so an unguarded call from the bar would
@@ -36,6 +43,10 @@ waiting=$(dunstctl count waiting 2>/dev/null) || exit 0
 case "$level"   in ''|*[!0-9]*) exit 0 ;;    esac
 case "$waiting" in ''|*[!0-9]*) waiting=0 ;; esac
 
+# IDLE is deliberately not "" -- see the note above. Any change here must stay
+# non-empty and non-whitespace, or the stale-field bug comes straight back.
+IDLE_MARKER='·'
+
 if [ "$level" -gt 0 ]; then
     # PAUSED is shown even at zero held, because the failure mode this guards
     # is forgetting to unpause after a meeting.
@@ -46,4 +57,6 @@ if [ "$level" -gt 0 ]; then
     fi
 elif [ "$waiting" -gt 0 ]; then
     printf '%s waiting' "$waiting"
+else
+    printf '%b' "$IDLE_MARKER"
 fi
