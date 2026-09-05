@@ -95,10 +95,35 @@ udiskie &
 # queue needs it to report a job blocked on a human decision.
 #
 # Path-guarded because .xinitrc is tracked in the dotfiles and travels to carbon.
-# Its config is ~/.config/dunst/dunstrc, NOT ~/.configure -- see the header of that
-# file for why. dunst is also D-Bus activatable (org.knopwob.dunst.service), so this
-# line is belt-and-braces: it makes startup deterministic rather than first-call lazy.
-[ -x /usr/bin/dunst ] && /usr/bin/dunst &
+# dunst is also D-Bus activatable (org.knopwob.dunst.service), so this line is
+# belt-and-braces: it makes startup deterministic rather than first-call lazy.
+#
+# ★ -conf is LOAD-BEARING, added 2026-09-05 after the first real reboot proved the
+#   bare line silently loaded the WRONG config. ★
+#
+# dunst honours XDG_CONFIG_HOME, which is $HOME/.configure on this box. No
+# ~/.configure/dunst/dunstrc exists, so a bare `dunst` finds nothing there and falls
+# through to /etc/dunst/dunstrc -- shipped defaults, none of our rules, no error, no
+# log line anyone sees. That is exactly what happened on the 2026-09-05 boot.
+#
+# The comment at line 75 below is the trap: it says XDG_CONFIG_HOME is set by .zshrc
+# "which this file never sources". True, and irrelevant -- .xinitrc does not SOURCE
+# .zshrc but it does INHERIT its exports, because startx is launched from an
+# interactive zsh that has already sourced it. Verified through the live process
+# chain: login zsh -> startx -> xinit -> .xinitrc -> dunst all carry the variable.
+# (/proc/PID/environ on the login zsh shows it unset, which is a red herring -- that
+# file is frozen at exec time and does not reflect a later `export`.)
+#
+# So the config path must be stated explicitly rather than inferred from the
+# environment. Falls back to a bare launch if the file is absent, since this file
+# travels to carbon where the dotfile may not be deployed.
+if [ -x /usr/bin/dunst ]; then
+  if [ -r "$HOME/.config/dunst/dunstrc" ]; then
+    /usr/bin/dunst -conf "$HOME/.config/dunst/dunstrc" &
+  else
+    /usr/bin/dunst &
+  fi
+fi
 # clipmenu records EVERY clipboard selection, and KeePassXC copies passwords to
 # the clipboard -- so without this the vault's contents accumulate in clipmenu's
 # cache for the whole session, retrievable with one Super+B.
