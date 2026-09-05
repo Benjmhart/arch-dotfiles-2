@@ -44,14 +44,25 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- ★ The run of spaces before %date% is LOAD-BEARING, not formatting. ★
        -- The right section is right-aligned at the bar's edge, so the padding is
        -- what pushes this field left of stalonetray's icons instead of under
-       -- them. Sized for the LEFT monitor with the `Fixed` bitmap font at 7px
-       -- per character:
-       --     clock "Sat Sep  5  1:10"  ~112px  ->  spans x1808-1920
-       --     stalonetray icons                 ->  x1660-1788
-       --     22 spaces                  ~154px  ->  field right edge at ~x1654
-       -- which clears the tray by ~6px. Because the section is right-aligned,
-       -- longer text ("Off (3 held)") grows LEFTWARD, away from the tray, so the
-       -- clearance holds for every state.
+       -- them.
+       --
+       -- ⚠️ These numbers are MEASURED, not derived -- a first attempt computed
+       -- them from assumed metrics and landed the text under the tray. Method:
+       -- capture the bar with `ffmpeg -f x11grab -video_size 1920x18 -i :0.0+0,0`
+       -- then find the ink columns (ignore rows 14+, which pick up the border of
+       -- the window below and span the full width). Tray geometry comes from
+       -- `xdotool search --class stalonetray getwindowgeometry`.
+       --
+       -- Measured 2026-09-05 on the LEFT monitor:
+       --     stalonetray window                 ->  x1660-1788 (128x16 at 1660,1)
+       --     clock "Sat Sep  5  5:26"  110px    ->  x1809-1918, i.e. 6.9px/char
+       --     with 22 spaces, the field ran x1594-~1711 -- 56px UNDER the tray
+       -- 34 spaces shifts it a further ~82px left, putting the right edge near
+       -- x1630 and clearing the tray by ~30px.
+       --
+       -- Because the section is right-aligned, longer text ("Off (3 held)")
+       -- grows LEFTWARD, away from the tray, so the clearance holds for every
+       -- state -- the right edge is what the padding fixes.
        --
        -- Delete or shorten that padding and the field lands underneath the tray
        -- icons. If the tray is ever resized or moved, re-derive the count; the
@@ -60,7 +71,7 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- On the 1080px vertical monitor the tray does not overlap at all, so the
        -- padding is merely cosmetic there -- but it does eat 154px of a narrower
        -- bar, which is the "tuned for the wide bar" caveat noted above.
-       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#bd93f9>%dunstwait%</fc>                      <fc=#ee9a00>%date%</fc>"
+       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#bd93f9>%dunstwait%</fc>                                  <fc=#ee9a00>%date%</fc>"
        }
        -- wishlist
        -- 1) clickable workspaces
