@@ -35,12 +35,32 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- left one. Anything tuned by pixel offset here is tuned for the wide bar
        -- and is tighter on the narrow one; `shorten 50` on ppTitle is the most
        -- likely thing to look cramped on the vertical monitor.
-       -- %dunstwait% joins %locks% in the CENTRE for the same reason: it is
-       -- normally empty, and must not shove the clock into stalonetray when it
-       -- is not. It reads "PAUSED", "PAUSED N held", or "N waiting". PAUSED
-       -- shows even at zero held, because the failure it guards against is
-       -- forgetting to unpause after a meeting.
-       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc> <fc=#bd93f9>%dunstwait%</fc>{ <fc=#ee9a00>%date%</fc>"
+       -- %dunstwait% sits in the RIGHT section, deliberately padded LEFT OF THE
+       -- TRAY (Ben's call, 2026-09-05). It reads "Notifications: On" /
+       -- "Notifications: Off" / "Notifications: Off (N held)"; it is never
+       -- empty, because xmobar's Run Com retains its previous value when a
+       -- command outputs nothing, which is what made the field stick.
+       --
+       -- ★ The run of spaces before %date% is LOAD-BEARING, not formatting. ★
+       -- The right section is right-aligned at the bar's edge, so the padding is
+       -- what pushes this field left of stalonetray's icons instead of under
+       -- them. Sized for the LEFT monitor with the `Fixed` bitmap font at 7px
+       -- per character:
+       --     clock "Sat Sep  5  1:10"  ~112px  ->  spans x1808-1920
+       --     stalonetray icons                 ->  x1660-1788
+       --     22 spaces                  ~154px  ->  field right edge at ~x1654
+       -- which clears the tray by ~6px. Because the section is right-aligned,
+       -- longer text ("Off (3 held)") grows LEFTWARD, away from the tray, so the
+       -- clearance holds for every state.
+       --
+       -- Delete or shorten that padding and the field lands underneath the tray
+       -- icons. If the tray is ever resized or moved, re-derive the count; the
+       -- old note about %locks% shoving the clock applies here too.
+       --
+       -- On the 1080px vertical monitor the tray does not overlap at all, so the
+       -- padding is merely cosmetic there -- but it does eat 154px of a narrower
+       -- bar, which is the "tuned for the wide bar" caveat noted above.
+       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#bd93f9>%dunstwait%</fc>                      <fc=#ee9a00>%date%</fc>"
        }
        -- wishlist
        -- 1) clickable workspaces

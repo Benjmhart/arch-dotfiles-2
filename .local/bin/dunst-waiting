@@ -19,8 +19,10 @@
 # the stale text stayed on screen anyway. (`xmobar -T` text mode DOES clear on
 # empty, so it does not reproduce this -- do not use it to test this behaviour.)
 #
-# The idle case therefore emits a marker rather than "". It doubles as proof the
-# field is alive: a bare marker means notifications are ON.
+# Every branch therefore emits explicit text. Ben, 2026-09-05: state the state --
+# "Notifications: On" / "Notifications: Off" -- rather than encoding it in a
+# glyph. An unreadable indicator has now caused three separate misreadings in
+# this task, so the field says what it means in words.
 #
 # Deliberately does NOT start dunst. dunstctl talks over D-Bus and dunst ships
 # a D-Bus activation file (task 57), so an unguarded call from the bar would
@@ -43,20 +45,19 @@ waiting=$(dunstctl count waiting 2>/dev/null) || exit 0
 case "$level"   in ''|*[!0-9]*) exit 0 ;;    esac
 case "$waiting" in ''|*[!0-9]*) waiting=0 ;; esac
 
-# IDLE is deliberately not "" -- see the note above. Any change here must stay
-# non-empty and non-whitespace, or the stale-field bug comes straight back.
-IDLE_MARKER='·'
-
+# ⚠️ EVERY branch below must emit non-empty, non-whitespace text. An empty
+# result does not clear the field -- xmobar keeps the previous value.
 if [ "$level" -gt 0 ]; then
-    # PAUSED is shown even at zero held, because the failure mode this guards
-    # is forgetting to unpause after a meeting.
+    # "Off" is shown even at zero held, because the failure mode this guards is
+    # forgetting to turn notifications back on after a meeting.
     if [ "$waiting" -gt 0 ]; then
-        printf 'PAUSED %s held' "$waiting"
+        printf 'Notifications: Off (%s held)' "$waiting"
     else
-        printf 'PAUSED'
+        printf 'Notifications: Off'
     fi
 elif [ "$waiting" -gt 0 ]; then
-    printf '%s waiting' "$waiting"
+    # Not paused, but dunst is queueing -- notification_limit reached.
+    printf 'Notifications: On (%s waiting)' "$waiting"
 else
-    printf '%b' "$IDLE_MARKER"
+    printf 'Notifications: On'
 fi
