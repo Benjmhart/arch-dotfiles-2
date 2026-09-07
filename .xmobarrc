@@ -29,6 +29,13 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
          -- script reads three files under /sys per tick.
          , Run Com "/home/ben/bin/battery-xmobar" [] "battery" 100
          , Run StdinReader
+         -- What dunst is holding back, 2026-09-02 (task 58). Prints nothing
+         -- unless dunst is paused or has notifications queued, so it stays as
+         -- quiet as Locks does. ABSOLUTE path on purpose: xmobar is spawned by
+         -- xmonad from .xinitrc, which does not source .zshrc, so ~/.local/bin
+         -- is not reliably on PATH there (.xinitrc says so itself at line 130).
+         -- Polls every 5s; the script exits early unless dunst is running.
+         , Run Com "/home/ben/.local/bin/dunst-waiting" [] "dunstwait" 20
          ]
        , sepChar = "%"
        , alignSep = "}{"
@@ -43,6 +50,12 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- left one. Anything tuned by pixel offset here is tuned for the wide bar
        -- and is tighter on the narrow one; `shorten 50` on ppTitle is the most
        -- likely thing to look cramped on the vertical monitor.
+       -- MERGED 2026-09-07. The two fields below arrived from opposite machines and
+       -- occupy DIFFERENT sections, so both are kept: %battery% in the centre next to
+       -- %locks% (carbon task 3), %dunstwait% in the right ahead of the tray padding
+       -- (beast-arch task 57). Neither note supersedes the other; read both before
+       -- moving anything, because each records a collision already walked into once.
+       --
        -- %battery% is in the CENTRE section, with %locks%, and that is not a style
        -- choice. It was in the right section next to the clock for one revision and
        -- the tray ate it: stalonetray is a dock at x 1660-1788 drawn ON TOP of the
@@ -56,7 +69,51 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- below 20%, so it is deliberately NOT wrapped in a colour here. On a
        -- machine with no battery it expands to nothing and the centre section is
        -- what it always was, one leading space aside.
-       , template = "%StdinReader% }%battery% <fc=#ff5555>%locks%</fc>{ <fc=#ee9a00>%date%</fc>"
+       --
+       -- %dunstwait% sits in the RIGHT section, deliberately padded LEFT OF THE
+       -- TRAY (Ben's call, 2026-09-05). It reads "Notifications: On" /
+       -- "Notifications: Off" / "Notifications: Off (N held)"; it is never
+       -- empty, because xmobar's Run Com retains its previous value when a
+       -- command outputs nothing, which is what made the field stick.
+       --
+       -- ★ The run of spaces before %date% is LOAD-BEARING, not formatting. ★
+       -- The right section is right-aligned at the bar's edge, so the padding is
+       -- what pushes this field left of stalonetray's icons instead of under
+       -- them.
+       --
+       -- ⚠️ These numbers are MEASURED, not derived -- a first attempt computed
+       -- them from assumed metrics and landed the text under the tray. Method:
+       -- capture the bar with `ffmpeg -f x11grab -video_size 1920x18 -i :0.0+0,0`
+       -- then find the ink columns (ignore rows 14+, which pick up the border of
+       -- the window below and span the full width). Tray geometry comes from
+       -- `xdotool search --class stalonetray getwindowgeometry`.
+       --
+       -- ★ A SPACE IS NOT A CHARACTER WIDTH HERE. ★ The font renders glyphs at
+       -- ~6.9px but spaces at ~4.0px, so scaling the padding by the character
+       -- width undershoots. Two attempts missed for exactly this reason before
+       -- it was measured bycomparing captures.
+       --
+       -- Measured 2026-09-05 on the LEFT monitor:
+       --     stalonetray window        ->  x1660-1788 (128x16 at 1660,1)
+       --     clock, 110px / 16 chars   ->  x1809-1918, i.e. 6.9px per GLYPH
+       --     22 spaces -> text began x1594 ; 34 spaces -> x1546
+       --         => 48px for 12 spaces = 4.0px per SPACE
+       --     at 34 spaces the text ran x1546-~1663, still ~3px under the tray
+       -- 43 spaces shifts it a further ~36px left: right edge ~x1627, clearing
+       -- the tray by ~33px.
+       --
+       -- Because the section is right-aligned, longer text ("Off (3 held)")
+       -- grows LEFTWARD, away from the tray, so the clearance holds for every
+       -- state -- the right edge is what the padding fixes.
+       --
+       -- Delete or shorten that padding and the field lands underneath the tray
+       -- icons. If the tray is ever resized or moved, re-derive the count; the
+       -- old note about %locks% shoving the clock applies here too.
+       --
+       -- On the 1080px vertical monitor the tray does not overlap at all, so the
+       -- padding is merely cosmetic there -- but it does eat 154px of a narrower
+       -- bar, which is the "tuned for the wide bar" caveat noted above.
+       , template = "%StdinReader% }%battery% <fc=#ff5555>%locks%</fc>{ <fc=#bd93f9>%dunstwait%</fc>                                           <fc=#ee9a00>%date%</fc>"
        }
        -- wishlist
        -- 1) clickable workspaces

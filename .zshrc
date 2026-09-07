@@ -34,6 +34,7 @@ path=(
   $HOME/go/bin
   $HOME/.local/share/gem/ruby/3.4.0/bin
   /usr/local/bin
+  $HOME/.fly/bin
   $path
 )
 export PATH
@@ -307,3 +308,7 @@ export PI_SMOL_MODEL="deepseek-v4-flash"
 export PI_SLOW_MODEL="deepseek-v4-pro"
 export PI_PLAN_MODEL="deepseek-v4-pro"
 # <<< omp (oh-my-pi) <<<
+
+# Added by flyctl installer
+export FLYCTL_INSTALL="/home/ben/.fly"
+export PATH="$FLYCTL_INSTALL/bin:$PATH"
