@@ -20,6 +20,16 @@
 !.claude/keybindings.json
 !.claude/statusline-command.sh
 
+# .claude/hooks/ -- same shape again, and for the reason stated above: the
+# directory has to be un-excluded before anything inside it can be re-admitted.
+# agent-inbox.sh is hand-written and has no installer, so if it is not tracked it
+# does not survive a rebuild -- while settings.json, which IS tracked, would go on
+# referencing it. That asymmetry is silent: the hook is the only thing that makes
+# an agent read its spool. See beast-arch task 59.
+!.claude/hooks/
+.claude/hooks/*
+!.claude/hooks/agent-inbox.sh
+
 # Deliberately NOT re-admitted, and why:
 #   .claude/hooks/herdr-agent-state.sh -- generated. Its own header says
 #     "managed by herdr; reinstalling or updating the integration overwrites
