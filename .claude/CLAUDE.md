@@ -29,6 +29,14 @@ while it sat committed and unpushed, and a generator run from the same stale clo
 deleted 14 live records. **Absence in git is indistinguishable from absence in fact**, so the
 mistake does not look like an error — it looks like a well-evidenced finding.
 
+**Push before minting anything another workspace allocates from.** Fetching protects the
+*reader* and cannot protect the *writer*: `git fetch` fixes a stale clone, but nothing reaches a
+commit that never left this machine. So when you allocate from a shared sequence — an outbound
+ID, a NAG number, a record id — the unpushed commit holding your allocation is invisible to every
+other workspace, and the next one mints the same value. That is not hypothetical: **NAG-036's
+outbound ID collided on 2026-09-06**, two workspaces minting from one sequence while one held
+unpushed commits. Ask to push at the point of minting, not at the end of the session.
+
 **Do not write files into another repo's working tree.** It dirties the tree, and the BMAD
 governor refuses to dispatch work to a project with a dirty tree — so a note left for an agent
 blocks that agent from ever being given work. Use the spool instead:
