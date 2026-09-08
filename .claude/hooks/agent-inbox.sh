@@ -76,12 +76,25 @@ if [ ! -d "$cwd" ]; then
     exit 0
 fi
 
+# Repo name = the git toplevel's basename, or the directory's own basename when
+# there is no git repo. This MUST match `repo_of()` in bin/inbox.
+#
+# ★ The non-git fallback closes a real delivery hole, found 2026-09-08. ★
+# The first version gave up here and said "no mailbox" whenever cwd was not a git
+# repo. 11 of the 27 directories in ~/projects are not git repos, four of them had
+# live sessions at the time, and a message spooled to one of them was reported as
+# "no mailbox" while it sat unread in the spool -- undeliverable and empty looked
+# identical, again. Addressing is by repo NAME, and a name needs no .git.
 repo="$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -n "$repo" ]; then
+    repo="$(basename "$repo")"
+else
+    repo="$(basename "$cwd")"
+fi
 if [ -z "$repo" ]; then
-    say "no mailbox -- $cwd is not a git repo, and messages are addressed by repo"
+    say "UNAVAILABLE -- cannot derive a repo name from '$cwd'"
     exit 0
 fi
-repo="$(basename "$repo")"
 
 spool="$HOME/.local/state/agent-inbox/$repo"
 if [ -d "$spool" ]; then
