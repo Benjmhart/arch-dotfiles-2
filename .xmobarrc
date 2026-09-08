@@ -14,13 +14,36 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
          -- otherwise, so the bar stays quiet until it has something to say.
          , Run Locks
          , Run StdinReader
-         -- What dunst is holding back, 2026-09-02 (task 58). Prints nothing
-         -- unless dunst is paused or has notifications queued, so it stays as
-         -- quiet as Locks does. ABSOLUTE path on purpose: xmobar is spawned by
+         -- What dunst is holding back, 2026-09-02 (task 58). ALWAYS prints --
+         -- "Notifications: On" / "Off" / "Off (N held)" -- and the note by the
+         -- template below says why: Run Com retains its previous value when a
+         -- command outputs nothing. (Corrected 2026-09-08: this comment used to
+         -- say it "prints nothing unless dunst is paused", which is the behaviour
+         -- that had to be REMOVED to stop the field sticking.)
+         -- ABSOLUTE path on purpose: xmobar is spawned by
          -- xmonad from .xinitrc, which does not source .zshrc, so ~/.local/bin
          -- is not reliably on PATH there (.xinitrc says so itself at line 130).
          -- Polls every 5s; the script exits early unless dunst is running.
          , Run Com "/home/ben/.local/bin/dunst-waiting" [] "dunstwait" 20
+         -- Pending agent messages, 2026-09-08 (beast-arch task 59). Absolute path
+         -- for the same reason as dunstwait above.
+         --
+         -- `inbox count` ALWAYS prints a line, including "Inbox: 0" -- it must,
+         -- because Run Com retains its previous value when a command outputs
+         -- nothing, which is the bug that made the dunst field stick. That is also
+         -- why this reads as words rather than a glyph: a count of zero has to be
+         -- distinguishable from a field that has stopped updating.
+         --
+         -- Verified under `env -i PATH=/usr/bin:/bin HOME=/home/ben`, which is much
+         -- closer to what xmobar actually gets than a login shell is. `count --all`
+         -- shells out to nothing -- no git, no herdr -- so it has no PATH needs
+         -- beyond python3 itself.
+         --
+         -- 300s, not 20: the SessionStart hook is the primary channel and fires on
+         -- /clear, compact and resume as well as startup. This field is Ben's
+         -- escalation for messages no agent has picked up, so it is not urgent to
+         -- the second.
+         , Run Com "/home/ben/projects/station-maintenance/bin/inbox" ["count","--all"] "inbox" 300
          ]
        , sepChar = "%"
        , alignSep = "}{"
@@ -78,7 +101,7 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
        -- On the 1080px vertical monitor the tray does not overlap at all, so the
        -- padding is merely cosmetic there -- but it does eat 154px of a narrower
        -- bar, which is the "tuned for the wide bar" caveat noted above.
-       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#bd93f9>%dunstwait%</fc>                                           <fc=#ee9a00>%date%</fc>"
+       , template = "%StdinReader% }<fc=#ff5555>%locks%</fc>{ <fc=#50fa7b>%inbox%</fc>  <fc=#bd93f9>%dunstwait%</fc>                                           <fc=#ee9a00>%date%</fc>"
        }
        -- wishlist
        -- 1) clickable workspaces
