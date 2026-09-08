@@ -19,17 +19,36 @@ import GHC.Word (Word64)
 winSuperMask = mod4Mask
 altMask = mod3Mask
 main = do
-  -- One xmobar per monitor, 2026-08-07. `-x N` is a Xinerama index, taken from
-  -- `xrandr --listmonitors`: 0 = HDMI-A-0 (1920x1080, left), 1 = HDMI-A-1 (the
-  -- vertical 1080x1920). Both read the same ~/.xmobarrc, which therefore says
-  -- `position = Top` rather than `OnScreen n` -- otherwise the config would
-  -- override the flag and both bars would land on the same screen.
+  -- One xmobar per monitor THAT ACTUALLY EXISTS, 2026-08-28 (carbon task 4).
   --
-  -- The index is positional: if the monitor layout is ever reordered, this points
-  -- at the wrong screen silently rather than failing. If a monitor is absent, that
-  -- bar simply has nowhere to draw -- it does not take the other one down.
-  xmproc0 <- spawnPipe "/usr/bin/xmobar -x 0 ~/.xmobarrc"
-  xmproc1 <- spawnPipe "/usr/bin/xmobar -x 1 ~/.xmobarrc"
+  -- Was two hardcoded lines, `-x 0` and `-x 1`, added 2026-08-07 for beast-arch's
+  -- two monitors. The old comment here claimed that if a monitor were absent "that
+  -- bar simply has nowhere to draw". That was wrong, and it was wrong on carbon for
+  -- three weeks: carbon has ONE screen, and the `-x 1` bar did not fail and did not
+  -- go anywhere else -- it fell back onto screen 0 and drew EXACTLY on top of the
+  -- other one. Both windows measured 1920x17 at +0+0. Invisible, because ppOutput
+  -- below writes the same line to both, so the only cost was that every `Run Com`
+  -- in ~/.xmobarrc ran twice -- including the battery script added in carbon
+  -- task 3.
+  --
+  -- countScreens asks X how many there are, so this is right on both machines
+  -- without a hostname anywhere: beast-arch still gets its two bars, carbon gets
+  -- one. `XMonad.Layout.IndependentScreens` was already imported.
+  --
+  -- `max 1` is deliberate insurance, not decoration. If countScreens ever answered
+  -- 0 the list would be empty and the session would come up with NO bar at all,
+  -- which is a far worse failure than the duplicate this replaces, and a silent
+  -- one. It should not be reachable while X is running; it costs nothing to make
+  -- sure.
+  --
+  -- `-x N` is still a positional Xinerama index: on beast-arch 0 = HDMI-A-0
+  -- (1920x1080, left) and 1 = HDMI-A-1 (the vertical 1080x1920). Reorder the
+  -- monitors and the bars follow the new order silently. ~/.xmobarrc is shared by
+  -- all of them and therefore says `position = Top`, not `OnScreen n` -- that would
+  -- override the flag and put every bar on the same screen.
+  screenCount <- countScreens :: IO Int
+  xmprocs <- mapM (\i -> spawnPipe ("/usr/bin/xmobar -x " ++ show i ++ " ~/.xmobarrc"))
+                  [0 .. max 1 screenCount - 1]
   -- `ewmh` publishes _NET_CLIENT_LIST / _NET_ACTIVE_WINDOW / _NET_CURRENT_DESKTOP.
   -- Without it xmonad advertises nothing, and anything that enumerates windows --
   -- notably Zoom's "Share Screen" window picker (task 15) -- sees an empty list.
@@ -42,9 +61,9 @@ main = do
     , startupHook = myStartupHook
     , layoutHook = avoidStruts $ layoutHook def
     , logHook = dynamicLogWithPP xmobarPP
-      -- Same line to both bars. Each xmobar owns its own stdin, so one write per
-      -- process is required -- writing once would leave the second bar blank.
-      { ppOutput = \s -> hPutStrLn xmproc0 s >> hPutStrLn xmproc1 s
+      -- Same line to every bar. Each xmobar owns its own stdin, so one write per
+      -- process is required -- writing once would leave the others blank.
+      { ppOutput = \s -> mapM_ (\h -> hPutStrLn h s) xmprocs
       , ppTitle = xmobarColor "green" "" . shorten 50
       }
     , handleEventHook = handleEventHook def <+> docksEventHook

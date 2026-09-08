@@ -1,0 +1,50 @@
+#!/bin/sh
+# Battery readout for xmobar. Wired up as `Run Com` in ~/.xmobarrc.
+#
+# THIS SCRIPT IS ALSO THE HOST GUARD. ~/.xmobarrc is one file shared by every
+# machine the dotfiles reach, and xmobar's config is data with no conditionals in
+# it -- there is nowhere in that file to write "only on the laptop". So the guard
+# lives here instead: no battery, no output, and the %battery% slot in the
+# template renders empty. beast-arch's bar is byte-identical to what it was.
+#
+# Finds the battery rather than hardcoding BAT0, because the guard has to be a
+# real question ("is there a battery?") and not a guess about its name.
+#
+# Colours are a traffic light, and the <20% case is a filled red block rather
+# than red text -- at 13px on a 17px bar, red-on-black reads as "some text is a
+# different colour" and white-on-red reads as an alarm, which is the point.
+# The threshold is a plain "below 20%", charging or not, as asked. cbatticon
+# raises its own notification at its own thresholds; this is independent of that.
+#
+# Written 2026-08-28, carbon task 3.
+
+for d in /sys/class/power_supply/*; do
+    [ -r "$d/type" ] || continue
+    [ "$(cat "$d/type")" = "Battery" ] || continue
+    [ -r "$d/capacity" ] || continue
+    bat="$d"
+    break
+done
+
+# No battery on this machine: print nothing at all and let the template collapse.
+[ -n "$bat" ] || exit 0
+
+pct=$(cat "$bat/capacity")
+status=$(cat "$bat/status" 2>/dev/null)
+
+# A trailing + means "on the way up". Anything else -- Discharging, Full,
+# "Not charging", Unknown -- gets no mark, so the mark only ever claims something
+# that is actually true.
+mark=''
+[ "$status" = "Charging" ] && mark='+'
+
+if [ "$pct" -lt 20 ]; then
+    printf '<fc=#ffffff,#cc0000> BAT %s%%%s </fc>' "$pct" "$mark"
+elif [ "$pct" -lt 50 ]; then
+    # #ffff55, not the #ee9a00 the clock uses. They sit side by side in the right
+    # section and at 13px two shades of amber read as one continuous string --
+    # checked on screen, which is the only way that particular fault shows up.
+    printf '<fc=#ffff55>BAT %s%%%s</fc>' "$pct" "$mark"
+else
+    printf '<fc=#8ae234>BAT %s%%%s</fc>' "$pct" "$mark"
+fi
