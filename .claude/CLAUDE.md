@@ -16,7 +16,7 @@
 
 ## Talking to agents in other repos
 
-Many sessions run at once, roughly one per repo, across beast-arch and carbon. Two rules, both
+Many sessions run at once, roughly one per repo, across beast-arch and carbon. Five rules, all
 paid for by real incidents (beast-arch task 59).
 
 **Cite a commit SHA in any claim about another repo's state.** "as of `b8e6023` on
@@ -28,6 +28,16 @@ claim. On 2026-09-05 a handover note was declared *"absent from the whole of tha
 while it sat committed and unpushed, and a generator run from the same stale clone would have
 deleted 14 live records. **Absence in git is indistinguishable from absence in fact**, so the
 mistake does not look like an error — it looks like a well-evidenced finding.
+
+**Absence in one place never licenses "it does not exist" — name the ref you checked.** `git
+cat-file -e` scopes to a single commit; an unqualified `grep -rl` silently means *"at my HEAD,
+whatever that is"*. Both return a confident zero that reads as well-evidenced. On **2026-09-09** I
+grepped my own working tree, reported a line *"gone from the repo"*, and had to withdraw it — the
+line was in `origin/main` the whole time and my HEAD held 11 unpushed commits. **Verify absence by
+reading the region, not by matching a string in it**: `grep -c 'unpushed-commit gap'` returns **0**
+against a line reading `the *unpushed-commit* gap`, because the emphasis markers sit inside the
+phrase. Nothing about that one is SHA-shaped, so no amount of fetching helps it. *"Absent at
+`f10a698`"* is a fact; *"absent"* is a guess about a working tree.
 
 **Push before minting anything another workspace allocates from.** Fetching protects the
 *reader* and cannot protect the *writer*: `git fetch` fixes a stale clone, but nothing reaches a
