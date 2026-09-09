@@ -1,0 +1,100 @@
+#!/bin/sh
+# clip-purge -- wipe a secret out of every clipboard sink on this machine.
+#
+# For the moment you realise you just copied a password, a token, or a private
+# key. Clears the live X selections AND clipmenu's stored history, in the one
+# order that does not race the daemon.
+#
+# ------------------------------------------------------------------ THE ORDER
+# It is disable -> clear -> nuke -> enable, and every step is load-bearing:
+#
+#   1. `clipctl disable`  clipmenud watches for selection CHANGES. Clearing a
+#                         selection IS a change, so clearing first with the
+#                         daemon live races it -- clipnotify fires and clipmenud
+#                         reads the selection mid-clear. Disable is a SIGUSR1 to
+#                         an in-memory flag, NOT a file in the cache dir, which
+#                         is why step 3 cannot silently undo it.
+#   2. clear selections   All three. PRIMARY matters most here: this machine runs
+#                         clipmenud with CM_SELECTIONS='primary' (see
+#                         ~/.local/bin/clipmenud), so a HIGHLIGHTED secret is the
+#                         one that reaches the history. CLIPBOARD still has to go
+#                         because it is what Ctrl+V pastes.
+#   3. `clipdel -d '.*'`  ".*" is special-cased in clipdel: it rm -rf's the whole
+#                         cache dir -- every clip file, the line_cache, and all
+#                         other state -- then recreates it empty. A per-entry
+#                         regex would leave the line_cache behind.
+#   4. `clipctl enable`   Re-enable LAST. clipmenud's sig_enable reads the
+#                         CURRENT selection contents and records them as
+#                         "already seen" -- so re-enabling while the secret is
+#                         still on the clipboard would make clipmenud hold a copy
+#                         in memory. Re-enabling after the clear stores empty.
+#
+# ------------------------------------------------------------------ WHAT IT IS NOT
+# This does NOT reach: another machine's clipboard, an X11 client that kept its
+# own copy in its process memory (a browser's paste buffer, an editor's kill
+# ring), scrollback in a terminal, or anything already written to a file. It
+# closes the clipboard, not the incident.
+set -u
+
+: "${DISPLAY:=:0}"
+export DISPLAY
+
+quiet=0
+[ "${1-}" = "-q" ] || [ "${1-}" = "--quiet" ] && quiet=1
+say() { [ "$quiet" -eq 1 ] || printf '%s\n' "$*"; }
+
+# clipdel and clipmenud both resolve the cache dir this way. Recomputed here so
+# the report names the directory actually acted on rather than assuming one --
+# a systemd unit or a non-interactive ssh has no XDG_RUNTIME_DIR and would
+# silently purge a DIFFERENT directory under /tmp.
+CM_DIR="${CM_DIR:-${XDG_RUNTIME_DIR:-${TMPDIR:-/tmp}}}"
+cache_dir="$CM_DIR/clipmenu.6.$USER"
+
+before=0
+[ -d "$cache_dir" ] && before=$(find "$cache_dir" -maxdepth 1 -type f ! -name 'lock' ! -name 'session_lock' | wc -l)
+
+# 1. Suspend collection. Exit 2 means clipmenud is not running -- then there is
+#    no daemon to race and no history to purge, but the selections still must go.
+daemon=1
+if ! clipctl disable 2>/dev/null; then
+    daemon=0
+    say "clipmenud: not running (selections will still be cleared)"
+fi
+
+# 2. Clear all three selections. Own-then-release: setting empty makes the
+#    content unreadable even if a client re-asserts ownership between the two
+#    calls, and --clear then leaves the selection unowned.
+for sel in clipboard primary secondary; do
+    printf '' | xsel --"$sel" --input  2>/dev/null
+    xsel --"$sel" --clear              2>/dev/null
+done
+
+# 3. Nuke the stored history.
+clipdel -d '.*' >/dev/null 2>&1
+
+# 4. Resume collection.
+[ "$daemon" -eq 1 ] && clipctl enable >/dev/null 2>&1
+
+# ---------------------------------------------------------------- VERIFY
+# Report what is TRUE after the fact, not what was attempted. An emergency tool
+# that prints "done" without checking is worse than one that prints nothing.
+residue=0
+for sel in b p s; do
+    n=$(xsel -o -"$sel" 2>/dev/null | wc -c)
+    [ "$n" -gt 0 ] && residue=$((residue + n))
+done
+after=0
+[ -d "$cache_dir" ] && after=$(find "$cache_dir" -maxdepth 1 -type f ! -name 'lock' ! -name 'session_lock' | wc -l)
+
+if [ "$residue" -eq 0 ] && [ "$after" -eq 0 ]; then
+    status="Clipboard purged: $before entries removed, all 3 selections empty"
+    rc=0
+else
+    status="Clipboard purge INCOMPLETE: ${residue}b left in selections, $after entries left in $cache_dir"
+    rc=1
+fi
+
+say "$status"
+command -v notify-send >/dev/null 2>&1 && \
+    notify-send -u critical -t 4000 "clip-purge" "$status" 2>/dev/null
+exit $rc
