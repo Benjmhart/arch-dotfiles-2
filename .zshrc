@@ -258,6 +258,24 @@ alias dotadd="dot add -u"
 # `system status` / `system push` across every system repo -- see
 # ~/projects/station-maintenance/REPOS.md. Pushes need a real terminal.
 alias system="$HOME/projects/station-maintenance/bin/system"
+# `beast` -- attach this terminal to beast-arch's herdr server over the tailnet.
+# herdr supports this first-class: `--remote <ssh-target>` runs the herdr CLIENT
+# here against the remote server, so it is NOT `ssh -t beast-arch herdr`.
+# ⚠️ RUN IT FROM A PLAIN TERMINAL, NOT FROM INSIDE A HERDR PANE. herdr refuses to
+# nest -- "nested herdr is disabled by default" -- and that refusal is LOCAL, from
+# the HERDR_ENV in the pane you typed in; beast-arch is not involved and nothing is
+# broken. To allow it anyway: [experimental] allow_nested = true in
+# ~/.configure/herdr/config.toml. It is experimental, and stacking two TUIs means
+# keybinding collisions -- which is what --remote-keybindings local|server settles.
+# For a one-shot that works from anywhere, herdr pane included, no TUI needed:
+#   ssh beast-arch 'herdr agent list'
+# Verified from carbon 2026-09-11: both boxes on herdr 0.8.2, beast-arch's server
+# running (protocol 20, compatible), carbon's key in its authorized_keys so the hop
+# needs no passphrase. With HERDR_* unset the client reached terminal INIT -- the
+# only thing a tool session could not supply was a tty.
+if [[ "$(uname -n)" != beast-arch ]]; then
+  alias beast='herdr --remote beast-arch'
+fi
 alias cronlog="cat ~/Desktop/cronlog"
 alias vifmrc="nvim ~/.configure/vifm/vifmrc"
 alias todo="cd ~/BRAIN/ && nvim './000-index.md'"
