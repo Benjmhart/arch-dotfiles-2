@@ -35,6 +35,37 @@ CAVEAT
   It also cannot protect itself: lowering its own OOM score needs
   CAP_SYS_RESOURCE, which a user unit does not have.
 
+WHY THE TIMESTAMPS ARE UTC — added 2026-09-11
+  Both the line stamp and the log FILENAME come from UTC, not local time.
+  Naive local timestamps were the original scheme and they are monotonic only
+  for as long as the local clock is. Two things break that, and one of them
+  already did:
+
+    * carbon's timezone changed from UTC to America/Toronto on 2026-09-11 at
+      02:32 UTC. The local clock jumped BACKWARDS four hours, so the sampler
+      reopened the previous day's file and appended 22:33:08 underneath an
+      existing 23:59:56. The day's samples ended up split across two files
+      interleaved in real time.
+    * DST fall-back does the same thing every year, on BOTH machines. Checked
+      against the zone database rather than assumed: America/Toronto next falls
+      back 2026-11-01, 02:00 EDT -> 01:00 EST, so that hour would be logged
+      twice with descending timestamps.
+
+  The damage is not the ugly file. It is that report()'s gap detector computes
+  t - prev across the discontinuity as NEGATIVE, which is not "> 3 minutes", so
+  a REAL gap in coverage reads as no gap at all. On carbon 2026-09-11 that hid
+  a genuine 2h33m hole in the samples — in the one tool built to find holes.
+
+  UTC has no such discontinuity: no DST, no relocation, and the two machines'
+  logs become directly comparable, which they were not while beast-arch ran
+  Canada/Eastern and carbon ran UTC.
+
+  Lines written before this change carry NAIVE local timestamps. report()
+  attaches the machine's current zone to those rather than refusing to compare
+  them — deltas BETWEEN two old lines stay exact, because a uniform offset
+  cancels. Only the single boundary delta where naive meets aware is wrong, and
+  that boundary is a real discontinuity anyway.
+
 USAGE
   mem-sample              write one sample
   mem-sample --report     summarise today, worst-first
@@ -44,7 +75,7 @@ import argparse
 import os
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 STATE = Path.home() / ".local/state/mem-sample"
@@ -82,7 +113,7 @@ def sample():
     used = m["MemTotal"] - m["MemAvailable"]
     swap_used = m["SwapTotal"] - m["SwapFree"]
     fields = [
-        datetime.now().isoformat(timespec="seconds"),
+        datetime.now(timezone.utc).isoformat(timespec="seconds"),
         f"used={used // 1024}M",
         f"avail={m['MemAvailable'] // 1024}M",
         f"swap={swap_used // 1024}M",
@@ -93,7 +124,7 @@ def sample():
     line = " ".join(fields) + "\n"
 
     STATE.mkdir(parents=True, exist_ok=True)
-    path = STATE / f"{datetime.now():%Y-%m-%d}.log"
+    path = STATE / f"{datetime.now(timezone.utc):%Y-%m-%d}.log"
     with open(path, "a") as fh:
         fh.write(line)
         fh.flush()
@@ -102,9 +133,13 @@ def sample():
 
 
 def report():
-    path = STATE / f"{datetime.now():%Y-%m-%d}.log"
+    # "Today" is the UTC day, matching how sample() names the file. On a machine
+    # west of Greenwich the current UTC day starts during the previous local
+    # evening; that is the cost of a monotonic clock and it is the right trade
+    # for an instrument that measures elapsed time rather than calendar days.
+    path = STATE / f"{datetime.now(timezone.utc):%Y-%m-%d}.log"
     if not path.exists():
-        print(f"no samples yet for today ({path})")
+        print(f"no samples yet for today, UTC ({path})")
         return 1
     lines = path.read_text().splitlines()
     print(f"{len(lines)} samples in {path}")
@@ -128,7 +163,24 @@ def report():
             t = datetime.fromisoformat(l.split()[0])
         except (ValueError, IndexError):
             continue
-        if prev and (t - prev) > timedelta(minutes=3):
+        # Pre-2026-09-11 lines are naive local. Mixing naive and aware in a
+        # subtraction raises TypeError, which would take out the whole report
+        # for any file that straddles the change -- so normalise rather than
+        # crash. astimezone() on a naive value assumes this machine's zone,
+        # which reproduces the old reading exactly for old lines.
+        if t.tzinfo is None:
+            t = t.astimezone()
+        if prev and t < prev:
+            # A backwards step is not a gap, and it must not be silent. It means
+            # the clock moved under the sampler -- a timezone change or DST
+            # fall-back -- and the delta ACROSS this point is meaningless, which
+            # is precisely how a real 2h33m hole in carbon's samples read as "no
+            # gaps" on 2026-09-11. Whatever gap is hiding here cannot be
+            # measured from the timestamps; say so instead of scoring it zero.
+            print(f"  {prev.isoformat()} -> {t.isoformat()}  CLOCK WENT BACKWARDS "
+                  f"by {prev - t} -- any gap across this point is UNMEASURABLE")
+            found = True
+        elif prev and (t - prev) > timedelta(minutes=3):
             print(f"  {prev.time()} -> {t.time()}  ({t - prev})")
             found = True
         prev = t
