@@ -19,9 +19,19 @@
 Many sessions run at once, roughly one per repo, across beast-arch and carbon. Five rules, all
 paid for by real incidents (beast-arch task 59).
 
-**Cite a commit SHA in any claim about another repo's state.** "as of `b8e6023` on
-`mlabs-marketing/main`" lets the reader run `git cat-file -e b8e6023` and learn *"I do not have
-that commit yet"* instead of *"that never happened"*.
+**Cite a commit SHA in any claim about another repo's state — and push it before you cite it.**
+"as of `b8e6023` on `mlabs-marketing/main`" lets the reader run `git cat-file -e b8e6023` and learn
+*"I do not have that commit yet"* instead of *"that never happened"*. **That only works while the
+SHA is stable, and an unpushed SHA is not.** On **2026-09-11** a message cited `f1b3d96`; the sender
+rebased before pushing — which `system pull` itself recommends as the ordinary fix for divergence —
+and the work went out as `66a7a44` instead. `git cat-file -e f1b3d96` **still succeeds on the
+sender's box** (unreachable from any branch, kept alive by the reflog until it is GC'd) and **fails
+permanently everywhere else**. So the sender who checks their own citation before sending gets a
+green light and ships a dead reference, and **no local test can catch it**; on the reader's side the
+failure is indistinguishable from *"not pushed yet"*, collapsing the exact distinction this rule
+exists to create. A SHA is an allocation in a shared namespace, exactly like the outbound IDs and NAG
+numbers in *"Push before minting"* below: **push, then cite.** If you genuinely must cite first, say it is unpushed and name the branch and
+machine — then **re-cite after the push**, which is the half that gets forgotten.
 
 **Never assert a negative about another repo's history without fetching first.** `git fetch`, then
 claim. On 2026-09-05 a handover note was declared *"absent from the whole of that repo's history"*
@@ -45,7 +55,9 @@ commit that never left this machine. So when you allocate from a shared sequence
 ID, a NAG number, a record id — the unpushed commit holding your allocation is invisible to every
 other workspace, and the next one mints the same value. That is not hypothetical: **NAG-036's
 outbound ID collided on 2026-09-06**, two workspaces minting from one sequence while one held
-unpushed commits. Ask to push at the point of minting, not at the end of the session.
+unpushed commits. Ask to push at the point of minting, not at the end of the session. **The same
+timing applies to any SHA you cite** — see the first rule, where an unpushed one was rebased out
+from under a message and the sender's own check could not detect it.
 
 **Do not write files into another repo's working tree.** It dirties the tree, and the BMAD
 governor refuses to dispatch work to a project with a dirty tree — so a note left for an agent
