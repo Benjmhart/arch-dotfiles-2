@@ -175,6 +175,12 @@ plugins=(gitfast command-not-found zsh-autosuggestions compleat npm cabal sudo v
 
 source $ZSH/oh-my-zsh.sh
 
+# Set explicitly, not left to oh-my-zsh. On 2026-09-30 carbon came out of a
+# bootstrap with no ~/.oh-my-zsh, the source above failed, and AUTO_CD went with
+# it, so typing a directory name said "permission denied" instead of entering it.
+# (The other thing it took, the emacs keymap, is set explicitly further down.)
+setopt auto_cd
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -235,7 +241,7 @@ alias start3="$HOME/bin/start3.sh"
 # alias start2="$HOME/bin/double.sh"
 alias start1="$HOME/bin/single.sh"
 alias startwide="$HOME/bin/startwide.sh"
-alias projects="cd ~/Projects"
+alias projects="cd ~/projects"
 alias reload="source ~/.zshrc"
 alias dotfiles="cd ~/dotfiles"
 alias mongostart="docker run -d -p 27017-27019:27017-27019 --name mongod mongo"
