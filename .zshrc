@@ -209,6 +209,11 @@ expand-aliases() {
     CURSOR=$#BUFFER
 }
 
+# Emacs keybindings, explicitly. zsh picks the VI keymap by default whenever
+# $EDITOR or $VISUAL contains "vi" -- and EDITOR=/bin/nvim does. Must come
+# before any bindkey below, which binds into whichever keymap is main.
+bindkey -e
+
 zle -N expand-aliases
 bindkey '^ ' expand-aliases
 
