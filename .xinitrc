@@ -63,6 +63,17 @@ fi
 # after Ben reported the desktop looking pixelated; beast-arch task 35.
 nitrogen --set-zoom-fill --random ~/projects/wallpapers
 
+# Dark mode, system-wide. Electron apps (Rambox) and GTK apps read the
+# preference from the xdg-desktop-portal Settings interface, which the gtk
+# backend serves from this gsettings key -- see
+# ~/.config/xdg-desktop-portal/portals.conf, without which the portal offers no
+# Settings interface under xmonad at all. Set at every login rather than tracked:
+# the value lives in dconf's binary ~/.config/dconf/user, and this way a rebuild
+# gets it without anyone remembering. Added 2026-09-30 -- Rambox kept losing its
+# own Dark setting; with Rambox on "System" it follows this instead.
+command -v gsettings >/dev/null 2>&1 && \
+  gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+
 # Japanese input (fcitx5 + mozc). Guarded like the monitor block above: this
 # file travels in the dotfiles repo, and on a machine without fcitx5 the env
 # vars would make GTK/Qt apps hunt for a missing input module.
