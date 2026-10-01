@@ -2,16 +2,20 @@
 
 ## Git
 
-- Pushing to GitHub works from a tool session as of 2026-08-23. `~/.ssh/id_ed25519_agent` is a
-  passphrase-less key pinned for `github.com` in `~/.ssh/config`, so nothing prompts. The old rule
-  here — never push, because the passphrase would hang — described a real constraint that has
-  since been removed; do not reason from it.
+- Pushing to GitHub works from a tool session, verified on beast-arch 2026-09-30 after the
+  post-incident rebuild: `~/.ssh/id_ed25519` authenticates to `github.com` with no prompt.
+  `~/.ssh/id_ed25519_agent` is listed first for `github.com` in `~/.ssh/config`. **On beast-arch it
+  was removed from GitHub** during the incident response and is rejected, so ssh falls through to
+  `id_ed25519`. **On carbon it is still registered** (`SHA256:27yM…`, kept by Ben's decision). Do not
+  register another passphrase-less push key without asking: the incident (a phishing script that ran
+  on a git branch change, 2026-09-28) had exactly that key's reach, which is push access to every repo. Record: `mlabs-marketing/state/incidents/2026-09-30-workstation-compromise.md`.
 - Still do not push unprompted. Commit locally, surface what is unpushed, and push when asked.
   Pushing is outward-facing and awkward to walk back, which is a different reason from the
   mechanical one above and is still in force.
 - Never force-push. Never push `~/secrets` without asking first — it holds the KeePassXC vault,
   and a bad push there costs more than a bad push of code.
-- Non-GitHub remotes still use the passphrase-protected `id_rsa` and can still block on a prompt.
+- Non-GitHub remotes: the passphrase-protected `id_rsa` did not survive the 2026-09-29/30
+  rebuilds (it is absent from beast-arch's `~/.ssh`). Anything that needs it will fail or prompt.
   Leave those to the user.
 
 ## Talking to agents in other repos

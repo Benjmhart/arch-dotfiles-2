@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# social-browser — start, check or cycle the agent-owned Chromium with CDP on 127.0.0.1:9222.
+#
+#   social-browser            start it if it is not running with the port
+#   social-browser --check    report only
+#   social-browser --restart  cycle a running browser to add the port (drops its tabs)
+#
+# A wrapper, not a symlink: the real script finds browsercheck.py through dirname "$0",
+# which a symlink in ~/.local/bin would point at the wrong directory.
+#
+# From dmenu there is no terminal to read, so the result goes to a notification instead.
+S="$HOME/projects/mlabs-marketing/tools/social-browser.sh"
+[ -x "$S" ] || { msg="not found: $S (is mlabs-marketing cloned?)"; [ -t 1 ] && echo "$msg" >&2 || notify-send -u critical social-browser "$msg"; exit 1; }
+
+if [ -t 1 ]; then
+    exec "$S" "$@"
+fi
+out=$("$S" "$@" 2>&1); rc=$?
+notify-send -u "$([ $rc -eq 0 ] && echo normal || echo critical)" "social-browser${1:+ $1}" "$(printf '%s\n' "$out" | grep -v '^\s*$' | tail -5)"
+exit $rc
