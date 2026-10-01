@@ -22,6 +22,12 @@
 # the wrong half of the lesson stuck.
 #
 # Before adding any Super binding to xmonad.hs, check it is not this one.
+#
+# Also check fcitx5's OWN add-ons. Quick Phrase defaults to Super+grave too and
+# took the key first (seen 2026-10-01: Super+` opened Quick Phrase instead of
+# hiragana). conf/quickphrase.conf moves it off. Read the live keys with:
+#   dbus-send --session --print-reply --dest=org.fcitx.Fcitx5 /controller \
+#     org.fcitx.Fcitx.Controller1.GetConfig string:fcitx://config/addon/<name>
 0=Super+grave
 # fcitx5's documented default, verified working here; kept as a fallback.
 1=Control+space
