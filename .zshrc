@@ -263,7 +263,8 @@ alias dotadd="dot add -u"
 # `system status` / `system push` across every system repo -- see
 # ~/projects/station-maintenance/REPOS.md. Pushes need a real terminal.
 alias system="$HOME/projects/station-maintenance/bin/system"
-# `beast` -- attach this terminal to beast-arch's herdr server over the tailnet.
+# `beast` / `carbon` -- attach this terminal to that machine's herdr server over
+# the tailnet. Each is defined only on the OTHER machine.
 # herdr supports this first-class: `--remote <ssh-target>` runs the herdr CLIENT
 # here against the remote server, so it is NOT `ssh -t beast-arch herdr`.
 # ⚠️ RUN IT FROM A PLAIN TERMINAL, NOT FROM INSIDE A HERDR PANE. herdr refuses to
@@ -278,8 +279,14 @@ alias system="$HOME/projects/station-maintenance/bin/system"
 # running (protocol 20, compatible), carbon's key in its authorized_keys so the hop
 # needs no passphrase. With HERDR_* unset the client reached terminal INIT -- the
 # only thing a tool session could not supply was a tty.
+# The targets are bare tailnet NAMES, resolved by Tailscale MagicDNS -- no IP is
+# written down anywhere, so a node that re-registers with a new address (as
+# beast-arch did in the 2026-09-30 rebuild) needs no edit here or in ~/.ssh/config.
 if [[ "$(uname -n)" != beast-arch ]]; then
   alias beast='herdr --remote beast-arch'
+fi
+if [[ "$(uname -n)" != carbon ]]; then
+  alias carbon='herdr --remote carbon'
 fi
 alias cronlog="cat ~/Desktop/cronlog"
 alias vifmrc="nvim ~/.configure/vifm/vifmrc"
