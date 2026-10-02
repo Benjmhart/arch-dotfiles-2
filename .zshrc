@@ -228,8 +228,8 @@ bindkey '^ ' expand-aliases
 export KEYTIMEOUT=1
 # see https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vi-mode for mapping details
 
-# allow 256 colors in konsole
-export COLORTERM=truecolor
+# truecolor everywhere except the kernel console (TERM=linux), which cannot draw it
+[[ $TERM != linux ]] && export COLORTERM=truecolor
 
 # Example aliases
 alias zshrc="nvim ~/.zshrc"
@@ -306,8 +306,8 @@ export SDKMAN_DIR="/home/ben/.sdkman"
 [[ -s "/home/ben/.sdkman/bin/sdkman-init.sh" ]] && source "/home/ben/.sdkman/bin/sdkman-init.sh"
 #[ -f "/home/ben/.ghcup/env" ] && source "/home/ben/.ghcup/env" # ghcup-env
 
-#use the startship prompt
-eval "$(starship init zsh)"
+#use the startship prompt -- not on the kernel console: its Nerd Font glyphs render as boxes there
+if [[ $TERM == linux ]]; then PROMPT='%F{cyan}%~%f %# '; else eval "$(starship init zsh)"; fi
 
 
 export CARDANO_NODE_SOCKET_PATH=~/Projects/iohk/cardano/db/node.socket
