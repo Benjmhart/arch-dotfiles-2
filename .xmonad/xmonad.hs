@@ -6,7 +6,10 @@ import XMonad
 import XMonad.Actions.SpawnOn (spawnOn, manageSpawn)
 import XMonad.Actions.WindowGo (runOrRaise)
 import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops (ewmh)
+import XMonad.Hooks.EwmhDesktops (ewmhDesktopsStartup, ewmhDesktopsLogHook, ewmhDesktopsEventHook)
+import XMonad.Hooks.UrgencyHook (withUrgencyHook, NoUrgencyHook(..), focusUrgent)
+import Data.Monoid (All(..))
+import Data.Bits (setBit)
 import XMonad.Hooks.ManageDocks
 import XMonad.StackSet as W
 import XMonad.Util.Run (spawnPipe)
@@ -55,21 +58,47 @@ main = do
   -- xmonad-contrib 0.16 exports `ewmh` but NOT `ewmhFullscreen`; the fullscreen
   -- half is a separate `fullscreenEventHook` in handleEventHook, left off on
   -- purpose so this change has one variable.
-  xmonad $ ewmh $ def
+  --
+  -- 2026-10-02 (beast-arch task 65): `ewmh` is spelled out as its three parts so
+  -- its event hook can be wrapped by activateToUrgent below. Same hooks, same
+  -- order as `ewmh` itself appends them.
+  xmonad $ withUrgencyHook NoUrgencyHook $ def
     { terminal = "alacritty"
     , manageHook = manageSpawn <+> myManageHook <+> manageDocks
-    , startupHook = myStartupHook
+    , startupHook = myStartupHook <+> ewmhDesktopsStartup
     , layoutHook = avoidStruts $ layoutHook def
-    , logHook = dynamicLogWithPP xmobarPP
+    , logHook = (<+> ewmhDesktopsLogHook) $ dynamicLogWithPP xmobarPP
       -- Same line to every bar. Each xmobar owns its own stdin, so one write per
       -- process is required -- writing once would leave the others blank.
       { ppOutput = \s -> mapM_ (\h -> hPutStrLn h s) xmprocs
       , ppTitle = xmobarColor "green" "" . shorten 50
       }
-    , handleEventHook = handleEventHook def <+> docksEventHook
+    , handleEventHook = handleEventHook def <+> docksEventHook <+> activateToUrgent
     , modMask = winSuperMask -- rebind mod to the windows key
     } `additionalKeys` 
       myKeys
+
+-- beast-arch task 65. Claude drives Chromium (the Claude in Chrome extension
+-- lives only in that profile; Ben's own browser is Vivaldi). Every tab or window
+-- it activates sends _NET_ACTIVE_WINDOW, and xmonad-contrib 0.16's ewmh obeys
+-- each one: focus and workspace jumped to Chromium 4 ms after the request
+-- (~/.local/state/focus-log/task65-2026-10-02.log). For Chromium only, the
+-- request now just sets the window's urgency hint: the workspace goes urgent
+-- in xmobar (xmobarPP's ppUrgent) and mod-u (focusUrgent) jumps there. Every
+-- other window, Vivaldi included, is still focused on request.
+-- 0.17+ does this with `setEwmhActivateHook doAskUrgent`; 0.16 has neither.
+activateToUrgent :: Event -> X All
+activateToUrgent e@ClientMessageEvent { ev_window = w, ev_message_type = t } = do
+  a <- getAtom "_NET_ACTIVE_WINDOW"
+  claude <- runQuery (className =? "Chromium") w
+  if t == a && claude
+    then do
+      withDisplay $ \d -> io $ do
+        h <- getWMHints d w
+        setWMHints d w h { wmh_flags = wmh_flags h `setBit` urgencyHintBit }
+      return (All True)
+    else ewmhDesktopsEventHook e
+activateToUrgent e = ewmhDesktopsEventHook e
 
 myManageHook
   = composeAll
@@ -142,6 +171,9 @@ modKAudioToggle = ((winSuperMask, xK_a), spawn "audio-toggle")
 -- warning below about additionalKeys overriding silently: xK_n would have taken
 -- mod-n (refresh) without saying so.
 modKQuiet = ((winSuperMask, xK_d), spawn "quiet toggle")
+-- Super+u: jump to the urgent window (task 65: where Claude's Chromium waits).
+-- mod-u is free in both myKeys and xmonad's defaults -- checked, not assumed.
+modKUrgent = ((winSuperMask, xK_u), focusUrgent)
 -- alt is mod1Mask
 modKScreenmap = [((mod4Mask .|. mod1Mask, key), screenWorkspace sc >>= flip whenJust (windows . f))
   | (key, sc) <- zip [xK_w, xK_e, xK_r] [1, 0, 2]
@@ -154,6 +186,7 @@ myKeys
     , modKClipboard
     , modKAudioToggle
     , modKQuiet
+    , modKUrgent
     -- , textEmail
     -- , textName
     ]
