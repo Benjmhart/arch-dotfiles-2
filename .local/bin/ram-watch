@@ -41,8 +41,11 @@ import sys
 from datetime import datetime, timedelta
 
 STATE = os.path.expanduser("~/.local/share/ram-watch/start")
-# The boot on which memmap= was removed — the original window's start.
-DEFAULT_START = "2026-08-04 12:57:42"
+# No default start. Until 2026-10-01 a missing marker fell back SILENTLY to
+# 2026-08-04, and after the 2026-09-30 rebuild erased the marker the tool
+# printed a 58-day "pass" over a journal holding 2 days. The window start is
+# also recorded in station-maintenance (beast-arch task 1), which is in git
+# and survives a rebuild; this file does not.
 
 FAULT_PATTERNS = [
     ("bad-page", "BUG: Bad page"),
@@ -100,7 +103,9 @@ def window_start(args):
     if os.path.exists(STATE):
         with open(STATE) as fh:
             return datetime.strptime(fh.read().strip()[:19], "%Y-%m-%d %H:%M:%S")
-    return datetime.strptime(DEFAULT_START, "%Y-%m-%d %H:%M:%S")
+    sys.exit(f"NO WINDOW: {STATE} is missing. Refusing to guess a start.\n"
+             "Find the recorded start in station-maintenance beast-arch task 1 and\n"
+             "run --since 'YYYY-MM-DD HH:MM:SS', or begin a new window with --restart.")
 
 
 def main():
@@ -113,13 +118,22 @@ def main():
     if args.restart:
         os.makedirs(os.path.dirname(STATE), exist_ok=True)
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open("/proc/sys/kernel/random/boot_id") as fh:
+            boot_id = fh.read().strip()
         with open(STATE, "w") as fh:
-            fh.write(now + "\n")
-        print(f"watch window restarted at {now}")
+            fh.write(f"{now} boot {boot_id}\n")
+        print(f"watch window restarted at {now} (boot {boot_id})")
+        print("Record this start in station-maintenance beast-arch task 1: this marker")
+        print("does not survive a rebuild, and the tool will not guess without it.")
         return 0
 
     start = window_start(args)
     boots = json.loads(run(["journalctl", "--list-boots", "-o", "json"]) or "[]")
+    # A window that starts before the journal does is partly unmeasured. Until
+    # 2026-10-01 those missing days were counted as quiet ones.
+    journal_start = (datetime.fromtimestamp(min(b["first_entry"] for b in boots) / 1e6)
+                     if boots else None)
+    unmeasured = journal_start is not None and journal_start > start
     # Always keep the running boot (index 0). Immediately after --restart its
     # last_entry can still predate the new window start by a few seconds, and
     # filtering it out made the tool report "no boots in window" and exit 2 on
@@ -136,6 +150,10 @@ def main():
     elapsed = datetime.now() - start
     print(f"elapsed      : {elapsed.days}d {elapsed.seconds // 3600}h "
           f"across {len(boots)} boot(s)\n")
+    if unmeasured:
+        gap = journal_start - start
+        print(f"!! JOURNAL BEGINS {journal_start:%Y-%m-%d %H:%M:%S}, after the window start:")
+        print(f"!! {gap.days}d {gap.seconds // 3600}h of this window has NO evidence at all.\n")
 
     hdr = f"{'boot':>5}  {'ended':<19}  {'shutdown':<9}  faults"
     print(hdr)
@@ -194,6 +212,10 @@ def main():
               f"{fault_total} kernel fault event(s).")
         print("The window does not pass. Record it and restart with --restart.")
         return 1
+    if unmeasured:
+        print("VERDICT: NO VERDICT — the journal does not cover the whole window.")
+        print("Missing days are not quiet days. Restart with --restart.")
+        return 3
     if elapsed >= timedelta(days=7):
         print("VERDICT: window completed with both signals quiet.")
         print("This is NOT proof the RAM is good — only that these signals stayed")
