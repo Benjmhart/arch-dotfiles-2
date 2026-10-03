@@ -348,6 +348,11 @@ nix() { GC_MAXIMUM_HEAP_SIZE="${NIX_EVAL_HEAP_MAX:-8G}" command nix "$@"; }
 # The DeepSeek key lives in ~/.zsh_secrets, which is UNTRACKED and 0600.
 # It was in this file until 2026-08-20, when GitHub push protection blocked
 # the commit that carried it -- correctly. Keep secrets out of tracked files.
+#
+# 2026-10-03: the shared copy is ~/secrets/zsh_secrets (the private secrets
+# repo, so one edit reaches every machine on its next pull). ~/.zsh_secrets
+# still loads after it, for anything that must stay on one machine.
+[ -r "$HOME/secrets/zsh_secrets" ] && source "$HOME/secrets/zsh_secrets"
 [ -r "$HOME/.zsh_secrets" ] && source "$HOME/.zsh_secrets"
 export PI_SMOL_MODEL="deepseek-v4-flash"
 export PI_SLOW_MODEL="deepseek-v4-pro"
