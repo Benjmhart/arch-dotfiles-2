@@ -1,0 +1,39 @@
+" Tridactyl config. Tracked in the dotfiles, shared by every machine.
+" Read by the native messenger (AUR firefox-tridactyl-native[-bin]) from
+" $XDG_CONFIG_HOME/tridactyl/tridactylrc -- ~/.configure here. Without the native
+" messenger Tridactyl never reads this file. Reload by hand with :source.
+"
+" Ported 2026-10-03 from the Vimium settings in ~/.configure/vimium-backup/
+" vimium-options.json, so the two browsers behave alike. Change one, change both.
+
+" This file is the whole truth: forget anything set by hand with :set or :bind.
+sanitise tridactyllocal tridactylsync
+
+colours dark
+
+" Search: DuckDuckGo by default (beast-arch task 73), `w <term>` for Wikipedia.
+set searchengine duckduckgo
+set searchurls.w https://www.wikipedia.org/w/index.php?title=Special:Search&search=%s
+
+" Hint characters, same as Vimium's linkHintCharacters.
+set hintchars sadfjklewcmpgh
+
+" Vimium keyMappings: Alt+j/k previous/next tab, Alt+h/l first/last tab,
+" Alt+o/i back/forward.
+bind <A-j> tabprev
+bind <A-k> tabnext
+bind <A-h> tabfirst
+bind <A-l> tablast
+bind <A-o> back
+bind <A-i> forward
+
+" Vimium exclusionRules: let Reddit's own keyboard shortcuts through.
+unbindurl reddit\.com j
+unbindurl reddit\.com k
+unbindurl reddit\.com h
+unbindurl reddit\.com l
+unbindurl reddit\.com a
+unbindurl reddit\.com z
+unbindurl reddit\.com x
+" Slack's Ctrl+Enter / Ctrl+U are typed into the message box, which is Tridactyl's
+" insert mode, where it already passes keys through. No rule needed.
