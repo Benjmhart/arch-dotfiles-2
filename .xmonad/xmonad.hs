@@ -199,7 +199,9 @@ myStartupHook = do
   spawnOnce "alacritty &"
   -- spawnOnce "copyq &" --remove? use clipmenu now
   -- spawnOnce "clipmenud &"
-  spawnOnce "stalonetray &"
+  -- Via a wrapper that places the tray against screen 0's actual width, not the
+  -- fixed x in ~/.stalonetrayrc, which was off-screen on micro's 1366px panel.
+  spawnOnce "~/bin/stalonetray-start &"
   -- Session apps, each pinned to a workspace.
   -- spawnOnOnce = place on workspace + don't respawn on xmonad restart.
   -- Requires manageSpawn in manageHook (above) or the workspace is ignored.

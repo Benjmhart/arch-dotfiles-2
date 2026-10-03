@@ -1,0 +1,30 @@
+#!/bin/sh
+# Launches stalonetray at the right-hand end of the FIRST monitor's xmobar,
+# wherever that is. Called from xmonad's startup hook instead of bare
+# `stalonetray`, which used the fixed `+1660+1` in ~/.stalonetrayrc.
+#
+# That fixed value was measured on a 1920px-wide screen 0 and is right on both
+# beast-arch (HDMI-A-0) and carbon. On micro, a 1366x768 laptop panel, x=1660
+# is past the right edge: the tray ran, docked its icons, and drew nowhere
+# visible. Found 2026-10-03, micro's first session.
+#
+# The offset is kept the same distance from the right edge as before:
+# 1920 - 1660 = 260px, which leaves the tray in the run of spaces that the
+# ~/.xmobarrc template pads in ahead of the clock. Command-line --geometry
+# overrides the rc file; every other tray setting still comes from there.
+#
+# Screen 0 is the first `xrandr --listmonitors` entry, the same Xinerama
+# order xmobar's `-x 0` follows. Falls back to the rc value if xrandr gives
+# nothing parseable, so a bad read reproduces the old behaviour, not no tray.
+
+geom=$(xrandr --listmonitors 2>/dev/null | awk '
+    $1 == "0:" {
+        split($3, a, /[\/x+]/)   # 1366/256x768/144+0+0 -> w,mm,h,mm,x,y
+        printf "%d", a[5] + a[1] - 260
+    }')
+
+if [ -n "$geom" ] && [ "$geom" -gt 0 ]; then
+    exec stalonetray --geometry "8x1+${geom}+1" --max-geometry "9x1+${geom}+1"
+else
+    exec stalonetray
+fi

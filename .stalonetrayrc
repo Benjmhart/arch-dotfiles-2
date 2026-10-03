@@ -1,6 +1,11 @@
 decorations none
 transparent false
 dockapp_mode none
+# 2026-10-03: the +1660 below is now only a FALLBACK. xmonad launches the tray through
+# ~/bin/stalonetray-start, which passes --geometry computed as (screen 0 width - 260):
+# 1660 on a 1920px screen as before, 1106 on micro's 1366px panel where +1660 was
+# off-screen. Change the offset in that script, not here.
+#
 # Top edge of the LEFT monitor (HDMI-A-0, 1920x1080 at +0+0), sitting on top of xmobar.
 # Absolute +x+y, not the old -2000+0: a negative offset is measured from the right edge of
 # the whole 3000x1920 X screen, which moves whenever the monitor layout changes.
