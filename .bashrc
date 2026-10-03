@@ -9,8 +9,14 @@ alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Bash only. .zshrc sources this file (line 16, via .bash_profile) and loads nvm
+# itself afterwards, so under zsh these two lines loaded nvm a second time, WITH its
+# automatic `nvm use`, and nvm's bash_completion ran an extra compinit -- about 0.5 s
+# of every zsh startup on micro (2026-10-03, traced with zsh -x).
+if [[ -z ${ZSH_VERSION-} ]]; then
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/ben/.sdkman"

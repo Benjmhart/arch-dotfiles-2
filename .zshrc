@@ -45,8 +45,8 @@ export VIFM=$HOME/.configure/vifm
 
 export WINHOME=/mnt/c/Users/Ben
 
-autoload -Uz compinit
-compinit
+# compinit is NOT called here: oh-my-zsh calls it (with its own dump file), and a
+# second full run cost ~0.3 s per shell on micro (2026-10-03, zprof).
 
 export XDG_CONFIG_HOME=$HOME/.configure
 export XDG_CACHE_HOME=$HOME/.cache
@@ -106,9 +106,9 @@ export GOPATH=~/Projects/go
 
 if [[ -d "$HOME/.nvm" ]]
 then
-  source "$HOME/.nvm/nvm.sh"
+  source "$HOME/.nvm/nvm.sh" --no-use
 else
-  source "$HOME/.configure/nvm/nvm.sh"
+  source "$HOME/.configure/nvm/nvm.sh" --no-use
 fi
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
@@ -316,7 +316,16 @@ export LD_LIBRARY_PATH=/usr/local/lib:
 export NODE_HOME=/home/ben/cardano-my-node
 export NODE_BUILD_NUM=7006939
 export CARDANO_NODE_SOCKET_PATH=/home/ben/cardano-my-node/cardano-private-network/example/node-bft1/node.sock
-nvm use v24
+# Node 24 on PATH WITHOUT `nvm use`. nvm.sh's automatic use plus `nvm use v24` took
+# ~1.2 s of every shell's startup on micro (2026-10-03, zprof), and printed "Now using
+# node ..." at the top of every terminal. Same result: the newest installed v24.x,
+# picked by numeric sort (`n`), so v24.21 beats v24.9. `nvm use` still works by hand.
+_node24=( "$NVM_DIR"/versions/node/v24.*(N/nOn[1]) )
+if (( $#_node24 )); then
+  PATH="$_node24[1]/bin:$PATH"
+  export NVM_BIN="$_node24[1]/bin"
+fi
+unset _node24
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 export LUA_PATH='~/.config/nvim/lua'

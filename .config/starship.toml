@@ -1,6 +1,12 @@
 # Don't print a new line at the start of the prompt
 add_newline = false
 
+# Default 30 ms. On micro's spinning disk the first directory scan of a new terminal
+# (cold cache) overran it and printed "Scanning current directory timed out" above
+# the prompt (2026-10-03). The limit only bites when the disk is slow; a warm scan
+# takes a few ms either way.
+scan_timeout = 200
+
 # Replace the "❯" symbol in the prompt with "➜"
 [character]                            # The name of the module we are configuring is "character"
 success_symbol = "[➜](bold green)"     # The "success_symbol" segment is being set to "➜" with the color "bold green"
