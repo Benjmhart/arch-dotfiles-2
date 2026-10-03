@@ -214,8 +214,8 @@ myStartupHook = do
   -- so the desktop app no longer needs to be running. Launch it by hand when you
   -- actually want the GUI -- but if you do, leave Sync DISABLED inside the app;
   -- two sync clients on one device is unsupported.
-  -- Not on lean hosts (~/bin/lean-host; micro, Ben 2026-10-03): ~90% of a core there.
-  spawnOnOnce "5" "~/bin/unless-lean rambox"
+  -- Not on lean hosts or media-center: the host list is in ~/bin/rambox-autostart.
+  spawnOnOnce "5" "~/bin/rambox-autostart"
   spawnOnOnce "4" "vivaldi"
   -- herdr = terminal multiplexer / workspace manager for coding agents.
   -- NOTE: ~/.local/bin/herdr is a self-distributed binary that updates itself

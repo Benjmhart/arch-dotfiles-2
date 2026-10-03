@@ -1,0 +1,11 @@
+#!/bin/sh
+# Rambox at login (xmonad.hs spawnOnOnce), except where it should not run:
+#   - lean hosts (~/bin/lean-host; micro): ~90% of a core there.
+#   - media-center: an appliance for watching media, not a desk (Ben, 2026-10-03).
+# exec keeps the PID xmonad recorded, so the window lands on its workspace --
+# see ~/bin/unless-lean for why a shell in between breaks that.
+"$HOME/bin/lean-host" && exit 0
+case "$(cat /etc/hostname 2>/dev/null)" in
+    media-center) exit 0 ;;
+esac
+exec rambox "$@"
