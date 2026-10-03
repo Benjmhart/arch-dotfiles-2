@@ -1,0 +1,21 @@
+# Jellyfin MPV Shim: makes this screen a cast target for the Jellyfin apps.
+# It is a long-running daemon -- in a terminal it looks hung because it just waits
+# for casts. Started by ~/.xinitrc (needs DISPLAY, which only exists once X is up,
+# and startx has no graphical-session.target), on machines that have the shim
+# installed: media-center (station-maintenance media-center task 2, 2026-10-03).
+# Log in once interactively first (`jellyfin-mpv-shim`) so cred.json exists;
+# --no-gui here skips the tray, which nothing needs once logged in.
+[Unit]
+Description=Jellyfin MPV Shim (cast target on this screen)
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+# The shell sets XDG_CONFIG_HOME=~/.configure; the user manager does not, and
+# without this the shim looks in ~/.config, finds no cred.json, and dies at a
+# "Server URL:" prompt it cannot read.
+Environment=XDG_CONFIG_HOME=%h/.configure
+ExecStart=/usr/bin/jellyfin-mpv-shim --no-gui
+# Jellyfin restarting, or the network coming up late, kills it; come back.
+Restart=on-failure
+RestartSec=10

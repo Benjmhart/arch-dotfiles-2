@@ -26,6 +26,11 @@
 # prompter is activated by dbus but launched as a systemd user unit.
 dbus-update-activation-environment --systemd DISPLAY XAUTHORITY
 
+# Jellyfin cast target, wherever the shim is installed (media-center). A user
+# service rather than `&` so it restarts and logs to the journal. Needs the
+# DISPLAY imported just above, so it cannot be enabled under default.target.
+command -v jellyfin-mpv-shim >/dev/null && systemctl --user start jellyfin-mpv-shim.service
+
 xsetroot -solid midnightblue
 
 
