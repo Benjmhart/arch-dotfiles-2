@@ -19,4 +19,6 @@ disabled = true
 disabled = false
 format = '🕙[\[ $time \]]($style) '
 time_format = "%T"
-utc_time_offset = "-5"
+# No utc_time_offset: the default, "local", follows the system timezone, which the
+# installer sets (install.sh TIMEZONE=America/Toronto). This line used to pin "-5"
+# (EST), so the prompt ran an hour behind for all of daylight time (found 2026-10-03).
