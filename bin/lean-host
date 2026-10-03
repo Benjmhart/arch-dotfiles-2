@@ -1,0 +1,13 @@
+#!/bin/sh
+# Exit 0 on machines that run the LEAN session, 1 everywhere else.
+#
+# micro (i3-3227U, 3.5 GiB, spinning disk; station-maintenance micro task 5)
+# shares .xinitrc and xmonad.hs with two much faster machines. Ben, 2026-10-03:
+# "let's make sure we're running extremely lean software on micro". Unlike the
+# tray width or the battery, "lean" is a preference, not something the machine
+# can be asked about, so this is the one place a hostname is named. Add a host
+# here rather than adding hostname checks anywhere else.
+case "$(cat /etc/hostname 2>/dev/null)" in
+    micro) exit 0 ;;
+esac
+exit 1

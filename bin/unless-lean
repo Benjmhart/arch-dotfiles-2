@@ -1,0 +1,10 @@
+#!/bin/sh
+# `unless-lean CMD ARGS...` runs CMD, except on a lean host (~/bin/lean-host),
+# where it does nothing. It uses exec so that CMD keeps the PID xmonad recorded.
+# spawnOnOnce places a window on its workspace by matching that PID. Writing
+# `~/bin/lean-host || rambox` in xmonad.hs would leave a shell in between: SpawnOn
+# adds `exec` only to commands WITHOUT shell metacharacters. The PID would then be the
+# shell's, Rambox's window would not match it, and it would open on whatever
+# workspace is current.
+"$HOME/bin/lean-host" && exit 0
+exec "$@"

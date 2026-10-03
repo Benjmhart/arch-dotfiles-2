@@ -94,7 +94,9 @@ fi
 
 #screensaver -no-splash &
 nm-applet --sm-disable &
-picom &
+# Not on lean hosts (~/bin/lean-host; micro, Ben 2026-10-03). With xrender, no shadow,
+# no fade and no blur, picom drew nothing visible, but vsync could hold back each frame.
+"$HOME/bin/lean-host" || picom &
 flameshot &
 # Battery indicator in the tray. XDG_CONFIG_HOME is pointed at a one-file config
 # dir for this process ONLY -- the same inline trick the fcitx5 block above uses --

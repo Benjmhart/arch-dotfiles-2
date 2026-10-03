@@ -202,6 +202,10 @@ myStartupHook = do
   -- Via a wrapper that places the tray against screen 0's actual width, not the
   -- fixed x in ~/.stalonetrayrc, which was off-screen on micro's 1366px panel.
   spawnOnce "~/bin/stalonetray-start &"
+  -- Every start, not once: `mod-q` respawns the xmobars, they map on top, and the tray
+  -- (which survives the restart) ends up drawn underneath them. Seen on micro 2026-10-03.
+  -- The sleep lets the new bars map first. Does nothing if no tray is running.
+  spawn "sleep 2; xdotool search --classname stalonetray windowraise"
   -- Session apps, each pinned to a workspace.
   -- spawnOnOnce = place on workspace + don't respawn on xmonad restart.
   -- Requires manageSpawn in manageHook (above) or the workspace is ignored.
@@ -210,7 +214,8 @@ myStartupHook = do
   -- so the desktop app no longer needs to be running. Launch it by hand when you
   -- actually want the GUI -- but if you do, leave Sync DISABLED inside the app;
   -- two sync clients on one device is unsupported.
-  spawnOnOnce "5" "rambox"
+  -- Not on lean hosts (~/bin/lean-host; micro, Ben 2026-10-03): ~90% of a core there.
+  spawnOnOnce "5" "~/bin/unless-lean rambox"
   spawnOnOnce "4" "vivaldi"
   -- herdr = terminal multiplexer / workspace manager for coding agents.
   -- NOTE: ~/.local/bin/herdr is a self-distributed binary that updates itself
