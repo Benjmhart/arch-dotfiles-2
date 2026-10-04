@@ -2,8 +2,10 @@
 #
 # Written 2026-09-01 for station-maintenance task 57.
 #
-# WHY THIS FILE IS IN ~/.config AND NOT ~/.configure:
-# XDG_CONFIG_HOME is $HOME/.configure on this box, but it is exported ONLY from
+# HISTORY (2026-10-04: ~/.configure was merged into ~/.config fleet-wide, so the
+# split below no longer exists; kept because the -conf flag in .xinitrc cites it).
+# WHY THIS FILE WAS IN ~/.config AND NOT ~/.configure:
+# XDG_CONFIG_HOME was $HOME/.configure on this box, but it is exported ONLY from
 # ~/.zshrc, and nothing that can start dunst ever sources ~/.zshrc:
 #   - .xinitrc does not source it (it says so explicitly, and sets XDG_CONFIG_HOME
 #     for the fcitx5 invocation alone, deliberately, to avoid repointing every

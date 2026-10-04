@@ -8,12 +8,15 @@
 # else that does not open an interactive session. Two of those exports are load
 # bearing, and one of them fails silently when missing:
 #
-#   * XDG_CONFIG_HOME=$HOME/.configure -- this machine's config lives in
-#     ~/.configure, NOT ~/.config. Without it, herdr resolves
-#     ~/.config/herdr/herdr.sock, a path that does not exist here, and returns
-#     A SECOND EMPTY SESSION WHILE EXITING 0. It does not error. A wrong answer
-#     that succeeds is worse than a failure, and gh does the same thing with
-#     ~/.configure/gh/hosts.yml, answering "please run gh auth login".
+#   * XDG_CONFIG_HOME -- until 2026-10-04 every machine kept its config in
+#     ~/.configure, and a shell without this export resolved herdr's socket and
+#     gh's hosts.yml under ~/.config and got A WRONG ANSWER WHILE EXITING 0 (a
+#     second empty herdr session; "please run gh auth login"). Since 2026-10-04
+#     (station-maintenance media-center task 3, arch-bootstrap tools/xdg-migrate)
+#     the config lives in ~/.config, the XDG default, and ~/.configure is a
+#     symlink to it for anything that still names the old path. The export is
+#     kept, explicit, so the shell and the systemd user manager agree by
+#     construction rather than by default.
 #
 #   * ~/.local/bin on PATH -- non-interactive PATH is
 #     /bin:/usr/bin:/usr/ucb:/usr/local/bin, so `herdr` is "command not found".
@@ -30,7 +33,7 @@
 # the shells nobody watches.
 typeset -U path PATH
 
-export XDG_CONFIG_HOME="$HOME/.configure"
+export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 
 # Deliberately only the two directories a non-interactive caller actually needs.
@@ -47,6 +50,6 @@ export PATH
 # stdout corrupts those transfers. No echo, no banners, no command substitution
 # that might warn.
 #
-# ⚠️ THIS DOES NOT FIX SYSTEMD USER UNITS. They do not invoke zsh at all, so they
-# still need Environment=XDG_CONFIG_HOME=%h/.configure in the unit file. Do not
-# read this file as having retired that requirement.
+# Systemd user units do not invoke zsh. Before 2026-10-04 they needed
+# Environment=XDG_CONFIG_HOME=%h/.configure; now their default (~/.config) is the
+# same directory, so no unit needs that line any more.

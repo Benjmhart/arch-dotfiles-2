@@ -88,13 +88,11 @@ if command -v fcitx5 >/dev/null 2>&1; then
   export GTK_IM_MODULE=fcitx
   export QT_IM_MODULE=fcitx
   export XMODIFIERS=@im=fcitx
-  # XDG_CONFIG_HOME is set by .zshrc (line 50), which this file never sources,
-  # so fcitx5 started here would read ~/.config/fcitx5 -- an empty path -- and
-  # silently fall back to stock defaults: no mozc in the group, Ctrl+space
-  # trigger, and typing that stays romaji. Set it for fcitx5 ONLY; exporting it
-  # session-wide would repoint every other app launched below at a different
-  # config tree.
-  XDG_CONFIG_HOME="$HOME/.configure" fcitx5 -d
+  # Until 2026-10-04 config lived in ~/.configure and fcitx5 needed
+  # XDG_CONFIG_HOME pointed there, or it read an empty ~/.config/fcitx5 and fell
+  # back to stock defaults (no mozc, Ctrl+space, romaji). ~/.config is now the one
+  # config tree, so it is stated for clarity only.
+  XDG_CONFIG_HOME="$HOME/.config" fcitx5 -d
 fi
 
 #screensaver -no-splash &
@@ -138,7 +136,7 @@ flameshot &
 # batteryless case. ~/bin/battery-xmobar guards itself the same way for the same
 # reason; the two are meant to agree.
 if grep -qs Battery /sys/class/power_supply/*/type; then
-  XDG_CONFIG_HOME="$HOME/.configure/cbatticon-gtk" cbatticon -i standard &
+  XDG_CONFIG_HOME="$HOME/.config/cbatticon-gtk" cbatticon -i standard &
 fi
 udiskie & 
 # dunst -- the notification daemon. Added 2026-09-01, station-maintenance task 57.
@@ -155,8 +153,8 @@ udiskie &
 # ★ -conf is LOAD-BEARING, added 2026-09-05 after the first real reboot proved the
 #   bare line silently loaded the WRONG config. ★
 #
-# dunst honours XDG_CONFIG_HOME, which is $HOME/.configure on this box. No
-# ~/.configure/dunst/dunstrc exists, so a bare `dunst` finds nothing there and falls
+# dunst honours XDG_CONFIG_HOME, which was $HOME/.configure until 2026-10-04. No
+# ~/.configure/dunst/dunstrc existed, so a bare `dunst` found nothing there and fell
 # through to /etc/dunst/dunstrc -- shipped defaults, none of our rules, no error, no
 # log line anyone sees. That is exactly what happened on the 2026-09-05 boot.
 #

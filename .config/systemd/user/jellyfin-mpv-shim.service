@@ -11,10 +11,10 @@ StartLimitIntervalSec=300
 StartLimitBurst=5
 
 [Service]
-# The shell sets XDG_CONFIG_HOME=~/.configure; the user manager does not, and
-# without this the shim looks in ~/.config, finds no cred.json, and dies at a
-# "Server URL:" prompt it cannot read.
-Environment=XDG_CONFIG_HOME=%h/.configure
+# Before 2026-10-04 the shell's config tree was ~/.configure and this line pointed
+# the shim there (else: no cred.json, dies at a "Server URL:" prompt). The tree is
+# ~/.config now, the user manager's default; stated explicitly anyway.
+Environment=XDG_CONFIG_HOME=%h/.config
 ExecStart=/usr/bin/jellyfin-mpv-shim --no-gui
 # Jellyfin restarting, or the network coming up late, kills it; come back.
 Restart=on-failure

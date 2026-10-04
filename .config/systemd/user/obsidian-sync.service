@@ -24,7 +24,7 @@ Environment=PATH=/home/ben/.nvm/versions/node/v24.21.0/bin:/usr/local/bin:/usr/b
 # to $XDG_CONFIG_HOME/obsidian-headless, falling back to ~/.config when unset. The
 # systemd user manager does NOT inherit your shell's environment, so without this the
 # daemon reads the wrong directory, finds no credentials, and fails.
-Environment=XDG_CONFIG_HOME=/home/ben/.configure
+Environment=XDG_CONFIG_HOME=/home/ben/.config
 Restart=on-failure
 RestartSec=30
 

@@ -1,9 +1,9 @@
 " Tridactyl config. Tracked in the dotfiles, shared by every machine.
 " Read by the native messenger (AUR firefox-tridactyl-native[-bin]) from
-" $XDG_CONFIG_HOME/tridactyl/tridactylrc -- ~/.configure here. Without the native
+" $XDG_CONFIG_HOME/tridactyl/tridactylrc -- ~/.config. Without the native
 " messenger Tridactyl never reads this file. Reload by hand with :source.
 "
-" Ported 2026-10-03 from the Vimium settings in ~/.configure/vimium-backup/
+" Ported 2026-10-03 from the Vimium settings in ~/.config/vimium-backup/
 " vimium-options.json, so the two browsers behave alike. Change one, change both.
 
 " This file is the whole truth: forget anything set by hand with :set or :bind.

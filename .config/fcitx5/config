@@ -1,8 +1,7 @@
-# NOTE: this lives under ~/.configure, not ~/.config -- .zshrc line 50 sets
-# XDG_CONFIG_HOME=$HOME/.configure. .xinitrc does NOT source .zshrc, so the
-# fcitx5 it launches is given XDG_CONFIG_HOME explicitly; without that, fcitx5
-# reads ~/.config/fcitx5, finds nothing, and silently falls back to stock
-# defaults (mozc absent from the group, Ctrl+space trigger, typing stays romaji).
+# NOTE: until 2026-10-04 this lived under ~/.configure (the old XDG_CONFIG_HOME),
+# and an fcitx5 started without that variable read an empty ~/.config/fcitx5 and
+# fell back to stock defaults (no mozc, Ctrl+space, romaji). It is in ~/.config now,
+# the default, so that trap is gone; .xinitrc still states the variable.
 
 [Hotkey/TriggerKeys]
 # Super+` -- Ben's request, 2026-08-25. Verified by synthesising the keypress

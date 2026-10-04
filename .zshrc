@@ -41,14 +41,14 @@ export PATH
 
 export GEM_HOME="$HOME/.ruby"
 
-export VIFM=$HOME/.configure/vifm
+export VIFM=$HOME/.config/vifm
 
 export WINHOME=/mnt/c/Users/Ben
 
 # compinit is NOT called here: oh-my-zsh calls it (with its own dump file), and a
 # second full run cost ~0.3 s per shell on micro (2026-10-03, zprof).
 
-export XDG_CONFIG_HOME=$HOME/.configure
+export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 
 # Point every shell at the one systemd-managed ssh-agent
@@ -108,7 +108,7 @@ if [[ -d "$HOME/.nvm" ]]
 then
   source "$HOME/.nvm/nvm.sh" --no-use
 else
-  source "$HOME/.configure/nvm/nvm.sh" --no-use
+  source "$HOME/.config/nvm/nvm.sh" --no-use
 fi
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
@@ -253,12 +253,12 @@ alias mongostart="docker run -d -p 27017-27019:27017-27019 --name mongod mongo"
 alias mongod="docker start mongod"
 alias mongo="docker exec -it mongod bash"
 alias gitchron="git branch --sort=committerdate"
-alias nvimrc="nvim ~/.configure/nvim/init.vim"
+alias nvimrc="nvim ~/.config/nvim/init.vim"
 alias xampp="sudo /opt/lampp/manager-linux-x64.run"
 alias capset="xmodmap ~/.Xmodmap"
 alias please='sudo $(fc -ln -1)'
 alias singletray="stalonetray --config ~/.stalonetrayrc-single"
-alias alacrittyconfig="nvim ~/.configure/alacritty/alacritty.toml"
+alias alacrittyconfig="nvim ~/.config/alacritty/alacritty.toml"
 alias tmux="tmux -u"
 unalias la
 alias la="eza -a"
@@ -266,7 +266,7 @@ alias ls="eza"
 alias bc="eva"
 alias cat="bat"
 alias clip="xclip -sel clip"
-alias vimrc="nvim ~/.configure/nvim/init.vim"
+alias vimrc="nvim ~/.config/nvim/init.vim"
 alias localec="LC_ALL='C'"
 alias localen="LC_ALL='en_US.UTF-8'"
 alias dot="/usr/bin/git --git-dir=$HOME/.dot/ --work-tree=$HOME"
@@ -282,7 +282,7 @@ alias system="$HOME/projects/station-maintenance/bin/system"
 # nest -- "nested herdr is disabled by default" -- and that refusal is LOCAL, from
 # the HERDR_ENV in the pane you typed in; beast-arch is not involved and nothing is
 # broken. To allow it anyway: [experimental] allow_nested = true in
-# ~/.configure/herdr/config.toml. It is experimental, and stacking two TUIs means
+# ~/.config/herdr/config.toml. It is experimental, and stacking two TUIs means
 # keybinding collisions -- which is what --remote-keybindings local|server settles.
 # For a one-shot that works from anywhere, herdr pane included, no TUI needed:
 #   ssh beast-arch 'herdr agent list'
@@ -303,7 +303,7 @@ if [[ "$(uname -n)" != media-center ]]; then
   alias media='herdr --remote media-center'
 fi
 alias cronlog="cat ~/Desktop/cronlog"
-alias vifmrc="nvim ~/.configure/vifm/vifmrc"
+alias vifmrc="nvim ~/.config/vifm/vifmrc"
 alias todo="cd ~/BRAIN/ && nvim './000-index.md'"
 eval $(thefuck --alias)
 

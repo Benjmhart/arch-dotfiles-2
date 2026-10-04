@@ -18,7 +18,7 @@
 # when the whole point of a scoped token is to fail closed. A push that stops working is
 # the correct symptom of an expired token.
 #
-# `gh` itself is unaffected -- it authenticates from ~/.configure/gh/hosts.yml, not from
+# `gh` itself is unaffected -- it authenticates from ~/.config/gh/hosts.yml, not from
 # git's credential helper. Beware: `gh auth setup-git` rewrites these blocks back.
 [credential]
 	helper = /usr/lib/git-core/git-credential-libsecret
