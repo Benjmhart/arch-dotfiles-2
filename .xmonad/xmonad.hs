@@ -11,6 +11,7 @@ import XMonad.Hooks.UrgencyHook (withUrgencyHook, NoUrgencyHook(..), focusUrgent
 import Data.Monoid (All(..))
 import Data.Bits (setBit)
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers (doCenterFloat)
 import XMonad.StackSet as W
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.EZConfig (additionalKeys)
@@ -108,6 +109,10 @@ myManageHook
     -- xprop reports both "Rambox" and "rambox" as res_class, so match either.
     [ className =? "Rambox" --> doShift "5"
     , className =? "rambox" --> doShift "5"
+    -- The yazi file chooser that xdg-desktop-portal-termfilechooser opens for
+    -- Vivaldi, Chromium and Rambox: floated, so it does not reflow the workspace
+    -- (station-maintenance beast-arch task 72; class set in its config's TERMCMD).
+    , className =? "termfilechooser" --> doCenterFloat
     ]
 
 printscreenFlameshot = ((noModMask, xK_Print), spawn "flameshot gui")
