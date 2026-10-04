@@ -1,0 +1,15 @@
+#!/bin/sh
+# Ctrl+O in qutebrowser: pick local file(s) in the yazi chooser and open each in a new
+# tab -- what Ctrl+O does in Vivaldi. qutebrowser has no open-file dialog of its own.
+# Paths are percent-encoded into file:// URLs, so a filename containing ";;" (qutebrowser's
+# command separator) cannot smuggle a second command into $QUTE_FIFO. beast-arch task 72.
+out=$(mktemp) || exit 1
+trap 'rm -f "$out"' EXIT
+"$HOME/.config/xdg-desktop-portal-termfilechooser/titled-yazi-wrapper.sh" 1 0 0 "$HOME" "$out"
+python3 - "$out" >> "$QUTE_FIFO" <<'PY'
+import sys, pathlib
+for line in open(sys.argv[1]):
+    p = line.rstrip("\n")
+    if p:
+        print("open -t " + pathlib.Path(p).as_uri())
+PY

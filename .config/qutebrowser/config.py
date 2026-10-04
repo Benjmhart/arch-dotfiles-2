@@ -33,3 +33,7 @@ c.fileselect.handler = "external"
 c.fileselect.single_file.command = [_yazi, "0", "0", "0", os.path.expanduser("~"), "{}"]
 c.fileselect.multiple_files.command = [_yazi, "1", "0", "0", os.path.expanduser("~"), "{}"]
 c.fileselect.folder.command = [_yazi, "0", "1", "0", os.path.expanduser("~"), "{}"]
+# Ctrl+O: open local file(s) via yazi (userscripts/open-file). In a download's location
+# prompt, Ctrl+O picks the folder in yazi too (qutebrowser's own Alt+E does the same).
+config.bind("<Ctrl-o>", "spawn --userscript open-file")
+config.bind("<Ctrl-o>", "prompt-fileselect-external", mode="prompt")
