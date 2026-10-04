@@ -1,9 +1,9 @@
 ; File chooser for apps that ask the portal (Vivaldi, Chromium, Rambox): yazi in Alacritty.
 ; Routed by ~/.config/xdg-desktop-portal/portals.conf (FileChooser=termfilechooser).
-; The class lets xmonad float it (myManageHook). station-maintenance beast-arch task 72.
+; titled-yazi-wrapper.sh (beside this file) sets TERMCMD: the class lets xmonad float it
+; (myManageHook), and the title ("Save as: <name>") shows in xmobar. station-maintenance beast-arch task 72.
 [filechooser]
-cmd=yazi-wrapper.sh
+cmd=titled-yazi-wrapper.sh
 default_dir=$HOME
-env=TERMCMD=alacritty --class termfilechooser --title termfilechooser -e
 open_mode=suggested
 save_mode=suggested
