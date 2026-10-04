@@ -231,6 +231,11 @@ export KEYTIMEOUT=1
 # truecolor everywhere except the kernel console (TERM=linux), which cannot draw it
 [[ $TERM != linux ]] && export COLORTERM=truecolor
 
+# On a tty kmscon serves (arch-bootstrap setup_kmscon), kmscon holds the display and
+# X has to ask it to let go first. Agetty ttys and X terminals keep plain startx.
+[[ $TTY == /dev/tty<-> ]] && systemctl is-active -q "kmsconvt@${TTY#/dev/}" 2>/dev/null \
+  && alias startx='kmscon-launch-gui startx'
+
 # Example aliases
 alias zshrc="nvim ~/.zshrc"
 alias cd..="cd .."
