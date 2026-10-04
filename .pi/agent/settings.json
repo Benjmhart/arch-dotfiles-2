@@ -1,7 +1,7 @@
 {
   "defaultModel": "deepseek-v4-pro",
   "defaultProvider": "deepseek",
-  "lastChangelogVersion": "0.99.2",
+  "lastChangelogVersion": "1.0.1",
   "packages": [
     "npm:@ollama/pi-web-search",
     "../../projects/auto-business/pi-bmad"
