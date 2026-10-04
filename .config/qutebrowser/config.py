@@ -24,3 +24,12 @@ c.content.blocking.method = "both"
 if subprocess.call([os.path.expanduser("~/bin/lean-host")]) == 0:
     c.qt.chromium.process_model = "process-per-site"
     c.qt.chromium.low_end_device_mode = "always"
+
+# File picker: the same yazi-in-floating-Alacritty as every portal app (beast-arch task 72).
+# qutebrowser does not ask the portal, so call the portal's wrapper directly. Its args:
+# multiple directory save path out -- each its own argv entry, nothing goes through a shell.
+_yazi = os.path.expanduser("~/.config/xdg-desktop-portal-termfilechooser/titled-yazi-wrapper.sh")
+c.fileselect.handler = "external"
+c.fileselect.single_file.command = [_yazi, "0", "0", "0", os.path.expanduser("~"), "{}"]
+c.fileselect.multiple_files.command = [_yazi, "1", "0", "0", os.path.expanduser("~"), "{}"]
+c.fileselect.folder.command = [_yazi, "0", "1", "0", os.path.expanduser("~"), "{}"]
