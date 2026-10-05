@@ -11,7 +11,7 @@ import XMonad.Hooks.UrgencyHook (withUrgencyHook, NoUrgencyHook(..), focusUrgent
 import Data.Monoid (All(..))
 import Data.Bits (setBit)
 import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.ManageHelpers (doCenterFloat)
+import XMonad.Hooks.ManageHelpers (doRectFloat)
 import XMonad.StackSet as W
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.EZConfig (additionalKeys)
@@ -110,9 +110,11 @@ myManageHook
     [ className =? "Rambox" --> doShift "5"
     , className =? "rambox" --> doShift "5"
     -- The yazi file chooser that xdg-desktop-portal-termfilechooser opens for
-    -- Vivaldi, Chromium and Rambox: floated, so it does not reflow the workspace
-    -- (station-maintenance beast-arch task 72; class set in its config's TERMCMD).
-    , className =? "termfilechooser" --> doCenterFloat
+    -- Vivaldi, Chromium and Rambox: floated, so it does not reflow the workspace,
+    -- at 90% of whichever screen it opens on. A centred float kept Alacritty's own
+    -- small size, unreadable on the portrait monitor (station-maintenance beast-arch
+    -- task 81; class set by the picker's titled-yazi-wrapper.sh).
+    , className =? "termfilechooser" --> doRectFloat (W.RationalRect 0.05 0.05 0.9 0.9)
     ]
 
 printscreenFlameshot = ((noModMask, xK_Print), spawn "flameshot gui")
