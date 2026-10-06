@@ -21,3 +21,13 @@ if [ "$directory" = 1 ]; then
 else
   term --chooser-file="$out" "$path"   # "multiple" needs no flag: yazi returns every selected file
 fi
+
+# Saving: the portal pre-creates $path holding its instructions. If it was not the file
+# chosen (cancelled, or another file picked), it is litter -- one was committed into a
+# repo on 2026-10-04. Removed only while it still starts with the portal's marker line,
+# so a real file at that path is never touched. A placeholder moved elsewhere and then
+# abandoned is not tracked.
+if [ "$save" = 1 ] && ! grep -qxF -- "$path" "$out" 2>/dev/null \
+   && head -n1 -- "$path" 2>/dev/null | grep -qF '* xdg-desktop-portal-termfilechooser instructions *'; then
+  rm -f -- "$path"
+fi
