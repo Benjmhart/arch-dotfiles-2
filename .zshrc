@@ -302,6 +302,13 @@ fi
 if [[ "$(uname -n)" != media-center ]]; then
   alias media='herdr --remote media-center'
 fi
+# Fleet rollouts (station-maintenance beast-arch task 80): micro is the controller, so
+# only there. `fleet status`; `fpush` = latest main to every machine (one fleet
+# passphrase, one sudo password); `fpush <sha> [stages]` for a pinned commit.
+if [[ "$(uname -n)" == micro ]]; then
+  alias fleet='~/projects/arch-bootstrap/tools/fleet'
+  alias fpush='~/projects/arch-bootstrap/tools/fleet push'
+fi
 alias cronlog="cat ~/Desktop/cronlog"
 alias vifmrc="nvim ~/.config/vifm/vifmrc"
 alias todo="cd ~/BRAIN/ && nvim './000-index.md'"
