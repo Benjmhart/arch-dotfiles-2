@@ -377,3 +377,9 @@ export PI_PLAN_MODEL="deepseek-v4-pro"
 # Added by flyctl installer
 export FLYCTL_INSTALL="/home/ben/.fly"
 export PATH="$FLYCTL_INSTALL/bin:$PATH"
+
+# zoxide (station-maintenance beast-arch 83, 2026-10-07): `z <part>` jumps to the best-ranked
+# directory matching <part>, `zi` picks with fzf. The same database feeds yazi's `Z`.
+# Replaces rupa's `z` package, which was installed but never sourced. Kept last: zoxide
+# hooks `cd`, and its init must come after anything else that wraps it.
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
