@@ -14,4 +14,8 @@
 prepend_keymap = [
   { on = [ "g", "t" ], run = "cd ~/.local/share/Trash/files", desc = "Go to the trash" },
   { on = [ "g", "d" ], run = "cd ~/Downloads",                desc = "Go to Downloads" },
+  # Directories only, anywhere under ~ (hidden dirs and build output skipped; ~3k dirs
+  # in 0.05 s on beast-arch, so no fd needed). fzf runs with yazi suspended (--block);
+  # `ya emit cd` reaches the instance through YAZI_ID. Esc in fzf = stay put. Added 2026-10-07.
+  { on = [ "g", "f" ], run = '''shell --block 'cd ~ && d=$(find . -mindepth 1 \( -name ".*" -o -name node_modules -o -name target -o -name .stack-work \) -prune -o -type d -print 2>/dev/null | sed "s|^\./||" | fzf --prompt="dir> ") && ya emit cd "$HOME/$d"' ''', desc = "Fuzzy-find a directory under ~" },
 ]
