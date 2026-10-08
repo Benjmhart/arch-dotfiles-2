@@ -9,6 +9,15 @@ Temp scripts for Ben to run and their logs go in **`$OPS`** (`~/.local/state/ops
 it as evidence. Scripts older than 10 days are deleted automatically (`.zshrc`); logs are kept.
 Files only for your own use stay in the session scratchpad.
 
+## On micro: the system repos move only through `fpush`
+
+micro is the trusted machine for fleet pushes and recovery; beast-arch, carbon and media-center are
+"dirty" (Ben, 2026-10-08). On micro, **never `git pull`, merge or check out** arch-bootstrap, the
+dotfiles (`~/.dot`) or secrets: a pulled `.zshrc` runs unreviewed code in every shell. `git fetch`
+and `git show origin/...:path` are fine for reading. Changes reach micro through `fpush`, which
+shows every new commit (with times) for review and applies exactly the approved commits.
+station-maintenance beast-arch task 86.
+
 ## Git
 
 - Pushing to GitHub works from a tool session, verified on beast-arch 2026-09-30 after the
