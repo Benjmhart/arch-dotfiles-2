@@ -1,5 +1,13 @@
 # Global instructions
 
+## Scratch files: `$OPS`, never `~`
+
+Temp scripts for Ben to run and their logs go in **`$OPS`** (`~/.local/state/ops`, set in
+`.zshenv`; it exists on every machine), never loose in `$HOME`. Name them
+`<host>-<topic>-<YYYYMMDD>.sh` / `.log`, have the script `tee` to its log there, and give Ben
+`$OPS/<name>.sh` to run. Delete a script once its log is read; keep the log, since task files cite
+it as evidence. Files only for your own use stay in the session scratchpad.
+
 ## Git
 
 - Pushing to GitHub works from a tool session, verified on beast-arch 2026-09-30 after the

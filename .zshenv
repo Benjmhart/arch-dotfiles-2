@@ -36,6 +36,11 @@ typeset -U path PATH
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 
+# One place for run logs and throwaway scripts (Ben, 2026-10-08: they were cluttering ~).
+# Under XDG state, beside fleet/ and chores/. Nothing prunes it; delete by hand.
+export OPS="$HOME/.local/state/ops"
+[[ -d $OPS ]] || mkdir -p "$OPS"
+
 # Deliberately only the two directories a non-interactive caller actually needs.
 # ~/.zshrc builds the full list; duplicates collapse via typeset -U above, so
 # naming these twice costs nothing. Keep this short -- every zsh pays for it.
