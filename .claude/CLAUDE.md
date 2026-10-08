@@ -6,7 +6,8 @@ Temp scripts for Ben to run and their logs go in **`$OPS`** (`~/.local/state/ops
 `.zshenv`; it exists on every machine), never loose in `$HOME`. Name them
 `<host>-<topic>-<YYYYMMDD>.sh` / `.log`, have the script `tee` to its log there, and give Ben
 `$OPS/<name>.sh` to run. Delete a script once its log is read; keep the log, since task files cite
-it as evidence. Files only for your own use stay in the session scratchpad.
+it as evidence. Scripts older than 10 days are deleted automatically (`.zshrc`); logs are kept.
+Files only for your own use stay in the session scratchpad.
 
 ## Git
 

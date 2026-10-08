@@ -309,6 +309,9 @@ if [[ "$(uname -n)" == micro ]]; then
   alias fleet='~/projects/arch-bootstrap/tools/fleet'
   alias fpush='~/projects/arch-bootstrap/tools/fleet push'
 fi
+# Throwaway scripts in $OPS (.zshenv) expire after 10 days (Ben, 2026-10-08); their .log
+# files stay, since task files cite them. Runs per interactive shell: one find, tiny dir.
+[[ -d $OPS ]] && command find "$OPS" -maxdepth 1 -type f -name '*.sh' -mtime +10 -delete 2>/dev/null
 alias cronlog="cat ~/Desktop/cronlog"
 alias vifmrc="nvim ~/.config/vifm/vifmrc"
 alias todo="cd ~/BRAIN/ && nvim './000-index.md'"
