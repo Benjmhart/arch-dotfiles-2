@@ -51,6 +51,15 @@ set -u
 
 say() { echo "=== AGENT INBOX: $* ==="; }
 
+# micro takes no inbox messages and runs no station-maintenance code (Ben, 2026-10-08,
+# beast-arch task 86): it is the trusted recovery box, so nothing pulled from a repo the
+# dirty machines can push to may execute there. Its instructions are rows in
+# machines/micro/MAINTENANCE.md. Still exactly one status line, per the rule above.
+if [ "$(uname -n)" = micro ]; then
+    say "micro takes no messages (by design) -- micro's to-do list is station-maintenance machines/micro/MAINTENANCE.md"
+    exit 0
+fi
+
 INBOX="$HOME/projects/station-maintenance/bin/inbox"
 if [ ! -x "$INBOX" ]; then
     say "UNAVAILABLE -- no executable bin/inbox at $INBOX"

@@ -273,7 +273,13 @@ alias dot="/usr/bin/git --git-dir=$HOME/.dot/ --work-tree=$HOME"
 alias dotadd="dot add -u"
 # `system status` / `system push` across every system repo -- see
 # ~/projects/station-maintenance/REPOS.md. Pushes need a real terminal.
-alias system="$HOME/projects/station-maintenance/bin/system"
+if [[ "$(uname -n)" == micro ]]; then
+  # micro runs no station-maintenance code, and its system repos move only through fpush
+  # (beast-arch task 86): `system pull` would pull and run unreviewed code here.
+  alias system='echo "on micro: no \`system\` -- the system repos move only through fpush (beast-arch 86)"'
+else
+  alias system="$HOME/projects/station-maintenance/bin/system"
+fi
 # `beast` / `carbon` / `media` -- attach this terminal to that machine's herdr server over
 # the tailnet. Each is defined only on the OTHER machine.
 # herdr supports this first-class: `--remote <ssh-target>` runs the herdr CLIENT

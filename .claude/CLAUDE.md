@@ -16,6 +16,9 @@ micro is the trusted machine for fleet pushes and recovery; beast-arch, carbon a
 dotfiles (`~/.dot`) or secrets: a pulled `.zshrc` runs unreviewed code in every shell. `git fetch`
 and `git show origin/...:path` are fine for reading. Changes reach micro through `fpush`, which
 shows every new commit (with times) for review and applies exactly the approved commits.
+**station-maintenance is text on micro:** pulling it is fine, but never run its `bin/` or
+`automation/` there (no `bin/inbox`, `bin/tasks`, `bin/system`). micro takes no inbox messages; its
+to-do list is `machines/micro/MAINTENANCE.md`, so a session elsewhere writes micro's work there.
 station-maintenance beast-arch task 86.
 
 ## Git
