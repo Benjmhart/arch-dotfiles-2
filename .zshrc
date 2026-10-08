@@ -104,12 +104,12 @@ export HISTCONTROL=ignoreboth
 #GOPATH
 export GOPATH=~/Projects/go
 
-if [[ -d "$HOME/.nvm" ]]
-then
-  source "$HOME/.nvm/nvm.sh" --no-use
-else
-  source "$HOME/.config/nvm/nvm.sh" --no-use
-fi
+# nvm lives in ~/.nvm or under XDG; a machine with neither (a headless box) skips it
+# instead of printing "no such file" at every shell start.
+for _nvm in "$HOME/.nvm/nvm.sh" "$HOME/.config/nvm/nvm.sh"; do
+  [[ -s $_nvm ]] && { source "$_nvm" --no-use; break; }
+done
+unset _nvm
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
