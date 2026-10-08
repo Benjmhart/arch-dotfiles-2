@@ -12,8 +12,10 @@ Files only for your own use stay in the session scratchpad.
 ## On micro: the system repos move only through `fpush`
 
 micro is the trusted machine for fleet pushes and recovery; beast-arch, carbon and media-center are
-"dirty" (Ben, 2026-10-08). On micro, **never `git pull`, merge or check out** arch-bootstrap, the
-dotfiles (`~/.dot`) or secrets: a pulled `.zshrc` runs unreviewed code in every shell. `git fetch`
+"dirty" (Ben, 2026-10-08). On micro, **never `git pull`, merge, check out or commit in** arch-bootstrap,
+the dotfiles (`~/.dot`) or secrets: a pulled `.zshrc` runs unreviewed code in every shell, and a
+commit made in the arch-bootstrap checkout mid-`fleet stick` once reached the recovery stick.
+Develop arch-bootstrap on micro in `~/projects/arch-bootstrap-dev` (a separate clone) and push. `git fetch`
 and `git show origin/...:path` are fine for reading. Changes reach micro through `fpush`, which
 shows every new commit (with times) for review and applies exactly the approved commits.
 **station-maintenance is text on micro:** pulling it is fine, but never run its `bin/` or
