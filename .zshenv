@@ -41,6 +41,13 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export OPS="$HOME/.local/state/ops"
 [[ -d $OPS ]] || mkdir -p "$OPS"
 
+# npm runs no package install scripts: a dependency's postinstall is the usual way a poisoned
+# package runs code (station-maintenance beast-arch 76). Checked 2026-10-09 against every
+# package-lock on beast-arch: esbuild, sharp, msw, iframe-resizer, fsevents work without theirs
+# on Linux. One-off override: `npm rebuild <pkg> --ignore-scripts=false`. pnpm 10+ already
+# blocks dependency builds unless allow-listed.
+export NPM_CONFIG_IGNORE_SCRIPTS=true
+
 # Deliberately only the two directories a non-interactive caller actually needs.
 # ~/.zshrc builds the full list; duplicates collapse via typeset -U above, so
 # naming these twice costs nothing. Keep this short -- every zsh pays for it.
