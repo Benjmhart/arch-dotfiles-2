@@ -101,9 +101,6 @@ export LC_COLLATE="en_US.UTF-8"
 
 export HISTCONTROL=ignoreboth
 
-#GOPATH
-export GOPATH=~/Projects/go
-
 # nvm lives in ~/.nvm or under XDG; a machine with neither (a headless box) skips it
 # instead of printing "no such file" at every shell start.
 for _nvm in "$HOME/.nvm/nvm.sh" "$HOME/.config/nvm/nvm.sh"; do
