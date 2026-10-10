@@ -223,7 +223,8 @@ myStartupHook = do
   -- two sync clients on one device is unsupported.
   -- Not on lean hosts or media-center: the host list is in ~/bin/rambox-autostart.
   spawnOnOnce "5" "~/bin/rambox-autostart"
-  spawnOnOnce "4" "vivaldi"
+  -- Not on lean hosts (micro): two resident browsers helped run it out of memory (micro task 10).
+  spawnOnOnce "4" "~/bin/unless-lean vivaldi"
   -- herdr = terminal multiplexer / workspace manager for coding agents.
   -- NOTE: ~/.local/bin/herdr is a self-distributed binary that updates itself
   -- (`herdr update`). It is NOT tracked here and NOT installed by pacman/AUR, so
