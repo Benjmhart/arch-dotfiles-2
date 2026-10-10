@@ -100,7 +100,9 @@ def top_rss(n):
             rss = int((p / "statm").read_text().split()[1]) * (os.sysconf("SC_PAGE_SIZE") // 1024)
             if rss < 51200:  # ignore anything under 50 MiB; the noise floor is ~70 processes
                 continue
-            comm = (p / "comm").read_text().strip()
+            # pid too: two instances of one program (micro task 10, two nvims) are otherwise
+            # indistinguishable, and `ps -p PID -o args` names the guilty one while it runs.
+            comm = (p / "comm").read_text().strip() + "/" + p.name
             procs.append((rss, comm))
         except (OSError, ValueError, IndexError):
             continue  # process exited mid-read; expected, not an error
